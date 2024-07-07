@@ -450,7 +450,7 @@
   .footer-contacts p span { font-size: 1.65rem; }
 
   /* Inner Page Hero */
-  .page-hero-section { padding-top: 90px; padding-bottom: 100px; }
+
 
   /* Cart */
   .cart-table .qty { margin-top: 0; }
@@ -995,7 +995,7 @@
   .footer-contacts p span { font-size: 1.75rem; }
 
   /* Inner Page Hero */
-  .page-hero-section { padding-top: 80px; padding-bottom: 90px; }
+
   .page-hero-section h2 { font-size: 3.25rem; }
 
   /* Pagination */
@@ -1628,7 +1628,7 @@
   #footer-3 .bottom-footer-list li p { font-size: 1rem; line-height: 1.5; }
 
   /* Inner Page Hero */
-  .page-hero-section { padding-top: 70px; padding-bottom: 80px; }
+
   .page-hero-section h2 { font-size: 3.1rem; }
 
   /* Gift Card Page */
@@ -1636,18 +1636,6 @@
   .card-box img { padding: 0 5%; }
   .card-box h5 { font-size: 2rem; }
   .card-box p { font-size: 1.0625rem; padding: 0 15%; }
-
-  /* Cart */
-  .cart-table.mb-70 { margin-bottom: 40px; }
-  .cart-product-desc h6 { font-size: 1.3rem; }
-  .cart-product-img { display: none; }
-  .cart-product-desc { padding-left: 0; }
-
-  .discount-coupon.pt-15 { padding-top: 0; }
-  .discount-form { margin-bottom: 50px; }
-  .discount-coupon .col-lg-5.text-right { text-align: center!important; }
-
-  .cart-checkout .btn { padding: 16px 30px; font-size: 1.15rem; }
 
   /* Team */
   .tm-meta h5 { font-size: 1.5rem; }
@@ -2165,7 +2153,7 @@
   .bottom-footer-list p:after { padding-left: 8px; }
 
   /* Inner Page Hero */
-  .page-hero-section { padding-top: 70px; padding-bottom: 80px; }
+
   .page-hero-section h2 { font-size: 2.6rem; }
 
   /* Breadcrumb */
@@ -2714,7 +2702,7 @@
   .bottom-footer-list p:after { padding-left: 8px; }
 
   /* Inner Page Hero */
-  .page-hero-section { padding-top: 70px; padding-bottom: 80px; }
+  /* .page-hero-section { padding-top: 70px; padding-bottom: 80px; } */
   .page-hero-section h2 { font-size: 2.35rem; }
 
   /* Breadcrumb */
@@ -2738,13 +2726,13 @@
   .tabs-2 li img { max-height: 65px; }
 
   /* Cart */
-  .cart-table.mb-70 { margin-bottom: 40px; }
+  /* .cart-table.mb-70 { margin-bottom: 40px; }
   .cart-product-desc h5 { font-size: 1.25rem; }
   .cart-product-img { display: none; }
   .cart-product-desc { padding-left: 0; }
   .cart-product-desc p { padding-left: 10%; }
 
-  .cart-table table th, .cart-table table td, .cart-table table td.product-name { padding: 16px 18px; }
+  .cart-table table th, .cart-table table td, .cart-table table td.product-name { padding: 16px 18px; } */
   .cart-table table td { font-size: 1.125rem; }
 
   .discount-form .form-control { 

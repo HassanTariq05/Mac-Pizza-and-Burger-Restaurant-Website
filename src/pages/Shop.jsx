@@ -15,7 +15,7 @@ function Shop() {
 
   return (
     <div id="page" className="page">
-        <div id="about-page" className="page-hero-section division">
+        <div id="about-page" className="page-hero-section division" style={{ backgroundImage: "url('')" }}>
             <div className="container">
                 <div className="row">
                     <div className="col-lg-10 offset-lg-1">
@@ -117,24 +117,57 @@ function Shop() {
                                 <div className="row">
                                     <ShopProduct 
                                         title={"Demo Title"}
-                                        rating={4}
+                                        rating={"4"}
                                         description={"Demo Decription here"}
-                                        price={"$300"}
+                                        price={300}
                                         image={require("../images/breakfast-img-1.jpg")}
+                                        quantity={1}
+                                        hasOption={true}
                                     />
                                     <ShopProduct 
                                         title={"Demo Title 2"}
-                                        rating={4}
+                                        rating={"4"}
                                         description={"Demo Decription here again"}
-                                        price={"$400"}
+                                        price={400}
                                         image={require("../images/breakfast-img-2.jpg")}
+                                        quantity={1}
+                                        hasOption={false}
                                     />
                                     <ShopProduct 
                                         title={"Demo Title 3"}
-                                        rating={4}
+                                        rating={"4"}
                                         description={"Demo Decription here once again"}
-                                        price={"$400"}
+                                        price={400}
                                         image={require("../images/breakfast-img-3.jpg")}
+                                        quantity={1}
+                                        hasOption={true}
+                                    />
+                                    <ShopProduct 
+                                        title={"Demo Title 4"}
+                                        rating={"4"}
+                                        description={"Demo Decription here"}
+                                        price={300}
+                                        image={require("../images/coffee-ig-q.jpg")}
+                                        quantity={1}
+                                        hasOption={true}
+                                    />
+                                    <ShopProduct 
+                                        title={"Demo Title 5"}
+                                        rating={"4"}
+                                        description={"Demo Decription here again"}
+                                        price={100}
+                                        image={require("../images/juice-img-1.jpg")}
+                                        quantity={1}
+                                        hasOption={false}
+                                    />
+                                    <ShopProduct 
+                                        title={"Demo Title 6"}
+                                        rating={"4"}
+                                        description={"Demo Decription here once again"}
+                                        price={200}
+                                        image={require("../images/sashimi.png")}
+                                        quantity={1}
+                                        hasOption={true}
                                     />
                                 </div>
                             </div>

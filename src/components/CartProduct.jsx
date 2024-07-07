@@ -1,31 +1,56 @@
-import React from 'react'
+import React, { useState } from 'react';
+import { useStateValue } from './StateProvider';
+import CurrencyFormat from 'react-currency-format';
+import '../css/Cart.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmarkCircle } from '@fortawesome/free-solid-svg-icons';
 
-function CartProduct({ title, image, description, price }) {
-    const getTotalPrice = (() => {
-        <span>100</span>
-    })
-  return (
-    <tr>
-        <td data-label="Product" className="product-name">
-            {/* Product Details */}
+function CartProduct({ title, image, description, price, quantity }) {
+    const [{ basket }, dispatch] = useStateValue();
+
+    const handleQuantityChange = (event) => {
+        const newQuantity = Number(event.target.value);
+        dispatch({
+            type: 'UPDATE_QUANTITY',
+            item: {
+                title: title,
+                quantity: newQuantity,
+            },
+        });
+    };
+
+    const getTotalPrice = () => {
+        return (price * quantity).toFixed(2);
+    };
+
+    return (
+        <tr className='thead'>
+            <td id='td' data-label="Product" className="product-name">
             <div className="cart-product-img"><img src={image} alt="cart-preview" /></div>
-            <div className="cart-product-desc">
-                <h5 className="h5-sm">{title}</h5>
-                <p className="p-sm">{description}</p>
-            </div>
-        </td>
-        <td data-label="Price" className="product-price">
-            <h5 className="h5-md">{price}</h5>
-        </td>
-        <td data-label="Quantity" className="product-qty">
-            <input className="qty" type="number" min="1" max="20" defaultValue="1" />
-        </td>
-        <td data-label="Total" className="product-price-total">
-            <h5 className="h5-md">{getTotalPrice}</h5>
-        </td>
-        <td data-label="Delete" className="td-trash"><i className="far fa-trash-alt"></i></td>
-    </tr>
-  )
+            </td>
+            <td id='td' data-label="Product" className="product-name">
+                
+                <div className="cart-product-des">
+                    <p className="b">{title}</p>
+                    <p data-label="Price" className="b">{price}som</p>
+                    <p className="d">{description}</p>
+                    <input
+                    className="qty"
+                    type="number"
+                    min="1"
+                    max="20"
+                    value={quantity}
+                    onChange={handleQuantityChange}
+                />
+
+                <p><button onClick={() => dispatch({ type: 'REMOVE_FROM_BASKET', title })} className='btn1'><FontAwesomeIcon icon={faXmarkCircle}  />    Remove item</button></p>
+                </div>
+            </td>
+            <td id='td' data-label="Total" className="product-price-total">
+                <p className="b">{getTotalPrice()}som</p>
+            </td>
+        </tr>
+    );
 }
 
 export default CartProduct;

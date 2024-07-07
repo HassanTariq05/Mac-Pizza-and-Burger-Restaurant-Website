@@ -1,56 +1,77 @@
-import React from 'react'
+import React from 'react';
+import { useStateValue } from './StateProvider';
+import '../css/ProductView.css';
+import { Link } from 'react-router-dom';
 
-function ShopProduct({ image, title, rating, description, price }) {
+function ShopProduct({ image, title, rating, description, price, hasOption, category }) {
+  const [{ basket }, dispatch] = useStateValue();
+
+  const addToBasket = () => {
+    const itemIndex = basket.findIndex((item) => item.title === title);
+    if (itemIndex >= 0) {
+      dispatch({
+        type: 'UPDATE_QUANTITY',
+        item: {
+          title: title,
+          quantity: basket[itemIndex].quantity + 1,
+        },
+      });
+    } else {
+      dispatch({
+        type: 'ADD_TO_BASKET',
+        item: {
+          title: title,
+          image: image,
+          price: price,
+          rating: rating,
+          description: description,
+          quantity: 1,
+        },
+      });
+    }
+  };
+
+  const encodedTitle = encodeURIComponent(title);
+  const encodedImage = encodeURIComponent(image);
+  const encodedHasOption = encodeURIComponent(hasOption);
+  const encodedPrice = encodeURIComponent(price);
+  const encodedDesc = encodeURIComponent(description);
+
   return (
-    <div className="col-lg-4">
-        <div className="menu-6-item bg-white">
-
-            <div className="menu-6-img rel">
-                <div className="hover-overlay">
-
-                    <img className="img-fluid" src={image} alt="menu-image"/>
-
-                    <span className="item-code bg-tra-dark"></span>
-
-                    <div className="menu-img-zoom ico-25">
-                        <a href={require("../images/breakfast-img-1.jpg")} className="image-link">
-                            <span className="flaticon-zoom"></span>
-                        </a>
-                    </div>
-
-                </div>
+    <div className="shopProduct">
+      <div className="">
+        <div className="">
+          <Link to={`/product/${encodedTitle}/${encodedImage}/${encodedHasOption}/${1}/${category}/${encodedPrice}/${encodedDesc}`}>
+            <div className="hover-overlay">
+              <img className="img-fluid" src={image} alt="menu-image" />
+              <span className="item-code bg-tra-dark"></span>
             </div>
-
-            <div className="menu-6-txt rel">
-
-                <div className="item-rating">
-                    <div className="stars-rating stars-lg">
-                    {Array(rating).fill().map((_, i) => (
-                        <i key={i} className="fas fa-star"></i>
-                    ))}
-                    </div>
-                </div>
-
-                <div className="like-ico ico-25">
-                    <a href="#"><span className="flaticon-heart"></span></a>
-                </div>
-
-                <h5 className="h5-sm">{title}</h5>
-
-                <p className="grey-color">{description}.</p>
-
-                <div className="menu-6-price bg-coffee">
-                    <h5 className="h5-xs yellow-color">{price}</h5>
-                </div>
-
-                <div className="add-to-cart bg-yellow ico-10">
-                    <a href="#"><span className="flaticon-shopping-bag"></span> Add to Cart</a>
-                </div>
-
+          </Link>
+        </div>
+        <div className="">
+          <Link to={`/product/${encodedTitle}/${encodedImage}/${encodedHasOption}/${1}/${category}/${encodedPrice}/${encodedDesc}`}>
+            <span className="productTitle">{title}</span>
+            <div className="">
+              <span className="productPrice">{`${price.toFixed(2)}som`}</span>
             </div>
+          </Link>
+          <div className="addToCartShop">
+            {hasOption ? (
+              <Link to={`/product/${encodedTitle}/${encodedImage}/${encodedHasOption}/${1}/${category}/${encodedPrice}/${encodedDesc}`}>
+                <button className='addToCart1'>SELECT OPTION</button>
+              </Link>
+            ) : (
+                <Link to={`/shop/add-to-cart/${encodedTitle}`}>
+              <button className='addToCart1' onClick={addToBasket}>
+                <span className="flaticon-shopping-bag"></span> Add to Cart
+              </button>
+              </Link>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
-    </div>
-  )
+  );
 }
 
-export default ShopProduct
+export default ShopProduct;
