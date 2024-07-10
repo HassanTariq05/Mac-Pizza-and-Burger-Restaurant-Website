@@ -195,6 +195,7 @@
     padding: 25px 0 7px;
     margin-top: 0;
     background-color: #3b100b; 
+    max-height: 95px;
 }
 
 .sizeLabel, .quantityLabel {

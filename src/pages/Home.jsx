@@ -1,8 +1,36 @@
 import React from 'react';
 import '../css/style.css';
 import '../css/responsive.css';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import categoryService from '../components/categoryService';
+import { baseURL } from '../components/service';
 
 function Home() {
+  const [categories, setCategories] = useState([]);
+  const navigate = useNavigate();
+
+  const handleCategoryClick = (uuid) => {
+    navigate(`/shop/${uuid}`)
+  };
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const params = { type: 'parent', perPage: '100' };
+                const response = await categoryService.getAll(params);
+                setCategories(response.data.data);
+                console.log('Category api response:', response.data);
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        };
+
+        fetchCategories();
+    }, []);
+
   return (
     <div>
       <section id="hero-2" className="bg-fixed hero-section division">
@@ -31,90 +59,15 @@ function Home() {
             <div className="row">
               <div className="col-lg-12 text-center">
                 <ul className="tabs-1 ico-55 red-tabs clearfix">
-                  <li className="tab-link current">
-                    <a href="shop.html">
-                      <img src={require('../images/our-menu-1.png')} alt="vector" />
-                      <h5>Breakfast</h5>
-                    </a>
-                  </li>
-                  <li className="tab-link">
-                    <a href="shop.html">
-                      <img src={require('../images/our-menu-2.png')} alt="" />
-                      <h5>Burgers</h5>
-                    </a>
-                  </li>
-                  <li className="tab-link">
-                    <a href="shop.html">
-                      <img src={require('../images/our-menu-3.png')} alt="" />
-                      <h5>Coffee</h5>
-                    </a>
-                  </li>
-                  <li className="tab-link">
-                    <a href="shop.html">
-                      <img src={require('../images/our-menu-4.png')} alt="" />
-                      <h5>Drinks</h5>
-                    </a>
-                  </li>
-                  <li className="tab-link">
-                    <a href="shop.html">
-                      <img src={require('../images/our-menu-5.png')} alt="" />
-                      <h5>Fried</h5>
-                    </a>
-                  </li>
-                  <li className="tab-link">
-                    <a href="shop.html">
-                      <img src={require('../images/our-menu-6.png')} alt="" />
-                      <h5>Ice Cream</h5>
-                    </a>
-                  </li>
-                  <li className="tab-link">
-                    <a href="shop.html">
-                      <img src={require('../images/our-menu-7.png')} alt="" />
-                      <h5>Indian-Pakistani Menu</h5>
-                    </a>
-                  </li>
-                  <li className="tab-link">
-                    <a href="shop.html">
-                      <img src={require('../images/our-menu-8.png')} alt="" />
-                      <h5>Juices</h5>
-                    </a>
-                  </li>
-                  <li className="tab-link">
-                    <a href="shop.html">
-                      <img src={require('../images/our-menu-9.png')} alt="" />
-                      <h5>Milk Shakes</h5>
-                    </a>
-                  </li>
-                  <li className="tab-link">
-                    <a href="shop.html">
-                      <img src={require('../images/our-menu-14.png')} alt="" />
-                      <h5>Pizza</h5>
-                    </a>
-                  </li>
-                  <li className="tab-link">
-                    <a href="shop.html">
-                      <img src={require('../images/our-menu-10.png')} alt="" />
-                      <h5>Pizza roll/Shawarma</h5>
-                    </a>
-                  </li>
-                  <li className="tab-link">
-                    <a href="shop.html">
-                      <img src={require('../images/our-menu-11.png')} alt="" />
-                      <h5>Salad</h5>
-                    </a>
-                  </li>
-                  <li className="tab-link">
-                    <a href="shop.html">
-                      <img src={require('../images/our-menu-12.png')} alt="" />
-                      <h5>Sauces</h5>
-                    </a>
-                  </li>
-                  <li className="tab-link">
-                    <a href="shop.html">
-                      <img src={require('../images/our-menu-13.png')} alt="" />
-                      <h5>Soups</h5>
-                    </a>
-                  </li>
+
+                {[...categories].reverse().map((item) => (
+                    <li className="tab-link">
+                      <a onClick={() => handleCategoryClick(item.uuid)}>
+                      <img src={`${baseURL}/${item.img}`} alt="vector" />
+                      <h5>{item.translation.title}</h5>
+                      </a>
+                    </li>
+                ))}
                 </ul>
               </div>
             </div>

@@ -54,6 +54,7 @@ const OrderDetails = () => {
                     </tr>
                 </thead>
                 <tbody>
+                    
                 {basket.map(item => (
                     <tr>
                         <td className='text-bold'>{`${item.title} × ${item.quantity}`}</td>

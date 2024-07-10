@@ -46,6 +46,7 @@
 .navik-header a:hover, .navik-header a:focus, .navik-header a:active {
   text-decoration: none;
   outline: none;
+  color: rgb(240, 191, 76);
 }
 
 .navik-header .logo {
@@ -1507,10 +1508,6 @@
   display: none;
 }
 
-.navik-menu .  {
-  margin-bottom: 20px;
-}
-
 .navik-menu .mega-menu-heading {
   font-size: 18px;
   color: #212121;
@@ -1608,7 +1605,7 @@
 }
 
 .navik-menu ul li.current-menu > a .navik-menu-icon, .navik-menu ul li:hover > a .navik-menu-icon, .navik-menu .mega-menu-heading a:hover .navik-menu-icon {
-  color: #26c6da !important;
+  color: #ffffff !important;
 }
 
 .header-dark .navik-menu .navik-menu-icon {
@@ -2311,7 +2308,7 @@
 .header-transparent-on .navik-menu > ul > li:hover > a, .header-transparent-on .navik-menu > ul > li.current-menu > a,
 .header-opacity-on .navik-menu > ul > li:hover > a,
 .header-opacity-on .navik-menu > ul > li.current-menu > a {
-  color: #26c6da;
+  color: rgb(240,191,76);
 }
 
 

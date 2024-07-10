@@ -1,183 +1,111 @@
-import React, {useEffect} from 'react'
+import React, { useState, useEffect } from 'react';
 import '../css/style.css';
 import '../css/responsive.css';
 import { Link } from 'react-router-dom';
-import $ from 'jquery';
 import '../js/menu';
-import '../js/booking-form'
-import '../js/changer'
-import '../js/comment-form'
-import '../js/contact-form'
-import '../js/jquery.scrollto'
+import '../js/booking-form';
+import '../js/changer';
+import '../js/comment-form';
+import '../js/contact-form';
+import '../js/jquery.scrollto';
 import ShopProduct from '../components/ShopProduct';
+import CategorySidebar from '../components/CategorySidebar';
+import productService from '../components/productService';
+import { useParams } from 'react-router-dom';
+import { baseURL } from '../components/service';
 
 function Shop() {
+    const {category} = useParams();
+    const [products, setProducts] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState(category || "133f1e30-40b0-4305-8343-51cfb47acf6a");
 
-  return (
-    <div id="page" className="page">
-        <div id="about-page" className="page-hero-section division" style={{ backgroundImage: "url('')" }}>
-            <div className="container">
-                <div className="row">
-                    <div className="col-lg-10 offset-lg-1">
-                        <div className="hero-txt text-center white-color">
-                            <div id="breadcrumb">
-                                <div className="row">
-                                    <div className="col">
-                                        <div className="breadcrumb-nav">
-                                            <nav aria-label="breadcrumb">
-                                                <ol className="breadcrumb">
-                                                    <li className="breadcrumb-item"><Link to='/home'>Home</Link></li>
-                                                    <li className="breadcrumb-item active" aria-current="page">SHOP
-                                                    </li>
-                                                </ol>
-                                            </nav>
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const params = { id: selectedCategory };
+                const response = await productService.getAll(params);
+                setProducts(response.data.data);
+                console.log('Product api response:', response.data);
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        };
+
+        fetchProducts();
+    }, [selectedCategory]);
+
+    return (
+        <div id="page" className="page">
+            <div id="about-page" className="page-hero-section division" style={{ backgroundImage: "url('')" }}>
+                <div className="container">
+                    <div className="row">
+                        <div className="col-lg-10 offset-lg-1">
+                            <div className="hero-txt text-center white-color">
+                                <div id="breadcrumb">
+                                    <div className="row">
+                                        <div className="col">
+                                            <div className="breadcrumb-nav">
+                                                <nav aria-label="breadcrumb">
+                                                    <ol className="breadcrumb">
+                                                        <li className="breadcrumb-item"><Link to='/home'>Home</Link></li>
+                                                        <li className="breadcrumb-item active" aria-current="page">SHOP</li>
+                                                    </ol>
+                                                </nav>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                                <h2 className="h2-xl">SHOP</h2>
                             </div>
-                            <h2 className="h2-xl">SHOP</h2>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <section className="wide-100 Shop-page division">
-            <div className="container">
-                <div className="shop-main d-flex flex-wrap">
-                    <div className="shop-sidebar">
-                        <div className="shop-sidebar-cats">
-                            <div className="shop-sidebar-cat-title active">
-                                <h3>Categories</h3>
+            <section className="wide-100 Shop-page division">
+                <div className="container">
+                    <div className="shop-main d-flex flex-wrap">
+                        <CategorySidebar onCategorySelect={setSelectedCategory} />
+                        <div className="shop-content">
+                            <div className="top-bar">
+                                <div className="leftbox">
+                                    <p>Showing 1–16 of 121 results</p>
+                                </div>
+                                <div className="select-wrap">
+                                    <select>
+                                        <option value="menu_order">Default sorting</option>
+                                        <option value="popularity">Sort by popularity</option>
+                                        <option value="date">Sort by latest</option>
+                                        <option value="price">Sort by price: low to high</option>
+                                        <option value="price-desc">Sort by price: high to low</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div className="shop-sidebar-cat-list">
-                                <ul className="list-unstyled categories-tabbing">
-                                    <li className="categories-tab-list active" data-tab="1">
-                                        <a href="javascript:;">Breakfast</a>
-                                    </li>
-                                    <li className="categories-tab-list" data-tab="2">
-                                        <a href="javascript:;">Burgers</a>
-                                    </li>
-                                    <li className="categories-tab-list" data-tab="3">
-                                        <a href="javascript:;">Coffee</a>
-                                    </li>
-                                    <li className="categories-tab-list" data-tab="4">
-                                        <a href="javascript:;">Drinks</a>
-                                    </li>
-                                    <li className="categories-tab-list" data-tab="5">
-                                        <a href="javascript:;">Fried</a>
-                                    </li>
-                                    <li className="categories-tab-list" data-tab="6">
-                                        <a href="javascript:;">Ice Cream</a>
-                                    </li>
-                                    <li className="categories-tab-list" data-tab="7">
-                                        <a href="javascript:;">Indian-Pakistani Menu</a>
-                                    </li>
-                                    <li className="categories-tab-list" data-tab="8">
-                                        <a href="javascript:;">Juices</a>
-                                    </li>
-                                    <li className="categories-tab-list" data-tab="9">
-                                        <a href="javascript:;">Milk Shakes</a>
-                                    </li>
-                                    <li className="categories-tab-list" data-tab="10">
-                                        <a href="javascript:;">Pizza</a>
-                                    </li>
-                                    <li className="categories-tab-list" data-tab="11">
-                                        <a href="javascript:;">Pizza roll/Shawarma</a>
-                                    </li>
-                                    <li className="categories-tab-list" data-tab="12">
-                                        <a href="javascript:;">Salad</a>
-                                    </li>
-                                    <li className="categories-tab-list" data-tab="13">
-                                        <a href="javascript:;">Sauces</a>
-                                    </li>
-                                    <li className="categories-tab-list" data-tab="14">
-                                        <a href="javascript:;">Soups</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="shop-content">
-                        <div className="top-bar">
-                            <div className="leftbox">
-                                <p>Showing 1–16 of 121 results</p>
-                            </div>
-                            <div className="select-wrap">
-                                <select>
-                                    <option value="menu_order">Default sorting</option>
-                                    <option value="popularity">Sort by popularity</option>
-                                    <option value="date">Sort by latest</option>
-                                    <option value="price">Sort by price: low to high</option>
-                                    <option value="price-desc">Sort by price: high to low</option>
-                            </select>
-                            </div>
-                        </div>
-                        <div className="categories-tabbing-content">
-                            <div className="categories-tab-box active" id="1">
-                                <div className="row">
-                                    <ShopProduct 
-                                        title={"Demo Title"}
-                                        rating={"4"}
-                                        description={"Demo Decription here"}
-                                        price={300}
-                                        image={require("../images/breakfast-img-1.jpg")}
-                                        quantity={1}
-                                        hasOption={true}
-                                    />
-                                    <ShopProduct 
-                                        title={"Demo Title 2"}
-                                        rating={"4"}
-                                        description={"Demo Decription here again"}
-                                        price={400}
-                                        image={require("../images/breakfast-img-2.jpg")}
-                                        quantity={1}
-                                        hasOption={false}
-                                    />
-                                    <ShopProduct 
-                                        title={"Demo Title 3"}
-                                        rating={"4"}
-                                        description={"Demo Decription here once again"}
-                                        price={400}
-                                        image={require("../images/breakfast-img-3.jpg")}
-                                        quantity={1}
-                                        hasOption={true}
-                                    />
-                                    <ShopProduct 
-                                        title={"Demo Title 4"}
-                                        rating={"4"}
-                                        description={"Demo Decription here"}
-                                        price={300}
-                                        image={require("../images/coffee-ig-q.jpg")}
-                                        quantity={1}
-                                        hasOption={true}
-                                    />
-                                    <ShopProduct 
-                                        title={"Demo Title 5"}
-                                        rating={"4"}
-                                        description={"Demo Decription here again"}
-                                        price={100}
-                                        image={require("../images/juice-img-1.jpg")}
-                                        quantity={1}
-                                        hasOption={false}
-                                    />
-                                    <ShopProduct 
-                                        title={"Demo Title 6"}
-                                        rating={"4"}
-                                        description={"Demo Decription here once again"}
-                                        price={200}
-                                        image={require("../images/sashimi.png")}
-                                        quantity={1}
-                                        hasOption={true}
-                                    />
+                            <div className="categories-tabbing-content">
+                                <div className="categories-tab-box active" id="1">
+                                    <div className="row">
+                                        {products.map((item) => (
+                                            <ShopProduct
+                                                key={item.id}
+                                                title={item.translation.title}
+                                                description={item.translation.description}
+                                                price={[item.min_price, item.max_price]}
+                                                image={`${baseURL}/${item.img}`}
+                                                quantity={item.min_qty}
+                                                maxQuantity={item.max_qty}
+                                                stocks={item.stocks}
+                                                hasOption={(item.stocks.length > 1) ? true : false}
+                                                uuid={item.uuid}
+                                            />
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
-    </div>
-  )
+            </section>
+        </div>
+    );
 }
 
-export default Shop
+export default Shop;

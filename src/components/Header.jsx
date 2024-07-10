@@ -30,9 +30,9 @@ function Header() {
             </a>
           </div>
           <div className="logo">
-            <a href="javascript:;">
+            <Link to={'/home'} >
               <img src={logo} width="177" height="120" alt="header-logo" />
-            </a>
+            </Link>
           </div>
           <div className="burger-menu">
             <div className="line-menu line-half first-line"></div>

@@ -7,13 +7,13 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useStateValue } from '../components/StateProvider';
 
 const AddToCartReceipt = () => {
-    const { title } = useParams();
+    const { title, size } = useParams();
     const [{ basket }, dispatch] = useStateValue();
     const [isActive, setIsActive] = useState(false);
     const [isRemoved, setIsRemoved] = useState(false);
     const navigate = useNavigate()
 
-    const matchedProduct = basket.find(item => item.title === title);
+    const matchedProduct = basket.find(item => item.title === title && item.size === size);
 
     useEffect(() => {
         setIsActive(true);
@@ -25,7 +25,7 @@ const AddToCartReceipt = () => {
     };
 
     const handleRemoveProduct = () => {
-        dispatch({ type: 'REMOVE_FROM_BASKET', title });
+        dispatch({ type: 'REMOVE_FROM_BASKET', title, size });
         setIsRemoved(true);
     };
 
@@ -39,6 +39,7 @@ const AddToCartReceipt = () => {
             item: {
                 title: title,
                 quantity: newQuantity,
+                size: size,
             },
         });
     };
@@ -87,6 +88,11 @@ const AddToCartReceipt = () => {
                                         </td>
                                         <td className="xoo-cp-ptitle">
                                             <a href="">{matchedProduct.title}</a>
+                                            <br></br>
+                                            {size && (
+                                                `Size: ${size}`
+                                            )} 
+                                            
                                         </td>
                                         <td className="xoo-cp-pprice">
                                             <span className="woocommerce-Price-amount amount">

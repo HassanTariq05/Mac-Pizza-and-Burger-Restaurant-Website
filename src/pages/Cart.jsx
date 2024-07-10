@@ -140,6 +140,7 @@ const Cart = () => {
                                                     description={item.description}
                                                     price={item.price}
                                                     quantity={item.quantity}
+                                                    size={item.size}
                                                 />
                                             ))}
                                         </tbody>

@@ -7,22 +7,25 @@ const DocumentTitle = () => {
   useEffect(() => {
     switch (location.pathname) {
       case '/about':
-        document.title = 'About | Mac Pizza & Burger';
+        document.title = 'About | Mac Burger & Pizza';
         break;
       case '/shop':
-        document.title = 'Shop | Mac Pizza & Burger';
+        document.title = 'Shop | Mac Burger & Pizza';
         break;
       case '/contact':
-        document.title = 'Contact | Mac Pizza & Burger';
+        document.title = 'Contact | Mac Burger & Pizza';
         break;
       case '/cart':
-        document.title = 'Cart | Mac Pizza & Burger';
+        document.title = 'Cart | Mac Burger & Pizza';
         break;
       case '/home':
-        document.title = 'Home | Mac Pizza & Burger';
+        document.title = 'Home | Mac Burger & Pizza';
         break;
+        case '/checkout':
+          document.title = 'Checkout | Mac Burger & Pizza';
+          break;
       default:
-        document.title = 'Mac Pizza & Burger';
+        document.title = 'Mac Burger & Pizza';
     }
   }, [location]);
 

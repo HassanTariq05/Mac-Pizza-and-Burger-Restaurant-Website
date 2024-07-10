@@ -5,7 +5,7 @@ import '../css/Cart.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmarkCircle } from '@fortawesome/free-solid-svg-icons';
 
-function CartProduct({ title, image, description, price, quantity }) {
+function CartProduct({ title, image, description, price, quantity, size }) {
     const [{ basket }, dispatch] = useStateValue();
 
     const handleQuantityChange = (event) => {
@@ -15,6 +15,7 @@ function CartProduct({ title, image, description, price, quantity }) {
             item: {
                 title: title,
                 quantity: newQuantity,
+                size: size,
             },
         });
     };
@@ -32,6 +33,10 @@ function CartProduct({ title, image, description, price, quantity }) {
                 
                 <div className="cart-product-des">
                     <p className="b">{title}</p>
+                    <p className='b'>{size && (
+                        `Size: ${size}`
+                    )} 
+                    </p>
                     <p data-label="Price" className="b">{price}som</p>
                     <p className="d">{description}</p>
                     <input
@@ -42,8 +47,8 @@ function CartProduct({ title, image, description, price, quantity }) {
                     value={quantity}
                     onChange={handleQuantityChange}
                 />
-
-                <p><button onClick={() => dispatch({ type: 'REMOVE_FROM_BASKET', title })} className='btn1'><FontAwesomeIcon icon={faXmarkCircle}  />    Remove item</button></p>
+                
+                <p><button onClick={() => dispatch({ type: 'REMOVE_FROM_BASKET', title, size})} className='btn1'><FontAwesomeIcon icon={faXmarkCircle}  />    Remove item</button></p>
                 </div>
             </td>
             <td id='td' data-label="Total" className="product-price-total">

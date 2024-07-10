@@ -15,7 +15,7 @@ export const Reducer = (state, action) => {
             return {
                 ...state,
                 basket: state.basket.map(item =>
-                    item.title === action.item.title
+                    item.title === action.item.title && item.size === action.item.size
                         ? { ...item, quantity: action.item.quantity }
                         : item
                 ),
@@ -23,7 +23,7 @@ export const Reducer = (state, action) => {
         case 'REMOVE_FROM_BASKET':
             return {
                 ...state,
-                basket: state.basket.filter(item => item.title !== action.title),
+                basket: state.basket.filter(item => !(item.title === action.title && item.size === action.size)),
             };
         case 'EMPTY_BASKET':
             return {
