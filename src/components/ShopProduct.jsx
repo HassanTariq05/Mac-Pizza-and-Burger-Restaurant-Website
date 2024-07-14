@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
 import singleProductService from './singleProductService';
 
-function ShopProduct({ image, title, description, price, hasOption, category, maxQuantity , quantity, stocks, uuid}) {
+function ShopProduct({ image, title, description, price, hasOption, category, maxQuantity , quantity, stocks, uuid, categoryUUID, productType, stockId}) {
   
   const [{ basket }, dispatch] = useStateValue();
 
@@ -16,6 +16,7 @@ function ShopProduct({ image, title, description, price, hasOption, category, ma
         type: 'UPDATE_QUANTITY',
         item: {
           title: title,
+          size: '',
           quantity: basket[itemIndex].quantity + 1,
         },
       });
@@ -28,23 +29,28 @@ function ShopProduct({ image, title, description, price, hasOption, category, ma
           price: price[0],
           description: description,
           quantity: 1,
+          stockId: stockId,
         },
       });
     }
   };
   
 
+  console.log(categoryUUID)
   const encodedTitle = encodeURIComponent(title);
   const encodedImage = encodeURIComponent(image);
   const encodedHasOption = encodeURIComponent(hasOption);
   const encodedPrice = encodeURIComponent(price);
   const encodedDesc = encodeURIComponent(description);
 
+  const className = productType ? 'shopProduct shopProduct-type1' : 'shopProduct shopProduct-type2';
+
+
   return (
-    <div className="shopProduct">
+    <div className={className}>
       <div className="">
         <div className="">
-          <Link to={`/product/${uuid}`}>
+          <Link to={`/product/${uuid}/${categoryUUID}`}>
             <div className="hover-overlay">
               <img className="img-fluid" src={image} alt="menu-image" />
               <span className="item-code bg-tra-dark"></span>
@@ -52,7 +58,7 @@ function ShopProduct({ image, title, description, price, hasOption, category, ma
           </Link>
         </div>
         <div className="">
-          <Link to={`/product/${uuid}`}>
+          <Link to={`/product/${uuid}/${categoryUUID}`}>
             <span className="productTitle">{title}</span>
             <div className="">
             {Array.isArray(price) && price.length > 0 ? (
@@ -68,7 +74,7 @@ function ShopProduct({ image, title, description, price, hasOption, category, ma
           </Link>
           <div className="addToCartShop">
             {hasOption ? (
-              <Link to={`/product/${uuid}`}>
+              <Link to={`/product/${uuid}/${categoryUUID}`}>
                 <button className='addToCart1'>SELECT OPTION</button>
               </Link>
             ) : (

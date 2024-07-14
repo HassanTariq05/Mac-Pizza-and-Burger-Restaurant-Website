@@ -5,7 +5,7 @@ import '../css/Cart.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmarkCircle } from '@fortawesome/free-solid-svg-icons';
 
-function CartProduct({ title, image, description, price, quantity, size }) {
+function CartProduct({ title, image, description, price, quantity, size, stockId }) {
     const [{ basket }, dispatch] = useStateValue();
 
     const handleQuantityChange = (event) => {

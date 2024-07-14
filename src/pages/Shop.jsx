@@ -34,6 +34,7 @@ function Shop() {
         fetchProducts();
     }, [selectedCategory]);
 
+    console.log(selectedCategory)
     return (
         <div id="page" className="page">
             <div id="about-page" className="page-hero-section division" style={{ backgroundImage: "url('')" }}>
@@ -95,6 +96,9 @@ function Shop() {
                                                 stocks={item.stocks}
                                                 hasOption={(item.stocks.length > 1) ? true : false}
                                                 uuid={item.uuid}
+                                                categoryUUID={selectedCategory}
+                                                productType={false}
+                                                stockId={(item.stocks.length === 1) ? item.stocks[0].id: null}
                                             />
                                         ))}
                                     </div>

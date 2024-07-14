@@ -7,15 +7,17 @@ import { useStateValue } from '../components/StateProvider';
 import ShopProduct from '../components/ShopProduct';
 import singleProductService from '../components/singleProductService';
 import { baseURL } from '../components/service';
+import productService from '../components/productService';
 
 const ProductView = () => {
-    const { uuid } = useParams();
+    const { uuid, categoryUUID } = useParams();
     const [quantity, setQuantity] = useState(1);
-    const [size, setSize] = useState('');
+    const [ size, setSize] = useState('');
     const [showAdditionalPrice, setShowAdditionalPrice] = useState(false);
     const [additionalPrice, setAdditionalPrice] = useState(0);
     const [{ basket }, dispatch] = useStateValue();
     const navigate = useNavigate();
+    const [stockId, setStockId] = useState();
 
     const [product, setProduct] = useState(null);
 
@@ -26,6 +28,9 @@ const ProductView = () => {
                 const params = { id: encodedUuid };
                 const response = await singleProductService.getAll(params);
                 setProduct(response.data.data);
+                if (product.stocks.length === 0) {
+                    setStockId(product.stocks[0].id);
+                }
                 console.log('Single Product api response:', response.data);
             } catch (error) {
                 console.error('Error fetching product:', error);
@@ -34,6 +39,23 @@ const ProductView = () => {
 
         fetchProduct();
     }, [encodedUuid]);
+
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const params = { id: categoryUUID };
+                const response = await productService.getAll(params);
+                setProducts(response.data.data);
+                console.log('Related Products api response:', response.data);
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        };
+
+        fetchProducts();
+    }, [categoryUUID]);
 
     if (!product) {
         return <div>Loading...</div>;
@@ -61,6 +83,7 @@ const ProductView = () => {
                     description: product.translation.description,
                     quantity: quantity,
                     size: size,
+                    stockId: stockId,
                 },
             });
         }
@@ -91,6 +114,8 @@ const ProductView = () => {
                 setAdditionalPrice(0);
             }
         }
+
+
     };
 
     const handleAddToCartClick = () => {
@@ -180,23 +205,27 @@ const ProductView = () => {
                     </div>
                 </div>
             </div>
-            {/* <div className="related-products-section">
+            <div className="related-products-section">
                 <h2>Related Products</h2>
                 <div className="related-products">
-                    {relatedProducts.slice(0, 5).map((relatedProduct, index) => (
+                    {products && products.map((item) => (
                         <ShopProduct
-                            key={index}
-                            image={relatedProduct.image}
-                            title={relatedProduct.title}
-                            rating={relatedProduct.rating}
-                            description={relatedProduct.description}
-                            price={relatedProduct.price}
-                            hasOption={relatedProduct.hasOption}
-                            category={relatedProduct.category}
+                        key={item.id}
+                        title={item.translation.title}
+                        description={item.translation.description}
+                        price={[item.min_price, item.max_price]}
+                        image={`${baseURL}/${item.img}`}
+                        quantity={item.min_qty}
+                        maxQuantity={item.max_qty}
+                        stocks={item.stocks}
+                        hasOption={(item.stocks.length > 1) ? true : false}
+                        uuid={item.uuid}
+                        categoryUUID={categoryUUID}
+                        productType={true}
                         />
                     ))}
                 </div>
-            </div> */}
+            </div>
         </>
     );
 };

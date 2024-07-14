@@ -25,6 +25,7 @@ import ProductView from './pages/ProductView';
 import AddToCartReceipt from './pages/AddtoCartReceipt';
 import ProductCheckout from './pages/ProductCheckout';
 import Orders from './pages/Orders';
+import Check from './components/Check';
 
 function App() {
   const [{basket}, dispatch] = useStateValue('');
@@ -42,6 +43,7 @@ function App() {
       <ScrollToTop />
       <DocumentTitle /> 
       <Routes>
+      <Route path="/check" element={<Check />} />
         <Route path="/about" element={<About />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/shop/:category" element={<Shop />} />
@@ -52,7 +54,7 @@ function App() {
         <Route path="/checkout/order-received" element={<Orders />} />
         <Route path="/shop/add-to-cart/:title/" element={<AddToCartReceipt />} />
         <Route path="/shop/add-to-cart/:title/:size" element={<AddToCartReceipt />} />
-        <Route path="/product/:uuid" element={<ProductView />} />
+        <Route path="/product/:uuid/:categoryUUID" element={<ProductView />} />
         <Route path="/" element={<Navigate to="/home" />} />
         <Route path="*" element={<Navigate to="/home" />} />
       </Routes>

@@ -226,7 +226,6 @@
 .related-products {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center; /* Center justify items */
     width: 100%;
     max-width: 1200px; /* Adjust max-width as needed */
     padding: 0 20px; /* Add padding to create space from edges */
@@ -240,7 +239,7 @@
 
 @media (max-width: 1200px) {
     .related-products {
-        justify-content: center;
+        justify-content: left;
     }
 }
 
@@ -252,5 +251,15 @@
     .related-products .shopProduct {
         flex: 1 1 calc(50% - 20px); /* Full width for one product per row */
         max-width: calc(90% - 20px); /* Full width for one product per row */
+    }
+}
+
+@media (max-width: 767px) {
+    .shopProduct-type1 {
+        margin-left: 25px;
+    }
+
+    .shopProduct-type2 {
+        margin-left: 55px;
     }
 }

@@ -93,6 +93,48 @@ const ProductCheckout = () => {
         return basket.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
     };
 
+    useEffect(() => {
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places`;
+        script.async = true;
+        document.head.appendChild(script);
+
+        script.onload = () => {
+            initMap();
+        };
+
+        const initMap = () => {
+            const map = new window.google.maps.Map(document.getElementById("map"), {
+                center: { lat: -34.397, lng: 150.644 },
+                zoom: 8,
+            });
+            const marker = new window.google.maps.Marker({
+                position: { lat: -34.397, lng: 150.644 },
+                map,
+                draggable: true,
+            });
+
+            const geocoder = new window.google.maps.Geocoder();
+
+            marker.addListener('dragend', () => {
+                geocodePosition(marker.getPosition(), geocoder);
+            });
+
+            const geocodePosition = (pos, geocoder) => {
+                geocoder.geocode({ latLng: pos }, (results, status) => {
+                    if (status === window.google.maps.GeocoderStatus.OK) {
+                        const address = results[0].formatted_address;
+                        setFormData(prevState => ({ ...prevState, streetAddress: address }));
+                    }
+                });
+            };
+        };
+
+        return () => {
+            document.head.removeChild(script);
+        };
+    }, []);
+
     return (
         <>
             <div id="page" className="page">
@@ -135,15 +177,7 @@ const ProductCheckout = () => {
                                     <div className="checkout-from-wrapper">
                                         <h3>BILLING</h3>
                                         <div className="map-box">
-                                            <iframe
-                                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2924.022710337545!2d74.60941867529345!3d42.87236480258325!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x389eb7c66fe2d2e3%3A0xcb5b5082725f8bc2!2s137%20Yusup%20Abdrahmanov%20Street%2C%20Bishkek%2C%20Kyrgyzstan!5e0!3m2!1sen!2s!4v1719583607089!5m2!1sen!2s"
-                                                width="600"
-                                                height="450"
-                                                style={{ border: 0 }}
-                                                allowFullScreen=""
-                                                loading="lazy"
-                                                referrerPolicy="no-referrer-when-downgrade"
-                                            ></iframe>
+                                            <div id="map" style={{ width: '100%', height: '450px' }}></div>
                                         </div>
                                         <div className="checkout-from">
                                             <form>

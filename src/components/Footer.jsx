@@ -45,12 +45,12 @@ function Footer() {
                 <h5 className="h5-md">Follow Us</h5>
                 <ul className="foo-socials text-center clearfix">
                   <li>
-                    <a href="javascript:;" className="ico-facebook">
+                    <a href="https://www.facebook.com/macburgerandpizza" className="ico-facebook">
                       <FontAwesomeIcon className="fab fa-facebook-f" icon={faFacebook}/>
                     </a>
                   </li>
                   <li>
-                    <a href="javascript:;" className="ico-instagram">
+                    <a href="https://www.instagram.com/macburger.kg/" className="ico-instagram">
                       <FontAwesomeIcon className="fab fa-instagram" icon={faInstagram}/>
                     </a>
                   </li>

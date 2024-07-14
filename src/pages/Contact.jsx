@@ -78,12 +78,12 @@ const Contact = () => {
                                 <h5 className="h5-md">Follow Us</h5>
                                 <ul className="foo-socials text-center clearfix">
                                     <li>
-                                        <a href="javascript:;" className="ico-facebook" aria-label="facebook">
+                                        <a href="https://www.facebook.com/macburgerandpizza" className="ico-facebook" aria-label="facebook">
                                             <i className="fab fa-facebook-f"></i>
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="javascript:;" className="ico-instagram" aria-label="instagram">
+                                        <a href="https://www.instagram.com/macburger.kg/" className="ico-instagram" aria-label="instagram">
                                             <i className="fab fa-instagram"></i>
                                         </a>
                                     </li>

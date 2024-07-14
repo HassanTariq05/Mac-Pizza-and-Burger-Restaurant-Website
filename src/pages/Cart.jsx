@@ -5,47 +5,27 @@ import { useStateValue } from '../components/StateProvider';
 import CurrencyFormat from 'react-currency-format';
 import '../css/Cart.css'; // Import the CSS file
 import ShopProduct from '../components/ShopProduct';
+import { baseURL } from '../components/service';
+import productService from '../components/productService';
 
 const Cart = () => {
+    const [products, setProducts] = useState([]);
 
-    const relatedProducts = [
-        {
-            image: require("../images/sashimi.png"),
-            title: 'Related Product 1',
-            rating: 4,
-            description: 'Description for related product 1',
-            price: 200,
-            hasOption: false,
-            category: 'Related Category',
-        },
-        {
-            image: require("../images/sashimi.png"),
-            title: 'Related Product 2',
-            rating: 5,
-            description: 'Description for related product 2',
-            price: 250,
-            hasOption: true,
-            category: 'Related Category',
-        },
-        {
-            image: require("../images/sashimi.png"),
-            title: 'Related Product 1',
-            rating: 4,
-            description: 'Description for related product 1',
-            price: 200,
-            hasOption: false,
-            category: 'Related Category',
-        },
-        {
-            image: require("../images/sashimi.png"),
-            title: 'Related Product 2',
-            rating: 5,
-            description: 'Description for related product 2',
-            price: 250,
-            hasOption: true,
-            category: 'Related Category',
-        },
-    ];
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const params = { id: "bc25c7cd-ed84-4626-8f6b-897476ca2a29" };
+                const response = await productService.getAll(params);
+                setProducts(response.data.data);
+                console.log('Product api response:', response.data);
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        };
+
+        fetchProducts();
+    }, ["bc25c7cd-ed84-4626-8f6b-897476ca2a29"]);
+
 
     const [{ basket }, dispatch] = useStateValue();
     const [showCouponInput, setShowCouponInput] = useState(false);
@@ -104,16 +84,20 @@ const Cart = () => {
                         <div className="related-products-section">
                         <h2>NEW IN STORE</h2>
                         <div className="related-products">
-                            {relatedProducts.slice(0, 5).map((product, index) => (
+                            {products.map((item) => (
                                 <ShopProduct
-                                    key={index}
-                                    image={product.image}
-                                    title={product.title}
-                                    rating={product.rating}
-                                    description={product.description}
-                                    price={product.price}
-                                    hasOption={product.hasOption}
-                                    category={product.category}
+                                    key={item.id}
+                                    title={item.translation.title}
+                                    description={item.translation.description}
+                                    price={[item.min_price, item.max_price]}
+                                    image={`${baseURL}/${item.img}`}
+                                    quantity={item.min_qty}
+                                    maxQuantity={item.max_qty}
+                                    stocks={item.stocks}
+                                    hasOption={(item.stocks.length > 1) ? true : false}
+                                    uuid={item.uuid}
+                                    categoryUUID={"bc25c7cd-ed84-4626-8f6b-897476ca2a29"}
+                                    productType={false}
                                 />
                             ))}
                         </div>
@@ -222,7 +206,10 @@ const Cart = () => {
                                             <button id='cbtn' href="#" className="btn btn-md btn-salmon tra-salmon-hover">Proceed To Checkout</button>
                                         </Link>
                                     </div>
-                                    <button href="#" className="btn btn-md btn-salmon tra-salmon-hover">Add another item</button>
+                                    <Link to={'/shop'}>
+                                        <button href="#" className="btn btn-md btn-salmon tra-salmon-hover">Add another item</button>
+                                    </Link>
+                                    
                                 </div>
                             </div>
                         </div>
