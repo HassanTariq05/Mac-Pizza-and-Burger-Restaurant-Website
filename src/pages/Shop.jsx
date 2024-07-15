@@ -25,7 +25,7 @@ function Shop() {
                 const params = { id: selectedCategory };
                 const response = await productService.getAll(params);
                 setProducts(response.data.data);
-                console.log('Product api response:', response.data);
+                // console.log('Product api response:', response.data);
             } catch (error) {
                 console.error('Error fetching categories:', error);
             }
@@ -34,7 +34,7 @@ function Shop() {
         fetchProducts();
     }, [selectedCategory]);
 
-    console.log(selectedCategory)
+    // console.log(selectedCategory)
     return (
         <div id="page" className="page">
             <div id="about-page" className="page-hero-section division" style={{ backgroundImage: "url('')" }}>

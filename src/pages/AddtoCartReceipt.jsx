@@ -11,13 +11,13 @@ const AddToCartReceipt = () => {
     const [{ basket }, dispatch] = useStateValue();
     const [isActive, setIsActive] = useState(false);
     const [isRemoved, setIsRemoved] = useState(false);
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
-    const matchedProduct = basket.find(item => item.title === title && item.size === size);
+    const matchedProduct = basket.find(item => item.title === title && (item.size === size || item.size === ''));
 
     useEffect(() => {
         setIsActive(true);
-    }, []);
+    }, [matchedProduct]);
 
     const handleCloseModal = () => {
         setIsActive(false);
@@ -31,7 +31,7 @@ const AddToCartReceipt = () => {
 
     const totalPrice = (() => {
         return matchedProduct ? matchedProduct.price * matchedProduct.quantity : 0;
-    });
+    })();
 
     const handleQuantityChange = (newQuantity) => {
         dispatch({
@@ -87,12 +87,9 @@ const AddToCartReceipt = () => {
                                             />
                                         </td>
                                         <td className="xoo-cp-ptitle">
-                                            <a href="">{matchedProduct.title}</a>
-                                            <br></br>
-                                            {size && (
-                                                `Size: ${size}`
-                                            )} 
-                                            
+                                            <a href="#">{matchedProduct.title}</a>
+                                            <br />
+                                            {size && `Size: ${size}`}
                                         </td>
                                         <td className="xoo-cp-pprice">
                                             <span className="woocommerce-Price-amount amount">
@@ -119,13 +116,13 @@ const AddToCartReceipt = () => {
                                 </tbody>
                             </table>
                         )}
-                        {!isRemoved && (
+                        {!isRemoved && matchedProduct && (
                             <div className="xoo-cp-ptotal">
                                 <span className="xcp-totxt">Total : </span>
                                 <span className="xcp-ptotal">
                                     <span className="woocommerce-Price-amount amount">
                                         <bdi>
-                                            {totalPrice()}<span className="woocommerce-Price-currencySymbol">som</span>
+                                            {totalPrice}<span className="woocommerce-Price-currencySymbol">som</span>
                                         </bdi>
                                     </span>
                                 </span>
@@ -136,7 +133,7 @@ const AddToCartReceipt = () => {
                         <Link to={'/cart'} className="xoo-cp-btn-vc xcp-btn">
                             View Cart
                         </Link>
-                        <Link to={'/checkout'} className="xoo-cp-btn-ch xcp-btn" >
+                        <Link to={'/checkout'} className="xoo-cp-btn-ch xcp-btn">
                             Checkout
                         </Link>
                         <button className="xoo-cp-close xcp-btn" onClick={handleCloseModal}>Continue Shopping</button>

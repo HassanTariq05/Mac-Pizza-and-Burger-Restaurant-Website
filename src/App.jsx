@@ -25,17 +25,17 @@ import ProductView from './pages/ProductView';
 import AddToCartReceipt from './pages/AddtoCartReceipt';
 import ProductCheckout from './pages/ProductCheckout';
 import Orders from './pages/Orders';
-import Check from './components/Check';
+import AuthResponse from './components/AuthResponse';
 
 function App() {
   const [{basket}, dispatch] = useStateValue('');
 
   useEffect(() => {
     localStorage.setItem('basket', JSON.stringify(basket));
-    console.log(basket);
+    // console.log(basket);
   }, [basket]);
 
-  console.log(localStorage)
+  // console.log(localStorage)
 
   return (
     <Router>
@@ -43,7 +43,6 @@ function App() {
       <ScrollToTop />
       <DocumentTitle /> 
       <Routes>
-      <Route path="/check" element={<Check />} />
         <Route path="/about" element={<About />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/shop/:category" element={<Shop />} />
@@ -51,8 +50,8 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/home" element={<Home />} />
         <Route path="/checkout" element={<ProductCheckout />} />
-        <Route path="/checkout/order-received" element={<Orders />} />
-        <Route path="/shop/add-to-cart/:title/" element={<AddToCartReceipt />} />
+        <Route path="/order/:id" element={<Orders />} />
+        {/* <Route path="/shop/add-to-cart/:title/" element={<AddToCartReceipt />} /> */}
         <Route path="/shop/add-to-cart/:title/:size" element={<AddToCartReceipt />} />
         <Route path="/product/:uuid/:categoryUUID" element={<ProductView />} />
         <Route path="/" element={<Navigate to="/home" />} />

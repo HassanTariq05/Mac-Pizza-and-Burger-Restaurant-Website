@@ -17,7 +17,7 @@ const Cart = () => {
                 const params = { id: "bc25c7cd-ed84-4626-8f6b-897476ca2a29" };
                 const response = await productService.getAll(params);
                 setProducts(response.data.data);
-                console.log('Product api response:', response.data);
+                // console.log('Product api response:', response.data);
             } catch (error) {
                 console.error('Error fetching categories:', error);
             }
@@ -43,7 +43,7 @@ const Cart = () => {
     const handleApplyCoupon = (event) => {
         event.preventDefault();
         // Logic to apply the coupon
-        console.log('Coupon applied:', couponCode);
+        // console.log('Coupon applied:', couponCode);
     };
 
     return (

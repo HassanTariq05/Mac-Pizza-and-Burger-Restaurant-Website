@@ -4,8 +4,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { useStateValue } from '../components/StateProvider';
 import CurrencyFormat from 'react-currency-format';
+import authService from '../components/authService';
+import orderService from '../components/orderService';
+import orderDetailService from '../components/orderDetailService';
 
-const CouponSection = ({ warnings }) => {
+const CouponSection = ({ warnings , showBilling}) => {
     const [showCoupon, setShowCoupon] = useState(false);
     const warningsRef = useRef(null);
 
@@ -32,7 +35,7 @@ const CouponSection = ({ warnings }) => {
                     </div>
                 </div>
             )}
-            {warnings.length > 0 && (
+            {(warnings.length > 0 && showBilling) && (
                 <div className='warnings'>
                     <ul className='warnIcon'><FontAwesomeIcon icon={faExclamationCircle} /></ul>
                     {warnings.map((warning, index) => (
@@ -45,6 +48,15 @@ const CouponSection = ({ warnings }) => {
 };
 
 const ProductCheckout = () => {
+    const [{}, dispatch] = useStateValue();
+        const emptyBasket = (() => {
+            dispatch( {
+                type: 'EMPTY_BASKET',
+            });
+        })
+
+    const [orders, setOrders] = useState();
+    const [validation, setValidation] = useState(false);
     const [formData, setFormData] = useState({
         email: '',
         firstName: '',
@@ -59,7 +71,7 @@ const ProductCheckout = () => {
     const [{ basket }] = useStateValue();
 
     const [showBilling, setShowBilling] = useState(true);
-    const [selectedShipping, setSelectedShipping] = useState('Deliver');
+    const [selectedShipping, setSelectedShipping] = useState('delivery');
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -69,7 +81,20 @@ const ProductCheckout = () => {
     const handleShippingChange = (e) => {
         const value = e.target.value;
         setSelectedShipping(value);
-        setShowBilling(value !== 'Local pickup');
+        setShowBilling(value !== 'point');
+    };
+
+    const getDeliveryDate = () => {
+        const date = new Date();
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+        return date.toLocaleDateString('sv-SE', options).replace(' ', ' ');
+    };
+
+    const getProducts = () => {
+        return basket.map(item => ({
+            stock_id: item.stockId,
+            quantity: item.quantity,
+        }));
     };
 
     const placeOrder = () => {
@@ -78,14 +103,13 @@ const ProductCheckout = () => {
         if (!formData.firstName) newWarnings.push('Billing First name is a required field.');
         if (!formData.lastName) newWarnings.push('Billing Last name is a required field.');
         if (!formData.phone) newWarnings.push('Billing Phone is a required field.');
-
-        setWarnings(newWarnings);
-
-        if(!showBilling) {
-            navigate('/checkout/order-received');
+        
+        if(showBilling) {
+            setWarnings(newWarnings);     
         }
-        if (newWarnings.length === 0) {
-            navigate('/checkout/order-received');
+           
+        if(!showBilling || newWarnings.length === 0) {
+            loginGuestUser()
         }
     };
 
@@ -93,47 +117,114 @@ const ProductCheckout = () => {
         return basket.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
     };
 
-    useEffect(() => {
-        const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places`;
-        script.async = true;
-        document.head.appendChild(script);
-
-        script.onload = () => {
-            initMap();
-        };
-
-        const initMap = () => {
-            const map = new window.google.maps.Map(document.getElementById("map"), {
-                center: { lat: -34.397, lng: 150.644 },
-                zoom: 8,
-            });
-            const marker = new window.google.maps.Marker({
-                position: { lat: -34.397, lng: 150.644 },
-                map,
-                draggable: true,
-            });
-
-            const geocoder = new window.google.maps.Geocoder();
-
-            marker.addListener('dragend', () => {
-                geocodePosition(marker.getPosition(), geocoder);
-            });
-
-            const geocodePosition = (pos, geocoder) => {
-                geocoder.geocode({ latLng: pos }, (results, status) => {
-                    if (status === window.google.maps.GeocoderStatus.OK) {
-                        const address = results[0].formatted_address;
-                        setFormData(prevState => ({ ...prevState, streetAddress: address }));
-                    }
-                });
+    const loginGuestUser = async () => {
+        try {
+            const params = {
+            email: "guestseller@macburger.kg",
+            password: "12345678",
             };
-        };
 
-        return () => {
-            document.head.removeChild(script);
-        };
-    }, []);
+            const response = await authService.authenticate(params);
+            // console.log('Auth api response:', response.data);
+            const token = response.data.data.token_type+" "+response.data.data.access_token;
+            localStorage.setItem("token", token)
+            createOrder(token, response.data.data.user.phone);
+
+        } catch (error) {
+            console.error('Error fetching Auth:', error);
+        }
+    };
+
+    const createOrder = async (token, guestUserPhone) => {        
+        try {
+          const params = {
+            user_id: 108,
+            currency_id: 2,
+            rate: 1,
+            payment_id: 1,
+            delivery_price_id: selectedShipping === 'delivery' ? 1 : null,
+            delivery_point_id: selectedShipping === 'point' ? 1 : null,
+            address: selectedShipping === 'delivery' ? {
+              country_id: 1,
+              city_id: 1,
+              street_house_number: 8322991,
+              zip_code: '65500',
+              location: {
+                latitude: 47.4143302506288,
+                longitude: 8.532059477976883,
+              },
+            } : {},
+            delivery_date: getDeliveryDate(),
+            delivery_type: selectedShipping,
+            phone: selectedShipping === 'delivery' ? formData.phone : guestUserPhone,
+            notes: selectedShipping === 'delivery' ? { '501': `${formData.email},${formData.firstName}, ${formData.lastName}, ${formData.orderNotes}` } : {},
+            coupons: {},
+            data: [
+              {
+                shop_id: 501,
+                products: getProducts(),
+              },
+            ],
+          };
+    
+          const headers = {
+            Authorization: token,
+          };
+    
+          const response = await orderService.create(params, headers);
+          const orderId = response.data.data[0].id;
+          setOrders(response.data.data);
+          navigate(`/order/${orderId}`)
+          emptyBasket()
+          
+        } catch (error) {
+            console.error('Error creating order:', error.message);
+        }
+      };
+    
+      
+
+    // useEffect(() => {
+    //     const script = document.createElement('script');
+    //     script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places`;
+    //     script.async = true;
+    //     document.head.appendChild(script);
+
+    //     script.onload = () => {
+    //         initMap();
+    //     };
+
+    //     const initMap = () => {
+    //         const map = new window.google.maps.Map(document.getElementById("map"), {
+    //             center: { lat: -34.397, lng: 150.644 },
+    //             zoom: 8,
+    //         });
+    //         const marker = new window.google.maps.Marker({
+    //             position: { lat: -34.397, lng: 150.644 },
+    //             map,
+    //             draggable: true,
+    //         });
+
+    //         const geocoder = new window.google.maps.Geocoder();
+
+    //         marker.addListener('dragend', () => {
+    //             geocodePosition(marker.getPosition(), geocoder);
+    //         });
+
+    //         const geocodePosition = (pos, geocoder) => {
+    //             geocoder.geocode({ latLng: pos }, (results, status) => {
+    //                 if (status === window.google.maps.GeocoderStatus.OK) {
+    //                     const address = results[0].formatted_address;
+    //                     setFormData(prevState => ({ ...prevState, streetAddress: address }));
+    //                 }
+    //             });
+    //         };
+    //     };
+
+    //     return () => {
+    //         document.head.removeChild(script);
+    //     };
+    // }, []);
 
     return (
         <>
@@ -169,7 +260,7 @@ const ProductCheckout = () => {
             </div>
             <div id="product-1" className="pt-100 pb-100 single-product division">
                 <div className="container">
-                    <CouponSection warnings={warnings} />
+                    <CouponSection warnings={warnings} showBilling={showBilling} />
                     <div className="checkout-content-box">
                         <div className="row1">
                             {showBilling && (
@@ -241,8 +332,8 @@ const ProductCheckout = () => {
                                                 </td>
                                                 <td style={{ borderTop: 'none' }}>
                                                     <select className='select-shipping' value={selectedShipping} onChange={handleShippingChange}>
-                                                        <option value="Deliver">Deliver</option>
-                                                        <option value="Local pickup">Local pickup</option>
+                                                        <option value="delivery">Deliver</option>
+                                                        <option value="point">Local pickup</option>
                                                     </select>
                                                 </td>
                                             </tr>

@@ -10,7 +10,7 @@ function CategorySidebar({ onCategorySelect }) {
                 const params = { type: 'parent', perPage: '100' };
                 const response = await categoryService.getAll(params);
                 setCategories(response.data.data);
-                console.log('Category api response:', response.data);
+                // console.log('Category api response:', response.data);
             } catch (error) {
                 console.error('Error fetching categories:', error);
             }

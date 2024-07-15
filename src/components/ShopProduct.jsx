@@ -30,13 +30,12 @@ function ShopProduct({ image, title, description, price, hasOption, category, ma
           description: description,
           quantity: 1,
           stockId: stockId,
+          size: '',
         },
       });
     }
   };
   
-
-  console.log(categoryUUID)
   const encodedTitle = encodeURIComponent(title);
   const encodedImage = encodeURIComponent(image);
   const encodedHasOption = encodeURIComponent(hasOption);
@@ -78,7 +77,7 @@ function ShopProduct({ image, title, description, price, hasOption, category, ma
                 <button className='addToCart1'>SELECT OPTION</button>
               </Link>
             ) : (
-                <Link to={`/shop/add-to-cart/${encodedTitle}`}>
+                <Link to={`/shop/add-to-cart/${encodedTitle}/${"none"}`}>
               <button className='addToCart1' onClick={addToBasket}>
                 <span className="flaticon-shopping-bag"></span> Add to Cart
               </button>

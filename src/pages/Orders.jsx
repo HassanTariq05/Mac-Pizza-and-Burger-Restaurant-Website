@@ -1,49 +1,44 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useStateValue } from '../components/StateProvider';
 import CurrencyFormat from 'react-currency-format';
 import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import orderDetailService from '../components/orderDetailService';
+import moment from "moment";
 
-const OrderInfo = () => {
-    const [{basket}] = useStateValue();
-    const getCurrentDate = () => {
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        const currentDate = new Date().toLocaleDateString('en-US', options);
-        return currentDate;
-    };
-
-    const totalPrice = () => {
-        return basket.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
-    };
-
+const OrderInfo = ({detail}) => {
+    
     return (
         <div className="order-info">
             <div className="info-item">
                 <span className="label">Order Number:</span>
-                <span className="value">834</span>
+                <span className="value">{detail.id}</span>
             </div>
             <div className="info-item">
                 <span className="label">Date:</span>
-                <span className="value">{getCurrentDate()}</span>
+                <span className="value">{ moment(detail.delivery_date).format("MMM DD, hh:mm A") }</span>
             </div>
             <div className="info-item">
                 <span className="label">Total:</span>
-                <span className="value">{totalPrice()}som</span>
+                <span className="value">{detail.total_price} {detail.currency.symbol}</span>
             </div>
             <div className="info-item">
-                <span className="label">Payment Method:</span>
-                <span className="value">Cash on delivery</span>
+                <span className="label">{detail.delivery_type == "point" ? "Shipping Method:" : "Payment Method:"}</span>
+                <span className="value">{detail.delivery_type == "point" ? "Local Pickup" : "Cash on Delivery"}</span>
+            </div>
+            <div className="info-item">
+                <span className="label">ORDER STATUS:</span>
+                <span className="value">{detail.status == "new" ? "PENDING" : "CANCELED"}</span>
             </div>
         </div>
     );
 };
 
-const OrderDetails = () => {
-    const [{basket}] = useStateValue();
-    const totalPrice = () => {
-        return basket.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
-    };
 
+
+const OrderDetails = ({detail}) => {
+    
     return (
         <div className="order-details">
             <table>
@@ -55,40 +50,36 @@ const OrderDetails = () => {
                 </thead>
                 <tbody>
                     
-                {basket.map(item => (
+                {detail.details.map(item => (
                     <tr>
-                        <td className='text-bold'>{`${item.title} × ${item.quantity}`}</td>
-                        <td className='text-bold'>{(item.price*item.quantity).toFixed(2)}som</td>
+                        <td className='text-bold'>{`${item.stock.product.translation.title} X ${item.quantity}`}</td>
+                        <td className='text-bold'>{(item.total_price).toFixed(2)}</td>
                     </tr>
                 ))}
                     <tr>
+                        <td className="text-bold">Shipping Fee:</td>
+                        <td className='text-bold'>{(detail.delivery_fee).toFixed(2)}</td>
+                    </tr>
+                    <tr>
                         <td className="text-bold">Subtotal:</td>
-                        <td className="text-bold">
-                        <CurrencyFormat
-                            value={totalPrice()}
-                            displayType={'text'}
-                            thousandSeparator={true}
-                            suffix={'som'}
-                            renderText={value => <div>{value}</div>}
-                        />
-                        </td>
+                        <td className='text-bold'>{(detail.total_price).toFixed(2)}</td>
                     </tr>
                     <tr>
                         <td className="text-bold">Shipping:</td>
-                        <td className="text-bold">Local pickup</td>
+                        <td className="text-bold">{detail.delivery_type == "point" ? "Local Pickup" : "Delivery"}</td>
                     </tr>
                     <tr>
                         <td className="text-bold">Payment method:</td>
-                        <td className="text-bold">Cash on delivery</td>
+                        <td className="text-bold">{detail.delivery_type == "point" ? "Cash" : "Cash on Delivery"}</td>
                     </tr>
                     <tr>
                         <td className="total-num">Total:</td>
                         <td className="total-num">
                         <CurrencyFormat
-                            value={totalPrice()}
+                            value={detail.total_price}
                             displayType={'text'}
                             thousandSeparator={true}
-                            suffix={'som'}
+                            suffix={detail.currency.symbol}
                             renderText={value => <div>{value}</div>}
                         />
                         </td>
@@ -99,13 +90,26 @@ const OrderDetails = () => {
     );
 };
 
-const Orders = () => {
+const Orders = () => { 
+    const [detail, setDetail] = useState({id: "", currency: { symbol: "" }, details:[], delivery_fee: 0, total_price: 0 });
+    useEffect(() => {
+        // console.log("Use Effect");
+        getOrderDetail();
+    }, []);
+
+    const {id} = useParams();
     const [{}, dispatch] = useStateValue();
-    const emptyBasket = (() => {
-        dispatch( {
-            type: 'EMPTY_BASKET',
-        });
-    })
+
+    const getOrderDetail = async () => {
+        try {    
+          const headers = { Authorization: localStorage.getItem("token") };
+          const response = await orderDetailService.getDetail(id, headers);
+        //   console.log('OrderDetail api response:', response.data);
+          setDetail(response.data.data)
+        } catch (error) {
+          console.error('Error fetching order details:', error);
+        }
+    };
 
     return (
         <>
@@ -143,10 +147,11 @@ const Orders = () => {
             <div className="container">
                 <div className="order-confirmation">
                     <h2>Thank you. Your order has been received.</h2>
-                    <OrderInfo />
-                    <p>Pay with cash upon delivery.</p>
+                    <OrderInfo
+                    detail={detail} />
                     <h3>Order Details</h3>
-                    <OrderDetails />
+                    <OrderDetails
+                    detail={detail} />
                 </div>
             </div>
         </div>

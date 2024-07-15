@@ -12,12 +12,12 @@ import productService from '../components/productService';
 const ProductView = () => {
     const { uuid, categoryUUID } = useParams();
     const [quantity, setQuantity] = useState(1);
-    const [ size, setSize] = useState('');
+    const [size, setSize] = useState('');
     const [showAdditionalPrice, setShowAdditionalPrice] = useState(false);
     const [additionalPrice, setAdditionalPrice] = useState(0);
     const [{ basket }, dispatch] = useStateValue();
     const navigate = useNavigate();
-    const [stockId, setStockId] = useState();
+    const [stockId, setStockId] = useState(null);
 
     const [product, setProduct] = useState(null);
 
@@ -28,10 +28,12 @@ const ProductView = () => {
                 const params = { id: encodedUuid };
                 const response = await singleProductService.getAll(params);
                 setProduct(response.data.data);
-                if (product.stocks.length === 0) {
-                    setStockId(product.stocks[0].id);
+
+                if (response.data.data.stocks.length > 0) {
+                    setStockId(response.data.data.stocks[0].id);
+                    setSize(response.data.data.stocks[0].extras[0].value.value);
                 }
-                console.log('Single Product api response:', response.data);
+                // console.log('Single Product api response:', response.data);
             } catch (error) {
                 console.error('Error fetching product:', error);
             }
@@ -48,7 +50,7 @@ const ProductView = () => {
                 const params = { id: categoryUUID };
                 const response = await productService.getAll(params);
                 setProducts(response.data.data);
-                console.log('Related Products api response:', response.data);
+                // console.log('Related Products api response:', response.data);
             } catch (error) {
                 console.error('Error fetching categories:', error);
             }
@@ -64,7 +66,7 @@ const ProductView = () => {
     const addToBasket = () => {
         const itemIndex = basket.findIndex((item) => item.title === product.translation.title && item.size === size);
         if (itemIndex >= 0) {
-            console.log(basket[itemIndex].quantity);
+            // console.log(basket[itemIndex].quantity);
             dispatch({
                 type: 'UPDATE_QUANTITY',
                 item: {
@@ -87,7 +89,12 @@ const ProductView = () => {
                 },
             });
         }
-        navigate(`/shop/add-to-cart/${product.translation.title}/${size}`);
+        if(size === '') {
+            navigate(`/shop/add-to-cart/${product.translation.title}/${"none"}`);
+        } else {
+            navigate(`/shop/add-to-cart/${product.translation.title}/${size}`);
+        }
+        
     };
 
     const handleQuantityChange = (event) => {
@@ -100,22 +107,23 @@ const ProductView = () => {
     const handleSizeChange = (event) => {
         const selectedSize = event.target.value;
         setSize(selectedSize);
-
+    
         if (selectedSize === '') {
             setShowAdditionalPrice(false);
             setAdditionalPrice(0);
+            setStockId(null);
         } else {
             const selectedStock = product.stocks.find((stock) => stock.extras[0].value.value === selectedSize);
             if (selectedStock) {
                 setShowAdditionalPrice(true);
                 setAdditionalPrice(selectedStock.price);
+                setStockId(selectedStock.id);
             } else {
                 setShowAdditionalPrice(false);
                 setAdditionalPrice(0);
+                setStockId(null);
             }
         }
-
-
     };
 
     const handleAddToCartClick = () => {
