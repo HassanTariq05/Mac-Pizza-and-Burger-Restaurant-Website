@@ -184,7 +184,7 @@ const Cart = () => {
                                             <tr>
                                                 <td>Shipping</td>
                                                 <td className="text-right">
-                                                    <div>0.00som</div>
+                                                    <div>On Checkout</div>
                                                 </td>
                                             </tr>
                                             <tr className="last-tr">

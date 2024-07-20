@@ -7,6 +7,10 @@ import CurrencyFormat from 'react-currency-format';
 import authService from '../components/authService';
 import orderService from '../components/orderService';
 import orderDetailService from '../components/orderDetailService';
+import {APIProvider, Map, AdvancedMarker, Pin} from '@vis.gl/react-google-maps';
+import { GOOGLE_MAPS_API_KEY } from '../components/service';
+import { useCallback } from 'react';
+import { event } from 'jquery';
 
 const CouponSection = ({ warnings , showBilling}) => {
     const [showCoupon, setShowCoupon] = useState(false);
@@ -48,6 +52,32 @@ const CouponSection = ({ warnings , showBilling}) => {
 };
 
 const ProductCheckout = () => {
+
+    const [map, setMap] = useState();
+    const [userMarker, setUserMarker] = useState();
+    const [address, setAddress] = useState();
+
+    const handleMapClick = useCallback((ev) => {
+        if(!map) return;
+        if(!ev.detail.latLng) return;
+        map.panTo(ev.detail.latLng);
+        setUserMarker(ev.detail.latLng)
+        handleMarkerAddress(ev.detail.latLng)
+      });
+
+      const handleMarkerAddress = (latLng) => {
+        const geocoder = new window.google.maps.Geocoder();
+        geocoder.geocode({ location: latLng }, (results, status) => {
+          if (status === 'OK') {
+            if (results[0]) {
+                setFormData(prevState => ({ ...prevState, streetAddress: results[0].formatted_address }));
+            }
+          } else {
+            setAddress('Geocoder failed due to: ' + status);
+          }
+        });
+      };
+
     const [{}, dispatch] = useStateValue();
         const emptyBasket = (() => {
             dispatch( {
@@ -125,7 +155,6 @@ const ProductCheckout = () => {
             };
 
             const response = await authService.authenticate(params);
-            // console.log('Auth api response:', response.data);
             const token = response.data.data.token_type+" "+response.data.data.access_token;
             localStorage.setItem("token", token)
             createOrder(token, response.data.data.user.phone);
@@ -156,8 +185,8 @@ const ProductCheckout = () => {
             } : {},
             delivery_date: getDeliveryDate(),
             delivery_type: selectedShipping,
-            phone: selectedShipping === 'delivery' ? formData.phone : guestUserPhone,
-            notes: selectedShipping === 'delivery' ? { '501': `${formData.email},${formData.firstName}, ${formData.lastName}, ${formData.orderNotes}` } : {},
+            phone: formData.phone,
+            notes: { '501': `${formData.email},${formData.firstName}, ${formData.lastName}, ${formData.streetAddress}, ${formData.orderNotes}` },
             coupons: {},
             data: [
               {
@@ -170,7 +199,7 @@ const ProductCheckout = () => {
           const headers = {
             Authorization: token,
           };
-    
+
           const response = await orderService.create(params, headers);
           const orderId = response.data.data[0].id;
           setOrders(response.data.data);
@@ -181,50 +210,6 @@ const ProductCheckout = () => {
             console.error('Error creating order:', error.message);
         }
       };
-    
-      
-
-    // useEffect(() => {
-    //     const script = document.createElement('script');
-    //     script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places`;
-    //     script.async = true;
-    //     document.head.appendChild(script);
-
-    //     script.onload = () => {
-    //         initMap();
-    //     };
-
-    //     const initMap = () => {
-    //         const map = new window.google.maps.Map(document.getElementById("map"), {
-    //             center: { lat: -34.397, lng: 150.644 },
-    //             zoom: 8,
-    //         });
-    //         const marker = new window.google.maps.Marker({
-    //             position: { lat: -34.397, lng: 150.644 },
-    //             map,
-    //             draggable: true,
-    //         });
-
-    //         const geocoder = new window.google.maps.Geocoder();
-
-    //         marker.addListener('dragend', () => {
-    //             geocodePosition(marker.getPosition(), geocoder);
-    //         });
-
-    //         const geocodePosition = (pos, geocoder) => {
-    //             geocoder.geocode({ latLng: pos }, (results, status) => {
-    //                 if (status === window.google.maps.GeocoderStatus.OK) {
-    //                     const address = results[0].formatted_address;
-    //                     setFormData(prevState => ({ ...prevState, streetAddress: address }));
-    //                 }
-    //             });
-    //         };
-    //     };
-
-    //     return () => {
-    //         document.head.removeChild(script);
-    //     };
-    // }, []);
 
     return (
         <>
@@ -263,13 +248,35 @@ const ProductCheckout = () => {
                     <CouponSection warnings={warnings} showBilling={showBilling} />
                     <div className="checkout-content-box">
                         <div className="row1">
-                            {showBilling && (
+                            
                                 <div className="col-lg-6 col-12">
                                     <div className="checkout-from-wrapper">
                                         <h3>BILLING</h3>
-                                        <div className="map-box">
-                                            <div id="map" style={{ width: '100%', height: '450px' }}></div>
+                                        {showBilling && (
+                                        <div className="">
+                                            <div id="" style={{ width: '100%', height: '450px' }}>
+                                            <APIProvider 
+                                                apiKey={GOOGLE_MAPS_API_KEY} 
+                                                onLoad={(map) => { setMap(map); }}
+                                            >
+                                                <Map
+                                                    mapId='1'
+                                                    onClick={handleMapClick}
+                                                    defaultZoom={17}
+                                                    defaultCenter={ { lat:42.8724925, lng: 74.6121651 } }
+                                                    onCameraChanged={ (ev) => {
+                                                        setMap(ev.map)
+                                                    }}
+                                                    >
+                                                        <AdvancedMarker
+                                                            key="User"
+                                                            position={userMarker}>
+                                                        </AdvancedMarker>
+                                                </Map>
+                                                </APIProvider>
+                                            </div>
                                         </div>
+                                        )}
                                         <div className="checkout-from">
                                             <form>
                                                 <div className="row">
@@ -291,12 +298,14 @@ const ProductCheckout = () => {
                                                             <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} />
                                                         </div>
                                                     </div>
+                                                    {showBilling && (
                                                     <div className="col-lg-12 col-12">
                                                         <div className="input-wrap">
                                                             <label>Country / Region <span>*</span></label>
                                                             <p>Kyrgyzstan</p>
                                                         </div>
                                                     </div>
+                                                    )}
                                                     <div className="col-lg-12">
                                                         <div className="input-wrap">
                                                             <label>Street address <span>*</span></label>
@@ -313,7 +322,7 @@ const ProductCheckout = () => {
                                                         <h3 className="mb-3">ADDITIONAL INFORMATION</h3>
                                                         <div className="input-wrap">
                                                             <label>Order notes (optional)</label>
-                                                            <textarea rows="5" cols="10" placeholder="Notes about your order, e.g special notes for delivery." name="orderNotes" value={formData.orderNotes} onChange={handleChange}></textarea>
+                                                            <textarea rows="5" cols="10" placeholder={showBilling ? "Notes about your order, e.g special notes for delivery." : "Notes about your order, e.g special notes for pickup."} name="orderNotes" value={formData.orderNotes} onChange={handleChange}></textarea>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -321,7 +330,6 @@ const ProductCheckout = () => {
                                         </div>
                                     </div>
                                 </div>
-                            )}
                             <div className="col-lg-6 col-12">
                                 <div className="checkout-container">
                                     <table className="table">

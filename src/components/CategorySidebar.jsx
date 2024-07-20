@@ -31,10 +31,7 @@ function CategorySidebar({ onCategorySelect }) {
                 </div>
                 <div className="shop-sidebar-cat-list">
                     <ul className="list-unstyled categories-tabbing">
-                        <li className="categories-tab-list active" data-tab="1">
-                            <a href="javascript:;" onClick={() => handleCategoryClick("133f1e30-40b0-4305-8343-51cfb47acf6a")}>All Categories</a>
-                        </li>
-                        {[...categories].reverse().map((item) => (
+                        {[...categories].map((item) => (
                             <li className="categories-tab-list" data-tab={item.id} key={item.id}>
                                 <a href="javascript:;" onClick={() => handleCategoryClick(item.uuid)}>{item.translation.title}</a>
                             </li>
