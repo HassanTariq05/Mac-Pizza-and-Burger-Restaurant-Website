@@ -4740,7 +4740,7 @@ span.ico-holder {
   display: inline-block;
   cursor: pointer;
   background-color: transparent;
-  color: #9f9f9f;
+  /* color: #9f9f9f; */
   padding: 0 70px;
   border-bottom: none;
   margin: 0;

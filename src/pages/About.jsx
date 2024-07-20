@@ -18,7 +18,7 @@ function About() {
                         <nav aria-label="breadcrumb">
                           <ol className="breadcrumb">
                             <Link to='/home'>
-                                <li className="breadcrumb-item"><a href="">Home</a></li>
+                                <li className="breadcrumb-item"><a href='/home'>Home</a></li>
                             </Link>
                             <p className='breadcrumb-item'></p>
                             <li className="breadcrumb-item active" aria-current="page">About</li>

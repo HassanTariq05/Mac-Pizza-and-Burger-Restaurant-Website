@@ -56,10 +56,12 @@ const OrderDetails = ({detail}) => {
                         <td className='text-bold'>{(item.total_price).toFixed(2)}</td>
                     </tr>
                 ))}
-                    <tr>
+                    {detail.delivery_type != "point" && (
+                        <tr>
                         <td className="text-bold">Shipping Fee:</td>
-                        <td className='text-bold'>{(detail.delivery_fee).toFixed(2)}</td>
-                    </tr>
+                        <td className='text-bold'>{(detail.delivery_fee)}</td>
+                        </tr>
+                    )}
                     <tr>
                         <td className="text-bold">Subtotal:</td>
                         <td className='text-bold'>{(detail.total_price).toFixed(2)}</td>

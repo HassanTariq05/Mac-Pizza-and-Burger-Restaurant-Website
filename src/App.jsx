@@ -38,7 +38,7 @@ function App() {
   // console.log(localStorage)
 
   return (
-    <Router>
+    <Router basename='/'>
       <Header />
       <ScrollToTop />
       <DocumentTitle /> 
