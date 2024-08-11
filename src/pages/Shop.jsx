@@ -15,7 +15,7 @@ import { baseURL } from '../components/service';
 import allCategoryProductService from '../components/allCategoryProductsService';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
-import placeHolderImg from "../images/placeHolderImg.jpg"
+import placeHolderImg1 from "../images/placeHolderImg1.png"
 
 function Shop() {
     const { category } = useParams();
@@ -156,7 +156,7 @@ function Shop() {
                         :
                         <div className='placeHolderDiv'>
                             <div className='text-center'>
-                            <img src={placeHolderImg} className='placeHolderImg' ></img>
+                            <img src={placeHolderImg1} className='placeHolderImg' ></img>
                             <h2>No Products Available</h2>
                          </div>
                             </div>
