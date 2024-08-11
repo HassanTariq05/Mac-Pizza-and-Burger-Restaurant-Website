@@ -9,7 +9,17 @@ function CategorySidebar({ onCategorySelect }) {
             try {
                 const params = { type: 'parent', perPage: '100' };
                 const response = await categoryService.getAll(params);
-                setCategories(response.data.data);
+                var sorted = response.data.data.sort((a, b) => {
+                    if (a.translation.title < b.translation.title) {
+                        return -1;
+                      }
+                      if (a.translation.title > b.translation.title) {
+                        return 1;
+                      }
+                      return 0;
+                    }
+                );
+                setCategories(sorted);
                 // console.log('Category api response:', response.data);
             } catch (error) {
                 console.error('Error fetching categories:', error);

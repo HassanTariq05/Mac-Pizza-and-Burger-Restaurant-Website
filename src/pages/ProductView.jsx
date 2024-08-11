@@ -33,7 +33,6 @@ const ProductView = () => {
                     setStockId(response.data.data.stocks[0].id);
                     setSize(response.data.data.stocks[0].extras[0].value.value);
                 }
-                // console.log('Single Product api response:', response.data);
             } catch (error) {
                 console.error('Error fetching product:', error);
             }
@@ -50,7 +49,6 @@ const ProductView = () => {
                 const params = { id: categoryUUID };
                 const response = await productService.getAll(params);
                 setProducts(response.data.data);
-                // console.log('Related Products api response:', response.data);
             } catch (error) {
                 console.error('Error fetching categories:', error);
             }
@@ -66,7 +64,6 @@ const ProductView = () => {
     const addToBasket = () => {
         const itemIndex = basket.findIndex((item) => item.title === product.translation.title && item.size === size);
         if (itemIndex >= 0) {
-            // console.log(basket[itemIndex].quantity);
             dispatch({
                 type: 'UPDATE_QUANTITY',
                 item: {
@@ -145,7 +142,7 @@ const ProductView = () => {
                             <div className="hero-txt text-center white-color">
                                 <div id="breadcrumb">
                                     <div className="row">
-                                        <div className="col">
+                                        <div className="coll">
                                             <div className="breadcrumb-nav">
                                                 <nav aria-label="breadcrumb">
                                                     <ol className="breadcrumb">

@@ -25,17 +25,13 @@ import ProductView from './pages/ProductView';
 import AddToCartReceipt from './pages/AddtoCartReceipt';
 import ProductCheckout from './pages/ProductCheckout';
 import Orders from './pages/Orders';
-import AuthResponse from './components/AuthResponse';
 
 function App() {
   const [{basket}, dispatch] = useStateValue('');
 
   useEffect(() => {
     localStorage.setItem('basket', JSON.stringify(basket));
-    // console.log(basket);
   }, [basket]);
-
-  // console.log(localStorage)
 
   return (
     <Router basename='/'>
@@ -51,7 +47,6 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/checkout" element={<ProductCheckout />} />
         <Route path="/order/:id" element={<Orders />} />
-        {/* <Route path="/shop/add-to-cart/:title/" element={<AddToCartReceipt />} /> */}
         <Route path="/shop/add-to-cart/:title/:size" element={<AddToCartReceipt />} />
         <Route path="/product/:uuid/:categoryUUID" element={<ProductView />} />
         <Route path="/" element={<Navigate to="/home" />} />

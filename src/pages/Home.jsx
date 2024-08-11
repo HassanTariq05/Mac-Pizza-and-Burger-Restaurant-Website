@@ -16,13 +16,16 @@ function Home() {
     navigate(`/shop/${uuid}`)
   };
 
+  const handleProductClick = (uuid) => {
+    navigate(`/product/${uuid}`)
+  };
+
     useEffect(() => {
         const fetchCategories = async () => {
             try {
                 const params = { type: 'parent', perPage: '100' };
                 const response = await categoryService.getAll(params);
                 setCategories(response.data.data);
-                // console.log('Category api response:', response.data);
             } catch (error) {
                 console.error('Error fetching categories:', error);
             }
@@ -82,12 +85,12 @@ function Home() {
               <div className="pbox-11-txt mb-40 white-color">
                 <h3 className="h3-lg">The</h3>
                 <h2>County General</h2>
-                <a href="product-single.html" className="btn btn-lg btn-red tra-white-hover">Order Now</a>
+                <a onClick={() => handleCategoryClick("bc25c7cd-ed84-4626-8f6b-897476ca2a29")} className="btn btn-lg btn-red tra-white-hover">Order Now</a>
               </div>
             </div>
             <div className="col-md-7 col-lg-6">
               <div className="pbox-11-img mb-40">
-                <img className="img-fluid" src={require('../images/pizza-banner-removebg-preview.png')} alt="promo-image" />
+                <img  className="img-fluid" src={require('../images/pizza-banner-removebg-preview.png')} alt="promo-image" />
                 <div className="red-badge price-badge-lg bg-fixed">
                   <div className="badge-txt white-color">
                     <h5 className="h5-xl">Only</h5>
@@ -98,13 +101,13 @@ function Home() {
             </div>
             <div className="col-lg-2">
               <div className="pbox-11-link text-center white-color">
-                <a href="product-single.html">
+                <a onClick={() => handleProductClick("06cea71c-6e22-4383-9bd0-9c219df7c52c/bc25c7cd-ed84-4626-8f6b-897476ca2a29")}>
                   <img className="img-fluid" src={require('../images/central-banner-pizza-1.png')} alt="promo-image" />
                   <p>POLO VEGGIE PIZZA</p>
                 </a>
               </div>
               <div className="pbox-11-link text-center mb-40 white-color">
-                <a href="product-single.html">
+                <a onClick={() => handleProductClick("66d2b9a2-6a4a-4c8f-92a5-02a55648f683/bc25c7cd-ed84-4626-8f6b-897476ca2a29")}>
                   <img className="img-fluid" src={require('../images/central-banner-pizza-2.png')} alt="promo-image" />
                   <p>HAWAIIAN PIZZA</p>
                 </a>
@@ -118,16 +121,18 @@ function Home() {
         <div className="container">
           <div className="row d-flex align-items-center">
             <div className="col-md-6">
-              <a href="menu-3.html">
+              <a onClick={() => handleCategoryClick("bc25c7cd-ed84-4626-8f6b-897476ca2a29")}>
                 <div className="pbox-3 mb-30">
                   <div className="hover-overlay">
-                    <img className="img-fluid" src={require('../images/promo-3-sec-img-1.webp')} alt="promo-image" />
+                    <img  className="img-fluid" src={require('../images/promo-3-sec-img-1.webp')} alt="promo-image" />
                   </div>
                 </div>
               </a>
+                
+              
             </div>
             <div className="col-md-6">
-              <a href="menu-3.html">
+              <a onClick={() => handleCategoryClick("440bc746-1209-402e-a578-ed5f92ba41f6")}>
                 <div className="pbox-3 mb-30">
                   <div className="hover-overlay">
                     <img className="img-fluid" src={require('../images/promo-3-sec-img-2.webp')} alt="promo-image" />
@@ -136,7 +141,7 @@ function Home() {
               </a>
             </div>
             <div className="col-md-6">
-              <a href="menu-3.html">
+              <a onClick={() => handleCategoryClick("5ad41a79-b6ce-4c55-beb0-67faa31821cd")}>
                 <div className="pbox-3">
                   <div className="hover-overlay">
                     <img className="img-fluid" src={require('../images/promo-3-sec-img-3.webp')} alt="promo-image" />
@@ -145,7 +150,7 @@ function Home() {
               </a>
             </div>
             <div className="col-md-6">
-              <a href="menu-3.html">
+              <a onClick={() => handleCategoryClick("bc25c7cd-ed84-4626-8f6b-897476ca2a29")}>
                 <div className="pbox-3 pbox-3-last">
                   <div className="hover-overlay">
                     <img className="img-fluid" src={require('../images/promo-3-sec-img-4.webp')} alt="promo-image" />

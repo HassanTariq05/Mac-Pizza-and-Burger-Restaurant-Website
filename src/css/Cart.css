@@ -257,3 +257,38 @@
     mask-size: 5em;
     width: 5em
 }
+
+.placeHolderImg {
+    width: 70vh;
+    height: auto;
+}
+
+.placeHolderDiv {
+    width: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto; 
+}
+
+@media (max-width: 768px) {
+    .placeHolderImg {
+        width: 50vh;
+        max-width: 100%;
+    }
+
+    .placeHolderDiv {
+        width: 90%; 
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .placeHolderImg {
+        width: 40vh;
+    }
+
+    .placeHolderDiv {
+        width: 100%;
+    }
+}

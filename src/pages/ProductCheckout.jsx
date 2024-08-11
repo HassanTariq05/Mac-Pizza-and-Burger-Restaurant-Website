@@ -10,17 +10,89 @@ import orderDetailService from '../components/orderDetailService';
 import {APIProvider, Map, AdvancedMarker, Pin} from '@vis.gl/react-google-maps';
 import { GOOGLE_MAPS_API_KEY } from '../components/service';
 import { useCallback } from 'react';
-import { event } from 'jquery';
+import couponService from '../components/couponService';
+import deliveryPriceService from '../components/deliveryPriceService';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
-const CouponSection = ({ warnings , showBilling}) => {
+
+const CouponSection = ({ warnings , showBilling, discount, setDiscount, subTotalPrice, couponCode, setCouponCode}) => {
+    const [{basket}, dispatch] = useStateValue();
     const [showCoupon, setShowCoupon] = useState(false);
     const warningsRef = useRef(null);
+    const [couponStatus, setCouponStatus] = useState('');
 
     useEffect(() => {
         if (warnings.length > 0) {
             warningsRef.current.scrollIntoView({ behavior: 'smooth' });
         }
     }, [warnings]);
+
+    const loginGuestUser = async () => {
+        try {
+            const params = {
+                email: "guestseller@macburger.kg",
+                password: "12345678",
+            };
+    
+            const response = await authService.authenticate(params);
+            const token = response.data.data.token_type + " " + response.data.data.access_token;
+            localStorage.setItem("token", token);
+        } catch (error) {
+            // console.error('Error fetching Auth:', error);
+        }
+    };
+    
+    const handleApplyCoupon = (event) => {
+        event.preventDefault();
+        loginGuestUser().then(() => {
+            createCoupon(couponCode);
+        });
+    };
+    
+    const createCoupon = async (couponCode) => {
+        try {
+            const token = localStorage.getItem("token");
+            const headers = {
+                Authorization: token,
+                
+            };
+
+            const params = {
+                coupon: couponCode,
+                user_id: "108",
+                shop_id: "501"
+            }
+    
+            const response = await couponService.check(params, headers);
+            if(response.status === 200) {
+                if(response.data.data.for === 'total_price' && response.data.data.type === 'fixed') {
+                    setDiscount(response.data.data.price)
+                }
+                if(response.data.data.for === 'total_price' && response.data.data.type === 'percent') {
+                    const subTotalPrice = () => {
+                        return (basket.reduce((total, item) => total + item.price * item.quantity, 0)).toFixed(2);
+                
+                    };
+                    setDiscount(subTotalPrice() * response.data.data.price / 100)                    
+                }
+                setCouponStatus({message:'Coupon Applied Successfully', status: 'success'})
+            } else {
+                setCouponStatus({message: 'Coupon not Found', status: 'error'})
+            }
+        } catch (error) {
+            setCouponStatus({message: 'Coupon not Found', status: 'error'})
+            // console.error('Error creating coupon:', error);
+        }
+    };
+
+    const handleRemoveCoupon = ( ()=> {
+        {(discount > 0) ?? (
+            setCouponStatus({ message: 'Coupon Removed Successfully', status: 'success'})
+        )}
+        setDiscount(0);
+        setShowCoupon(false);
+    })
 
     return (
         <div className="have-coupon-bar-wrap" ref={warningsRef}>
@@ -32,13 +104,37 @@ const CouponSection = ({ warnings , showBilling}) => {
                 <div className="coupon-field-box">
                     <p>If you have a coupon code, please apply it below.</p>
                     <div className="field-wrap">
-                        <input type="text" placeholder="Coupon code" />
+                        <input type="text" value={couponCode} onChange={(e) => setCouponCode(e.target.value)} placeholder="Coupon code" />
                         <div className="apply-btn">
-                            <a href="#">Apply coupon</a>
+                        <button onClick={handleApplyCoupon} id='applyBtn' type="" className="btn btn-md btn-salmon tra-salmon-hover">
+                            <span className="wc-block-components-button__text">Apply</span>
+                        </button>
+                        <button onClick={handleRemoveCoupon} id='applyBtn' type="" className="btn btn-md btn-salmon tra-salmon-hover">
+                            <span className="wc-block-components-button__text">Remove</span>
+                        </button>
                         </div>
                     </div>
                 </div>
             )}
+            {( couponStatus !== '') && (
+                <div className={couponStatus.status === 'success' ? "xoo-cp-atcn xoo-cp-success" : "xoo-cp-atcn xoo-cp-error"}>
+                    <span className="xoo-cp-icon-check">
+                        {couponStatus.status === 'success' ? (
+                            <>
+                            <FontAwesomeIcon className='checkIcon' icon={faCheck} />
+                            <span>{couponStatus.message}</span>
+                            </>  
+                        ) : (
+                            <>
+                            <FontAwesomeIcon className='checkIcon' icon={faXmark} />
+                            <span>{couponStatus.message}</span>
+                            </>
+                        ) }
+                        
+                    </span>
+                </div>
+            )}
+            
             {(warnings.length > 0 && showBilling) && (
                 <div className='warnings'>
                     <ul className='warnIcon'><FontAwesomeIcon icon={faExclamationCircle} /></ul>
@@ -56,6 +152,9 @@ const ProductCheckout = () => {
     const [map, setMap] = useState();
     const [userMarker, setUserMarker] = useState();
     const [address, setAddress] = useState();
+    const [discount, setDiscount] = useState(0);
+    const [couponCode, setCouponCode] = useState('');
+    const [latLong, setLatLong] = useState();
 
     const handleMapClick = useCallback((ev) => {
         if(!map) return;
@@ -63,6 +162,7 @@ const ProductCheckout = () => {
         map.panTo(ev.detail.latLng);
         setUserMarker(ev.detail.latLng)
         handleMarkerAddress(ev.detail.latLng)
+        setLatLong(ev.detail.latLng)
       });
 
       const handleMarkerAddress = (latLng) => {
@@ -114,6 +214,31 @@ const ProductCheckout = () => {
         setShowBilling(value !== 'point');
     };
 
+    const [shippingCost, setShippingCost] = useState(0);
+   
+    
+    const getShippingCost = async () => {
+        try {
+            const response = await deliveryPriceService.getPrice();
+            if(response.status === 200) {
+                if(selectedShipping === 'delivery') {
+                    setShippingCost(response.data.data[0].price);
+                } else {
+                    setShippingCost(0)
+                }
+            } else {
+                // console.log('Delivery Price not found');
+            }
+
+        } catch (error) {
+            // console.error('Error fetching delivery price:', error);
+        }
+    };
+
+    useEffect(() => {
+        getShippingCost();
+    }, [selectedShipping]);
+
     const getDeliveryDate = () => {
         const date = new Date();
         const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
@@ -144,6 +269,10 @@ const ProductCheckout = () => {
     };
 
     const totalPrice = () => {
+        return (basket.reduce((total, item) => total + item.price * item.quantity, 0) - discount + shippingCost).toFixed(2);
+
+    };
+    const subTotalPrice = () => {
         return basket.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
     };
 
@@ -160,7 +289,7 @@ const ProductCheckout = () => {
             createOrder(token, response.data.data.user.phone);
 
         } catch (error) {
-            console.error('Error fetching Auth:', error);
+            // console.error('Error fetching Auth:', error);
         }
     };
 
@@ -179,15 +308,15 @@ const ProductCheckout = () => {
               street_house_number: 8322991,
               zip_code: '65500',
               location: {
-                latitude: 47.4143302506288,
-                longitude: 8.532059477976883,
+                latitude: latLong.lat,
+                longitude: latLong.long,
               },
             } : {},
             delivery_date: getDeliveryDate(),
             delivery_type: selectedShipping,
             phone: formData.phone,
             notes: { '501': `${formData.email},${formData.firstName}, ${formData.lastName}, ${formData.streetAddress}, ${formData.orderNotes}` },
-            coupons: {},
+            coupon: couponCode == ''? {} : {"501" : couponCode},
             data: [
               {
                 shop_id: 501,
@@ -207,9 +336,9 @@ const ProductCheckout = () => {
           emptyBasket()
           
         } catch (error) {
-            console.error('Error creating order:', error.message);
+            // console.error('Error creating order:', error.message);
         }
-      };
+    };
 
     return (
         <>
@@ -245,7 +374,7 @@ const ProductCheckout = () => {
             </div>
             <div id="product-1" className="pt-100 pb-100 single-product division">
                 <div className="container">
-                    <CouponSection warnings={warnings} showBilling={showBilling} />
+                    <CouponSection warnings={warnings} showBilling={showBilling} discount={discount} setDiscount={setDiscount} subTotalPrice={subTotalPrice} couponCode={couponCode} setCouponCode={setCouponCode} />
                     <div className="checkout-content-box">
                         <div className="row1">
                             
@@ -361,7 +490,7 @@ const ProductCheckout = () => {
                                                 <td>Subtotal</td>
                                                 <td className="text-right">
                                                     <CurrencyFormat
-                                                        value={totalPrice()}
+                                                        value={subTotalPrice()}
                                                         displayType={'text'}
                                                         thousandSeparator={true}
                                                         suffix={'som'}
@@ -369,10 +498,19 @@ const ProductCheckout = () => {
                                                     />
                                                 </td>
                                             </tr>
+                                            {selectedShipping === 'delivery' && (
+                                                <tr>
+                                                    <td>Shipping</td>
+                                                    <td className="text-right">
+                                                        <span className="">{shippingCost.toFixed(2)}som</span>
+                                                    </td>
+                                                </tr>
+                                            )}
+                                            
                                             <tr>
-                                                <td>Shipping</td>
+                                                <td>Discount</td>
                                                 <td className="text-right">
-                                                    <span className="shipping-method">{selectedShipping}</span>
+                                                    <span className="">{discount.toFixed(2)}som</span>
                                                 </td>
                                             </tr>
                                             <tr>

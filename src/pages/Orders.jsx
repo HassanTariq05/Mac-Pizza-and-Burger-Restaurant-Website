@@ -59,8 +59,14 @@ const OrderDetails = ({detail}) => {
                     {detail.delivery_type != "point" && (
                         <tr>
                         <td className="text-bold">Shipping Fee:</td>
-                        <td className='text-bold'>{(detail.delivery_fee)}</td>
+                        <td className='text-bold'>{(detail.delivery_fee).toFixed(2)}</td>
                         </tr>
+                    )}
+                    { (detail.coupon && detail.coupon.name) && (
+                        <tr>
+                        <td className="text-bold">Discount(Coupon Applied):{detail.coupon.name}</td>
+                        <td className="text-bold">{detail.coupon.price.toFixed(2)}</td>
+                    </tr>
                     )}
                     <tr>
                         <td className="text-bold">Subtotal:</td>
@@ -93,9 +99,8 @@ const OrderDetails = ({detail}) => {
 };
 
 const Orders = () => { 
-    const [detail, setDetail] = useState({id: "", currency: { symbol: "" }, details:[], delivery_fee: 0, total_price: 0 });
+    const [detail, setDetail] = useState({id: "", currency: { symbol: "" }, details:[], delivery_fee: 0, total_price: 0, coupon: { name: "" } });
     useEffect(() => {
-        // console.log("Use Effect");
         getOrderDetail();
     }, []);
 
@@ -106,7 +111,6 @@ const Orders = () => {
         try {    
           const headers = { Authorization: localStorage.getItem("token") };
           const response = await orderDetailService.getDetail(id, headers);
-        //   console.log('OrderDetail api response:', response.data);
           setDetail(response.data.data)
         } catch (error) {
           console.error('Error fetching order details:', error);

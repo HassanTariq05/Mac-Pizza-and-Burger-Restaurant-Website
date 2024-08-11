@@ -117,22 +117,22 @@
 }
 
 .addToCart1 {
-    width: 100%;
+    width: 90%;
     text-align: center;
     color: #000 !important;
     background: transparent;
     border: 1px solid #ddd !important;
-    padding: 8px 0;
+    padding: 8px 9px 7px 0;
     font-size: 15px;
     border-radius: 4px;
     text-transform: uppercase;
-    font-weight: 700;
+    font-weight: 500;
     letter-spacing: 0.5px;
     cursor: pointer;
-    line-height: 1;
     transition: 0.4s all;
     outline: none;
-    margin-top: 8px;
+    margin: 8px 8px 12px 8px;
+    font-size: smaller;
 }
 
 .addToCart:hover {
@@ -209,7 +209,8 @@
 
 .productTitle, .productPrice {
     font-size: 17px;
-    font-weight: 700;
+    font-weight: 500;
+    font-family: inherit;
 }
 .related-products-section {
     display: flex;
@@ -224,6 +225,14 @@
 }
 
 .related-products {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 1200px; /* Adjust max-width as needed */
+    padding: 0 20px; /* Add padding to create space from edges */
+}
+
+.related-products-cart {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
@@ -252,6 +261,11 @@
         flex: 1 1 calc(50% - 20px); /* Full width for one product per row */
         max-width: calc(90% - 20px); /* Full width for one product per row */
     }
+
+    .related-products-cart .shopProduct {
+        flex: 1 1 calc(50% - 20px); /* Full width for one product per row */
+        max-width: 43% /* Full width for one product per row */
+    }
 }
 
 @media (max-width: 767px) {
@@ -260,6 +274,6 @@
     }
 
     .shopProduct-type2 {
-        margin-left: 55px;
+        width: 43%;
     }
 }

@@ -93,6 +93,11 @@
     color: green;
     background-color: #dff0d8;
   }
+
+  .xoo-cp-error {
+    color: rgb(128, 11, 0);
+    background-color: #f0d8d8;
+  }
   
   .xoo-cp-icon-check {
     margin-right: 10px;

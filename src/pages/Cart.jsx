@@ -7,6 +7,8 @@ import '../css/Cart.css'; // Import the CSS file
 import ShopProduct from '../components/ShopProduct';
 import { baseURL } from '../components/service';
 import productService from '../components/productService';
+import couponService from '../components/couponService';
+import authService from '../components/authService';
 
 const Cart = () => {
     const [products, setProducts] = useState([]);
@@ -17,7 +19,6 @@ const Cart = () => {
                 const params = { id: "bc25c7cd-ed84-4626-8f6b-897476ca2a29" };
                 const response = await productService.getAll(params);
                 setProducts(response.data.data);
-                // console.log('Product api response:', response.data);
             } catch (error) {
                 console.error('Error fetching categories:', error);
             }
@@ -40,10 +41,46 @@ const Cart = () => {
         return basket.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
     };
 
+    const loginGuestUser = async () => {
+        try {
+            const params = {
+                email: "guestseller@macburger.kg",
+                password: "12345678",
+            };
+    
+            const response = await authService.authenticate(params);
+            const token = response.data.data.token_type + " " + response.data.data.access_token;
+            localStorage.setItem("token", token);
+        } catch (error) {
+            console.error('Error fetching Auth:', error);
+        }
+    };
+    
     const handleApplyCoupon = (event) => {
         event.preventDefault();
-        // Logic to apply the coupon
-        // console.log('Coupon applied:', couponCode);
+        loginGuestUser().then(() => {
+            createCoupon(couponCode);
+        });
+    };
+    
+    const createCoupon = async (couponCode) => {
+        try {
+            const token = localStorage.getItem("token");
+            const headers = {
+                Authorization: token,
+                
+            };
+
+            const params = {
+                coupon: couponCode,
+                user_id: "108",
+                shop_id: "501"
+            }
+    
+            const response = await couponService.create(params, headers);
+        } catch (error) {
+            console.error('Error creating coupon:', error);
+        }
     };
 
     return (
@@ -83,7 +120,7 @@ const Cart = () => {
                         </div>
                         <div className="related-products-section">
                         <h2>NEW IN STORE</h2>
-                        <div className="related-products">
+                        <div className="related-products-cart">
                             {products.map((item) => (
                                 <ShopProduct
                                     key={item.id}
@@ -138,35 +175,10 @@ const Cart = () => {
                                         <tbody>
                                             <tr className="trrr">
                                                 <td>
-                                                    {showCouponInput ? (
-                                                        <form className="wc-block-components-totals-coupon__form" id="wc-block-components-totals-coupon__form" onSubmit={handleApplyCoupon}>
-                                                            <div className="wc-block-components-text-input wc-block-components-totals-coupon__input">
-                                                                <input className='cinput'
-                                                                    type="text"
-                                                                    id="wc-block-components-totals-coupon__input-0"
-                                                                    autocapitalize="off"
-                                                                    autocomplete="off"
-                                                                    aria-label="Enter code"
-                                                                    aria-invalid="false"
-                                                                    title=""
-                                                                    placeholder='Enter Code'
-                                                                    value={couponCode}
-                                                                    onChange={(e) => setCouponCode(e.target.value)}
-                                                                />
-                                                            </div>
-                                                        </form>
-                                                    ) : (
-                                                        <span className="coupon" onClick={() => setShowCouponInput(true)}>Add a coupon</span>
-                                                    )}
+                                                    Coupon
                                                 </td>
-                                                <td>
-                                                    {showCouponInput ? (
-                                                        <button id='applyBtn' type="submit" className="btn btn-md btn-salmon tra-salmon-hover">
-                                                            <span className="wc-block-components-button__text">Apply</span>
-                                                        </button>
-                                                    ) : (
-                                                        <span></span>
-                                                    )}
+                                                <td className="text-right">
+                                                    On Checkout
                                                 </td>
                                             </tr>
                                             <tr className='trr'>

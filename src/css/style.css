@@ -6655,14 +6655,13 @@ select:-webkit-autofill:focus {
     position: relative;
     margin: 0 0px 20px 20px;
     border-radius: 6px;
-    padding: 25px 20px 20px !important;
     background: #fff;
     text-align: center;
     overflow: hidden;
     border: 1px solid #e5e5e5;
     max-width: 255px;
     /* max-height: 390px; */
-    align-content: flex-end;
+    align-content: space-between;
 }
 
 .select-shipping {
@@ -7637,7 +7636,7 @@ nav a#pull {
   padding: 15px;
   margin-bottom: 20px;
   box-shadow: 0 0 46px rgba(9, 33, 43, 0.1);
-  height: auto;
+  height: fit-content;
 }
 
 .shop-sidebar .shop-sidebar-cat-title h3 {
