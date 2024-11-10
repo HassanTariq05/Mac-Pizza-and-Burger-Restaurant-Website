@@ -1,0 +1,197 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.signup-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  background-color: #f5f5f5;
+}
+
+.signup-form {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+.signup-logo {
+  display: block;
+  margin: 0 auto 15px auto;
+  width: 80px;
+  height: auto;
+}
+
+.signup-heading {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.signup-subtext {
+  font-size: 0.9em;
+  font-weight: 300;
+  color: #777;
+  margin-bottom: 20px;
+  display: block;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group-row {
+  display: flex;
+  gap: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: #555;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  transition: border-color 0.3s ease;
+}
+.password-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.password-toggle-icon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.password-toggle-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.form-group input[type="password"]:focus,
+.form-group input[type="text"]:focus {
+  border-color: rgb(161, 48, 31);
+  border-width: 1px;
+  outline: none;
+}
+
+.error-message {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="email"]:focus,
+.form-group input[type="password"]:focus {
+  border-color: rgb(161, 48, 31);
+  border-width: 1px;
+  outline: none;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: baseline;
+  justify-content: left;
+  margin-top: 10px;
+  margin-bottom: 0px;
+}
+
+.checkbox-group input[type="checkbox"] {
+  margin-right: 10px;
+  accent-color: rgb(161, 48, 31);
+}
+
+.agreeLabel {
+  font-size: 14px;
+}
+
+.existingAccountLabel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  margin-top: 20px;
+}
+
+.forgot-password-text {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  font-size: 14px;
+  margin-top: 20px;
+  color: rgb(161, 48, 31);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.red-text {
+  color: rgb(161, 48, 31);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.signup-button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  background-color: rgb(161, 48, 31);
+  border: none;
+  color: #ffffff;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.signup-button:hover {
+  background-color: rgb(128, 38, 23);
+}
+
+.otp-input-container {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+
+.otp-input {
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  font-size: 24px;
+  margin: 0 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  caret-color: rgb(161, 48, 31);
+}
+
+.otp-input:focus {
+  border-color: rgb(161, 48, 31);
+  border-width: 2px;
+  outline: none;
+}
+
+@media (max-width: 768px) {
+  .form-group-row {
+    flex-direction: column;
+  }
+}

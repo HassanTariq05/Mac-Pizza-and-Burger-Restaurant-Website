@@ -1,44 +1,60 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import About from './pages/About';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Home from './pages/Home';
-import Shop from './pages/Shop';
-import Contact from './pages/Contact';
-import { useEffect } from 'react';
+import React, { useEffect } from "react"
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+  useLocation,
+} from "react-router-dom"
+import Header from "./components/Header"
+import Footer from "./components/Footer"
+import About from "./pages/About"
+import Home from "./pages/Home"
+import Shop from "./pages/Shop"
+import Contact from "./pages/Contact"
+import Cart from "./pages/Cart"
+import DocumentTitle from "./components/DocumentTitle"
+import { useStateValue } from "./components/StateProvider"
+import ScrollToTop from "./components/ScrollToTop"
+import ProductView from "./pages/ProductView"
+import AddToCartReceipt from "./pages/AddtoCartReceipt"
+import ProductCheckout from "./pages/ProductCheckout"
+import Orders from "./pages/Orders"
 
-import './css/bootstrap.min.css';
-import './css/flaticon.css';
-import './css/menu.css';
-import './css/magnific-popup.css';
-import './css/flexslider.css';
-import './css/owl.carousel.min.css';
-import './css/owl.theme.default.min.css';
-import './css/jquery.datetimepicker.min.css';
-import Cart from './pages/Cart';
-import DocumentTitle from './components/DocumentTitle';
-import { useStateValue } from './components/StateProvider';
-import ScrollToTop from './components/ScrollToTop';
-import ProductView from './pages/ProductView';
-import AddToCartReceipt from './pages/AddtoCartReceipt';
-import ProductCheckout from './pages/ProductCheckout';
-import Orders from './pages/Orders';
+import "./css/bootstrap.min.css"
+import "./css/flaticon.css"
+import "./css/menu.css"
+import "./css/magnific-popup.css"
+import "./css/flexslider.css"
+import "./css/owl.carousel.min.css"
+import "./css/owl.theme.default.min.css"
+import "./css/jquery.datetimepicker.min.css"
+import Signup from "./pages/Signup"
+import Login from "./pages/Login"
+import ForgotPassword from "./pages/ForgotPassword"
+import ResetPassword from "./pages/ResetPassword"
+import Otp from "./pages/Otp"
 
-function App() {
-  const [{basket}, dispatch] = useStateValue('');
+function MainContent() {
+  const location = useLocation()
 
-  useEffect(() => {
-    localStorage.setItem('basket', JSON.stringify(basket));
-  }, [basket]);
-
+  const skipHeaderFooter =
+    location.pathname === "/signup" ||
+    location.pathname === "/login" ||
+    location.pathname === "/forgot-password" ||
+    location.pathname === "/reset-password" ||
+    location.pathname === "/otp-verification"
   return (
-    <Router basename='/'>
-      <Header />
+    <>
+      {!skipHeaderFooter && <Header />}
       <ScrollToTop />
-      <DocumentTitle /> 
+      <DocumentTitle />
       <Routes>
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/otp-verification" element={<Otp />} />
         <Route path="/about" element={<About />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/shop/:category" element={<Shop />} />
@@ -47,14 +63,31 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/checkout" element={<ProductCheckout />} />
         <Route path="/order/:id" element={<Orders />} />
-        <Route path="/shop/add-to-cart/:title/:size" element={<AddToCartReceipt />} />
+        <Route
+          path="/shop/add-to-cart/:title/:size"
+          element={<AddToCartReceipt />}
+        />
         <Route path="/product/:uuid/:categoryUUID" element={<ProductView />} />
         <Route path="/" element={<Navigate to="/home" />} />
         <Route path="*" element={<Navigate to="/home" />} />
       </Routes>
-      <Footer />
-    </Router>
-  );
+      {!skipHeaderFooter && <Footer />}
+    </>
+  )
 }
 
-export default App;
+function App() {
+  const [{ basket }, dispatch] = useStateValue("")
+
+  useEffect(() => {
+    localStorage.setItem("basket", JSON.stringify(basket))
+  }, [basket])
+
+  return (
+    <Router basename="/">
+      <MainContent />
+    </Router>
+  )
+}
+
+export default App
