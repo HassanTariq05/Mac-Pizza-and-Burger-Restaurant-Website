@@ -9,9 +9,6 @@
   Tags: Jthemes, Food, Fast Food, Restaurant, Pizzeria, Restaurant Menu, Pizza, Burger, Sushi, Steak, Grill, Snack
 */
 
-
-
-
 /* ==========================================================================
   01. GENERAL & BASIC STYLES
   =========================================================================== */
@@ -22,7 +19,7 @@ html {
 }
 
 body {
-  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #283034;
   font-weight: 300;
 }
@@ -821,7 +818,7 @@ body {
 }
 
 .bg-tra-dark {
-  background-color: rgba(10, 10, 10, .4);
+  background-color: rgba(10, 10, 10, 0.4);
 }
 
 .bg-lightgrey {
@@ -933,9 +930,6 @@ body {
   border-right: 1px solid #eee;
 }
 
-
-
-
 /* ==========================================================================
   02. TYPOGRAPHY
   =========================================================================== */
@@ -950,7 +944,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Oswald', sans-serif;
+  font-family: "Oswald", sans-serif;
   line-height: 1.3;
   font-weight: 500;
   text-transform: uppercase;
@@ -1186,7 +1180,7 @@ ul.txt-list {
 
 .btn {
   background-color: transparent;
-  font-family: 'Oswald', sans-serif;
+  font-family: "Oswald", sans-serif;
   color: #fff;
   font-size: 16px;
   line-height: 1;
@@ -1778,18 +1772,18 @@ ul.txt-list {
 /*------------------------------------------*/
 
 .shadow-txt-white {
-  text-shadow: #fff 3px 3px 0, #fff -3px -3px 0,
-    #fff -3px 3px 0, #fff 3px -3px 0;
+  text-shadow: #fff 3px 3px 0, #fff -3px -3px 0, #fff -3px 3px 0,
+    #fff 3px -3px 0;
 }
 
 .shadow-txt-black {
-  text-shadow: #000 3px 3px 0, #000 -3px -3px 0,
-    #000 -3px 3px 0, #000 3px -3px 0;
+  text-shadow: #000 3px 3px 0, #000 -3px -3px 0, #000 -3px 3px 0,
+    #000 3px -3px 0;
 }
 
 .shadow-txt-yellow {
-  text-shadow: #e1a100 4px 4px 0, #e1a100 -4px -4px 0,
-    #e1a100 -4px 4px 0, #e1a100 4px -4px 0;
+  text-shadow: #e1a100 4px 4px 0, #e1a100 -4px -4px 0, #e1a100 -4px 4px 0,
+    #e1a100 4px -4px 0;
 }
 
 /*------------------------------------------*/
@@ -1915,7 +1909,7 @@ span.item-code {
 /*  Icon Hover
 /*------------------------------------------*/
 
-.like-ico:hover>a span {
+.like-ico:hover > a span {
   color: #e84e1d !important;
 }
 
@@ -1929,7 +1923,7 @@ span.item-code {
   width: 34px;
   height: 34px;
   text-align: center;
-  background-color: rgba(20, 20, 20, .45);
+  background-color: rgba(20, 20, 20, 0.45);
   -webkit-border-radius: 100%;
   -moz-border-radius: 100%;
   border-radius: 100%;
@@ -1953,7 +1947,7 @@ span.item-code {
 }
 
 .menu-img-zoom span {
-  color: rgba(255, 255, 255, .95);
+  color: rgba(255, 255, 255, 0.95);
   -webkit-transition: all 350ms ease-in-out;
   -moz-transition: all 350ms ease-in-out;
   -o-transition: all 350ms ease-in-out;
@@ -2074,7 +2068,6 @@ span.item-code {
   background-image: url(../images/price-badge-orange.png);
 }
 
-
 #promo-3.promo-section .price-badge-sm {
   top: -10px;
   right: -15px;
@@ -2152,9 +2145,6 @@ span.item-code {
   max-width: inherit;
   max-height: 210px;
 }
-
-
-
 
 /* ==========================================================================
   03. PRELOAD SPINNER
@@ -2861,9 +2851,6 @@ span.item-code {
   }
 }
 
-
-
-
 /* ==========================================================================
   04. HEADER & NAVIGATION
   =========================================================================== */
@@ -2888,10 +2875,10 @@ span.item-code {
   color: #fff;
 }
 
-.navik-menu ul li>a {
+.navik-menu ul li > a {
   color: #fff;
   display: block;
-  font-family: 'Oswald', sans-serif;
+  font-family: "Oswald", sans-serif;
   font-size: 1.095rem;
   font-weight: 500;
   text-transform: uppercase;
@@ -2918,9 +2905,9 @@ span.item-code {
 /*  MAIN MENU LINK
 /*------------------------------------------*/
 
-.navik-menu ul li>a {
+.navik-menu ul li > a {
   display: block;
-  font-family: 'Oswald', sans-serif;
+  font-family: "Oswald", sans-serif;
   font-size: 1.095rem;
   font-weight: 500;
   text-transform: uppercase;
@@ -2931,21 +2918,21 @@ span.item-code {
   transition: all 150ms ease-in-out;
 }
 
-#header-3 .navik-menu ul li>a {
+#header-3 .navik-menu ul li > a {
   font-size: 18px;
   padding-left: 16px;
   padding-right: 16px;
 }
 
-.navbar-dark .navik-menu ul li>a {
+.navbar-dark .navik-menu ul li > a {
   color: #212121;
 }
 
-.navbar-dark .navik-menu>ul>li.dropdown_menu>a>span::before {
+.navbar-dark .navik-menu > ul > li.dropdown_menu > a > span::before {
   border-color: #212121;
 }
 
-.navik-menu ul li.dropdown_menu>a>span::before {
+.navik-menu ul li.dropdown_menu > a > span::before {
   top: -6px;
 }
 
@@ -2953,22 +2940,22 @@ span.item-code {
 /*  Main Menu Link Hover 
 /*------------------------------------------*/
 
-.navik-menu.navik-yellow ul li:hover>a,
+.navik-menu.navik-yellow ul li:hover > a,
 .navik-menu.navik-yellow .mega-menu-heading a:hover {
   color: #f7be27;
 }
 
-.navik-menu.navik-meat ul li:hover>a,
+.navik-menu.navik-meat ul li:hover > a,
 .navik-menu.navik-meat .mega-menu-heading a:hover {
   color: #d2322b;
 }
 
-.navik-menu.navik-red ul li:hover>a,
+.navik-menu.navik-red ul li:hover > a,
 .navik-menu.navik-red .mega-menu-heading a:hover {
   color: #e3000e;
 }
 
-.navik-menu.navik-salmon ul li:hover>a,
+.navik-menu.navik-salmon ul li:hover > a,
 .navik-menu.navik-salmon .mega-menu-heading a:hover {
   color: #e84e1d;
 }
@@ -2987,15 +2974,15 @@ span.item-code {
   padding-right: 5px;
 }
 
-#header-3 .navik-menu ul li.nav-btn.yellow-color>a {
+#header-3 .navik-menu ul li.nav-btn.yellow-color > a {
   color: #f7be27;
 }
 
-#header-3 .navik-menu ul li.nav-btn.red-color>a {
+#header-3 .navik-menu ul li.nav-btn.red-color > a {
   color: #e3000e;
 }
 
-#header-3 .navik-menu ul li.nav-btn.salmon-color>a {
+#header-3 .navik-menu ul li.nav-btn.salmon-color > a {
   color: #e84e1d;
 }
 
@@ -3047,14 +3034,14 @@ span.ico-holder {
 /*  HEADER SUBMENU
 /*------------------------------------------*/
 
-.navik-menu li>ul {
+.navik-menu li > ul {
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   -o-border-radius: 2px;
 }
 
-.navik-menu ul ul li>a {
-  font-family: 'Roboto', sans-serif;
+.navik-menu ul ul li > a {
+  font-family: "Roboto", sans-serif;
   font-size: 15px;
   font-weight: 500;
   font-style: normal;
@@ -3062,7 +3049,7 @@ span.ico-holder {
   padding: 14px 8px;
 }
 
-#header-3 .navik-menu ul ul li>a {
+#header-3 .navik-menu ul ul li > a {
   font-size: 15px;
 }
 
@@ -3084,9 +3071,6 @@ span.ico-holder {
   top: 0;
   box-shadow: unset !important;
 }
-
-
-
 
 /* ==========================================================================
   05. HERO
@@ -3256,15 +3240,15 @@ span.ico-holder {
   width: 10px;
   border: 2px solid #fff;
   margin: 0 7px;
-  opacity: .5;
-  -webkit-transition: background-color .3s;
-  transition: background-color .3s;
+  opacity: 0.5;
+  -webkit-transition: background-color 0.3s;
+  transition: background-color 0.3s;
   border-radius: 50%;
 }
 
 .slider .indicators .indicator-item.active {
   background-color: #fff;
-  opacity: .65;
+  opacity: 0.65;
 }
 
 /*------------------------------------------*/
@@ -3304,7 +3288,7 @@ span.ico-holder {
 .hero-4-txt h2,
 #hero-6 h2,
 #hero-9 h2 {
-  font-family: 'Lilita One', cursive;
+  font-family: "Lilita One", cursive;
   font-size: 7.25rem;
   line-height: 1.1;
   letter-spacing: 3px;
@@ -3347,7 +3331,7 @@ span.ico-holder {
 }
 
 .hero-4-txt h3 {
-  font-family: 'Lilita One', cursive;
+  font-family: "Lilita One", cursive;
   font-size: 2.5rem;
   line-height: 1;
   letter-spacing: 3px;
@@ -3355,30 +3339,30 @@ span.ico-holder {
 }
 
 #hero-5 h2 {
-  font-family: 'Lilita One', cursive;
+  font-family: "Lilita One", cursive;
   font-size: 17rem;
   line-height: 1;
   letter-spacing: 0;
   position: relative;
-  opacity: .25;
+  opacity: 0.25;
   z-index: 8;
   margin-bottom: 0;
 }
 
 #hero-9 h2 {
   font-size: 7rem;
-  opacity: .95;
+  opacity: 0.95;
   padding: 0 5%;
   margin-bottom: 25px;
 }
 
 #hero-10 h2 {
   display: inline-block;
-  font-family: 'Lilita One', cursive;
+  font-family: "Lilita One", cursive;
   font-size: 18rem;
   line-height: 1;
   letter-spacing: 3px;
-  opacity: .85;
+  opacity: 0.85;
   border-bottom: 10px solid #fff;
   padding-bottom: 25px;
   margin-bottom: 35px;
@@ -3388,7 +3372,7 @@ span.ico-holder {
   font-size: 4.75rem;
   line-height: 1;
   font-weight: 300;
-  opacity: .85;
+  opacity: 0.85;
   letter-spacing: 2px;
   margin-bottom: 70px;
 }
@@ -3425,7 +3409,7 @@ span.ico-holder {
 }
 
 #hero-12 h2 {
-  font-family: 'Lilita One', cursive;
+  font-family: "Lilita One", cursive;
   font-size: 8.5rem;
   line-height: 1;
   letter-spacing: 3px;
@@ -3443,7 +3427,7 @@ span.ico-holder {
 }
 
 #hero-1 p span {
-  font-family: 'Oswald', sans-serif;
+  font-family: "Oswald", sans-serif;
   font-size: 2.35rem;
   line-height: 1;
   font-weight: 700;
@@ -3493,7 +3477,7 @@ span.ico-holder {
 
 .hbox-2 h5,
 .hbox-2-ico {
-  opacity: .8;
+  opacity: 0.8;
 }
 
 /*------------------------------------------*/
@@ -3532,9 +3516,6 @@ span.ico-holder {
   max-width: none;
   display: inline-block;
 }
-
-
-
 
 /* ==========================================================================
   06. ABOUT
@@ -3610,7 +3591,6 @@ span.ico-holder {
 .about-3-txt ul li {
   margin-bottom: 5px;
 }
-
 
 .about-1-txt h2 {
   font-size: 4.25rem;
@@ -3722,9 +3702,6 @@ span.ico-holder {
   left: 0;
 }
 
-
-
-
 /* ==========================================================================
   07. DIVIDERS
   ========================================================================== */
@@ -3757,9 +3734,6 @@ span.ico-holder {
 #div-05 {
   background-image: url(../images/divider-05.jpg);
 }
-
-
-
 
 /* ==========================================================================
   08. PROMO
@@ -3836,8 +3810,16 @@ span.ico-holder {
 }
 
 .pbox-1-txt {
-  background-image: -webkit-linear-gradient(bottom, rgba(0, 0, 0, .8), rgba(0, 0, 0, .02));
-  background-image: linear-gradient(bottom, rgba(0, 0, 0, .8), rgba(0, 0, 0, .02));
+  background-image: -webkit-linear-gradient(
+    bottom,
+    rgba(0, 0, 0, 0.8),
+    rgba(0, 0, 0, 0.02)
+  );
+  background-image: linear-gradient(
+    bottom,
+    rgba(0, 0, 0, 0.8),
+    rgba(0, 0, 0, 0.02)
+  );
   padding: 70px 0 50px;
   -webkit-border-radius: 0 0 6px 6px;
   -moz-border-radius: 0 0 6px 6px;
@@ -3866,7 +3848,7 @@ span.ico-holder {
 }
 
 .pbox-5:hover {
-  box-shadow: 0px 8px 17px 0px rgba(0, 0, 0, .1);
+  box-shadow: 0px 8px 17px 0px rgba(0, 0, 0, 0.1);
 }
 
 #pb-5-1.pbox-5 {
@@ -3933,7 +3915,7 @@ span.ico-holder {
 
 .pbox-11-link {
   background-color: transparent;
-  border: 1px solid rgba(255, 255, 255, .5);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   -webkit-border-radius: 6px;
   -moz-border-radius: 6px;
   border-radius: 6px;
@@ -3947,7 +3929,7 @@ span.ico-holder {
 }
 
 .pbox-11-link:hover {
-  background-color: rgba(255, 255, 255, .2);
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .pbox-11-link p {
@@ -4034,7 +4016,7 @@ span.ico-holder {
   font-size: 6rem;
   line-height: 1.2;
   letter-spacing: -1px;
-  opacity: .8;
+  opacity: 0.8;
   margin-bottom: 20px;
 }
 
@@ -4194,7 +4176,7 @@ span.ico-holder {
 
 .pbox-5-price p span,
 .pbox-9-price p span {
-  font-family: 'Oswald', sans-serif;
+  font-family: "Oswald", sans-serif;
   font-size: 1.75rem;
   line-height: 1;
   font-weight: 500;
@@ -4237,7 +4219,7 @@ span.ico-holder {
   margin-top: 35px;
 }
 
-.owl-carousel.owl-theme .owl-nav [class*='owl-'] {
+.owl-carousel.owl-theme .owl-nav [class*="owl-"] {
   background: transparent;
   margin: 0 10px;
   padding: 0;
@@ -4356,9 +4338,6 @@ span.ico-holder {
   -o-transform: scale(1.1);
   -moz-transform: scale(1.1);
 }
-
-
-
 
 /* ==========================================================================
   09. MENU
@@ -4529,7 +4508,11 @@ span.ico-holder {
   height: 3px;
   width: 98%;
   z-index: 1;
-  background-image: radial-gradient(circle closest-side, #878889 99%, transparent 100%);
+  background-image: radial-gradient(
+    circle closest-side,
+    #878889 99%,
+    transparent 100%
+  );
   background-position: 50% 100%;
   background-size: 5px 2px;
   background-repeat: repeat-x;
@@ -4832,9 +4815,6 @@ span.ico-holder {
   -moz-transform: scale(1.1);
 }
 
-
-
-
 /* ==========================================================================
   10. GALLERY
   ========================================================================== */
@@ -4930,7 +4910,7 @@ span.ico-holder {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(10, 10, 10, .45);
+  background: rgba(10, 10, 10, 0.45);
   -webkit-transition: all 400ms ease-in-out;
   -moz-transition: all 400ms ease-in-out;
   -o-transition: all 400ms ease-in-out;
@@ -4968,9 +4948,6 @@ span.ico-holder {
 #gallery-3 .owl-dots {
   display: none;
 }
-
-
-
 
 /* ==========================================================================
   11. REVIEWS
@@ -5047,7 +5024,7 @@ span.ico-holder {
 }
 
 .review-1-txt p.testimonial-autor {
-  font-family: 'Oswald', sans-serif;
+  font-family: "Oswald", sans-serif;
   font-size: 1.1rem;
   line-height: 1;
   font-weight: 500;
@@ -5095,31 +5072,28 @@ span.ico-holder {
 /*------------------------------------------*/
 
 .flex-control-paging li a {
-  background: rgba(90, 90, 90, .25);
+  background: rgba(90, 90, 90, 0.25);
   width: 10px;
   height: 10px;
-  border: 2px solid rgba(90, 90, 90, .02);
+  border: 2px solid rgba(90, 90, 90, 0.02);
 }
 
 .bg-image .flex-control-paging li a {
   background: transparent;
-  border: 2px solid rgba(240, 240, 240, .4);
+  border: 2px solid rgba(240, 240, 240, 0.4);
 }
 
 .flex-control-paging li a:hover,
 .flex-control-paging li a.flex-active {
-  background: rgba(111, 94, 77, .65);
-  border: 2px solid rgba(111, 94, 77, .2);
+  background: rgba(111, 94, 77, 0.65);
+  border: 2px solid rgba(111, 94, 77, 0.2);
 }
 
 .bg-image .flex-control-paging li a:hover,
 .bg-image .flex-control-paging li a.flex-active {
-  background: rgba(255, 255, 255, .5);
-  border: 2px solid rgba(255, 255, 255, .02);
+  background: rgba(255, 255, 255, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.02);
 }
-
-
-
 
 /* ==========================================================================
   12. BRANDS
@@ -5139,15 +5113,12 @@ span.ico-holder {
 }
 
 .brand-logo img {
-  opacity: .7;
+  opacity: 0.7;
 }
 
 #brands-1 .owl-dots {
   display: none;
 }
-
-
-
 
 /* ==========================================================================
   13. BANNER
@@ -5289,9 +5260,6 @@ img.appstore-original {
   margin-left: -30px;
 }
 
-
-
-
 /* ==========================================================================
   14. FAQs
   ========================================================================== */
@@ -5323,9 +5291,6 @@ img.appstore-original {
 .more-questions-btn {
   margin-top: 35px;
 }
-
-
-
 
 /* ==========================================================================
   15. NEWSLETTER
@@ -5378,8 +5343,8 @@ img.appstore-original {
   border-radius: 2px;
 }
 
-.newsletter-section .input-group>.custom-select:not(:last-child),
-.newsletter-section .input-group>.form-control:not(:last-child) {
+.newsletter-section .input-group > .custom-select:not(:last-child),
+.newsletter-section .input-group > .form-control:not(:last-child) {
   border-top-right-radius: 2px;
   border-bottom-right-radius: 2px;
 }
@@ -5450,9 +5415,6 @@ img.appstore-original {
 .newsletter-section .newsletter-form label.valid {
   color: #48af4b;
 }
-
-
-
 
 /* ==========================================================================
   16. BLOG
@@ -5863,9 +5825,6 @@ img.appstore-original {
   font-size: 17px !important;
 }
 
-
-
-
 /* ==========================================================================
   17. CONTACTS
   ========================================================================== */
@@ -5979,7 +5938,7 @@ img.appstore-original {
 
 .cbox-1 p a,
 .cbox-1 p.yellow-color {
-  font-family: 'Oswald', sans-serif;
+  font-family: "Oswald", sans-serif;
   font-size: 1.85rem;
   line-height: 1;
   font-weight: 700;
@@ -6150,9 +6109,6 @@ select:-webkit-autofill:focus {
   left: 0;
 }
 
-
-
-
 /* ==========================================================================
   18. BOOKING FORM
   =========================================================================== */
@@ -6169,9 +6125,9 @@ select:-webkit-autofill:focus {
   -webkit-border-radius: 6px;
   -moz-border-radius: 6px;
   border-radius: 6px;
-  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, .05);
-  -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, .05);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, .05);
+  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
 }
 
 .booking-form {
@@ -6299,9 +6255,6 @@ select:-webkit-autofill:focus {
   font-size: 17px !important;
 }
 
-
-
-
 /* ==========================================================================
   19. GOOGLE MAP
   ========================================================================== */
@@ -6327,9 +6280,6 @@ select:-webkit-autofill:focus {
 #contacts-5 #gmap {
   margin-top: 30px;
 }
-
-
-
 
 /* ==========================================================================
   20. FOOTER
@@ -6403,18 +6353,18 @@ select:-webkit-autofill:focus {
 }
 
 .footer-info .footer-info-wrap h6 {
-  font-family: 'Roboto';
+  font-family: "Roboto";
   font-size: 18px;
   display: inline-block;
   text-transform: capitalize;
 }
 
 .footer-info .footer-info-wrap p {
-  font-size: 16PX;
+  font-size: 16px;
 }
 
 .footer-info .footer-info-wrap h6 {
-  font-family: 'Roboto';
+  font-family: "Roboto";
   font-size: 18px;
   display: inline-block;
   text-transform: capitalize;
@@ -6465,7 +6415,7 @@ select:-webkit-autofill:focus {
 }
 
 .footer-contacts p span {
-  font-family: 'Oswald', sans-serif;
+  font-family: "Oswald", sans-serif;
   font-size: 1.85rem;
   line-height: 1;
   font-weight: 700;
@@ -6565,11 +6515,11 @@ select:-webkit-autofill:focus {
 }
 
 #footer-2.bg-red .bottom-footer {
-  border-top: 1px solid rgba(255, 255, 255, .25);
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
 }
 
 #footer-2.bg-dark .bottom-footer {
-  border-top: 1px solid rgba(100, 100, 100, .25);
+  border-top: 1px solid rgba(100, 100, 100, 0.25);
 }
 
 /*------------------------------------------*/
@@ -6634,9 +6584,6 @@ select:-webkit-autofill:focus {
   padding-left: 0;
 }
 
-
-
-
 /* ==========================================================================
   21 INNER PAGE HERO
   =========================================================================== */
@@ -6652,40 +6599,39 @@ select:-webkit-autofill:focus {
 
 .shopProduct {
   float: left;
-    position: relative;
-    margin: 0 0px 20px 20px;
-    border-radius: 6px;
-    background: #fff;
-    text-align: center;
-    overflow: hidden;
-    border: 1px solid #e5e5e5;
-    max-width: 255px;
-    /* max-height: 390px; */
-    align-content: space-between;
+  position: relative;
+  margin: 0 0px 20px 20px;
+  border-radius: 6px;
+  background: #fff;
+  text-align: center;
+  overflow: hidden;
+  border: 1px solid #e5e5e5;
+  max-width: 255px;
+  /* max-height: 390px; */
+  align-content: space-between;
 }
 
 .select-shipping {
   background-color: #fff;
-    border: 1px solid hsla(0, 0%, 7%, .8);
-    border-radius: 4px;
-    box-sizing: border-box;
-    color: #2b2d2f;
-    font-family: inherit;
-    font-size: 1em;
-    line-height: 1em;
-    margin: 0;
-    min-height: 0;
-    padding: 1em;
-    width: 100%;
+  border: 1px solid hsla(0, 0%, 7%, 0.8);
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: #2b2d2f;
+  font-family: inherit;
+  font-size: 1em;
+  line-height: 1em;
+  margin: 0;
+  min-height: 0;
+  padding: 1em;
+  width: 100%;
 }
 
 @media (max-width: 767px) {
   .shopProduct {
-      
   }
   .shopProduct1 {
     margin-left: 60px;
-}
+  }
 }
 
 #about-page {
@@ -6749,9 +6695,6 @@ select:-webkit-autofill:focus {
   margin-bottom: 0;
 }
 
-
-
-
 /* ==========================================================================
   22. BREADCRUMB
   =========================================================================== */
@@ -6798,7 +6741,7 @@ select:-webkit-autofill:focus {
   text-transform: uppercase;
 }
 
-.breadcrumb-item+.breadcrumb-item::before {
+.breadcrumb-item + .breadcrumb-item::before {
   font-size: 0.925rem;
   display: inline-block;
   padding-right: 10px;
@@ -6806,12 +6749,9 @@ select:-webkit-autofill:focus {
   content: "/";
 }
 
-.breadcrumb-item+.breadcrumb-item {
+.breadcrumb-item + .breadcrumb-item {
   padding-left: 12px;
 }
-
-
-
 
 /* ==========================================================================
   23. PAGE PAGINATION
@@ -6860,9 +6800,9 @@ select:-webkit-autofill:focus {
   background-color: #f7be27;
   color: #151515;
   border-color: #f7be27;
-  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, .05);
-  -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, .05);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, .05);
+  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
 }
 
 .page-link:focus {
@@ -6871,9 +6811,6 @@ select:-webkit-autofill:focus {
   border-color: transparent;
   box-shadow: 0 0;
 }
-
-
-
 
 /* ==========================================================================
   24. GIFT CARDS PAGE
@@ -6896,9 +6833,6 @@ select:-webkit-autofill:focus {
 .card-box p {
   padding: 0 5%;
 }
-
-
-
 
 /* ==========================================================================
   25. SINGLE PRODUCT
@@ -7034,7 +6968,7 @@ select:-webkit-autofill:focus {
 }
 
 .tabs-2 li {
-  opacity: .5;
+  opacity: 0.5;
   display: inline-block;
   cursor: pointer;
   background-color: transparent;
@@ -7062,9 +6996,6 @@ select:-webkit-autofill:focus {
 .tabs-2 li.displayed {
   opacity: 1;
 }
-
-
-
 
 /* ==========================================================================
   26. CART PAGE
@@ -7167,14 +7098,13 @@ table th {
   outline: 0;
 }
 
-input[type=number]::-webkit-inner-spin-button {
+input[type="number"]::-webkit-inner-spin-button {
   opacity: 1;
 }
 
 /*------------------------------------------*/
 /*  Responsive Table
 /*------------------------------------------*/
-
 
 /*------------------------------------------*/
 /*  Checkout Table
@@ -7242,8 +7172,8 @@ input[type=number]::-webkit-inner-spin-button {
   border-radius: 2px;
 }
 
-.discount-form .input-group>.custom-select:not(:last-child),
-.discount-form .input-group>.form-control:not(:last-child) {
+.discount-form .input-group > .custom-select:not(:last-child),
+.discount-form .input-group > .form-control:not(:last-child) {
   border-top-right-radius: 2px;
   border-bottom-right-radius: 2px;
 }
@@ -7288,9 +7218,6 @@ input[type=number]::-webkit-inner-spin-button {
   -o-border-radius: 2px;
   border-radius: 2px;
 }
-
-
-
 
 /* ==========================================================================
   27. TEAM
@@ -7366,7 +7293,7 @@ input[type=number]::-webkit-inner-spin-button {
   width: 40px;
   height: 40px;
   color: #fff;
-  background-color: rgba(10, 10, 10, .35);
+  background-color: rgba(10, 10, 10, 0.35);
   font-size: 1.15rem;
   line-height: 40px !important;
   margin-right: 1px;
@@ -7390,7 +7317,7 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 .tm-social a.ico-instagram:hover {
-  background-color: #e44772
+  background-color: #e44772;
 }
 
 .tm-social a.ico-dribbble:hover {
@@ -7425,15 +7352,11 @@ input[type=number]::-webkit-inner-spin-button {
   background-color: #3b5998;
 }
 
-
 .team-member:hover .tm-social ul {
   bottom: 6%;
   opacity: 1;
   -moz-opacity: 1;
 }
-
-
-
 
 /* ==========================================================================
   28. TERMS PAGE
@@ -7455,9 +7378,6 @@ input[type=number]::-webkit-inner-spin-button {
   font-weight: 500;
 }
 
-
-
-
 /* ==========================================================================
   29. SCROLL TO TOP
   ========================================================================== */
@@ -7476,7 +7396,7 @@ input[type=number]::-webkit-inner-spin-button {
   background-repeat: no-repeat;
   background-size: 20px;
   background-position: 50% 48%;
-  background-color: rgba(227, 0, 14, .95);
+  background-color: rgba(227, 0, 14, 0.95);
   -webkit-transition: all 400ms ease-in-out;
   -moz-transition: all 400ms ease-in-out;
   -o-transition: all 400ms ease-in-out;
@@ -7485,15 +7405,12 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 #scrollUp:hover {
-  background-color: rgba(10, 10, 10, .65);
+  background-color: rgba(10, 10, 10, 0.65);
 }
 
 nav a#pull {
   display: none;
 }
-
-
-
 
 /* ==========================================================================
    STYLE CHANGER 
@@ -7624,7 +7541,6 @@ nav a#pull {
 .s_1 img:hover {
   opacity: 0.8;
 }
-
 
 /* shope-page css */
 .shop-sidebar {
@@ -7763,7 +7679,6 @@ nav a#pull {
 
 /* shope-page css */
 
-
 /* size-select-field */
 .size-select-field {
   display: flex;
@@ -7811,28 +7726,26 @@ nav a#pull {
   border: none;
   border-radius: 20px;
   padding: 1em 2em 1em 3.5em;
-    margin: 0 0 2em;
-    position: relative;
-    background-color: #f6f5f8;
-    color: #f95621;
-    list-style: none outside;
-    width: auto;
-    word-wrap: break-word;
-    line-height: 10px;
+  margin: 0 0 2em;
+  position: relative;
+  background-color: #f6f5f8;
+  color: #f95621;
+  list-style: none outside;
+  width: auto;
+  word-wrap: break-word;
+  line-height: 10px;
 }
 
 .warnIcon {
-  content: '\e016';
+  content: "\e016";
   color: #ff5722 !important;
   font-family: WooCommerce;
-    content: "\e028";
-    display: inline-block;
-    position: absolute;
-    top: 1em;
-    left: 1.5em;
+  content: "\e028";
+  display: inline-block;
+  position: absolute;
+  top: 1em;
+  left: 1.5em;
 }
-
-
 
 /* checkout-sec styling */
 .have-coupon-bar-wrap {
@@ -8013,11 +7926,11 @@ nav a#pull {
   margin-bottom: 20px;
 }
 
-.checkout-container table.table tr{
+.checkout-container table.table tr {
   border-bottom: none !important;
 }
 
-.checkout-container table.table th{
+.checkout-container table.table th {
   border-bottom: none;
 }
 
@@ -8033,7 +7946,7 @@ nav a#pull {
   font-weight: bold;
 }
 
-.checkout-container .payment-method-wrapper{
+.checkout-container .payment-method-wrapper {
   background-color: #e9e6ed;
   border-radius: 5px;
 }
@@ -8043,30 +7956,30 @@ nav a#pull {
   border-bottom: 1px solid #cfcfcf;
 }
 
-.checkout-container .payment-method .payment-method-title{
+.checkout-container .payment-method .payment-method-title {
   font-weight: 400;
   font-size: 18px;
   margin-bottom: 15px;
 }
 
-.checkout-container .payment-method p{
+.checkout-container .payment-method p {
   background: #dcd7e3;
   padding: 15px;
   font-weight: 400;
   font-size: 18px;
 }
 
-.checkout-container .privacy-policy-wrap{
+.checkout-container .privacy-policy-wrap {
   padding: 15px;
 }
 
-.checkout-container .privacy-policy{
+.checkout-container .privacy-policy {
   font-weight: 400;
   font-size: 18px;
   margin-bottom: 15px;
 }
 
-.checkout-container .privacy-policy a{
+.checkout-container .privacy-policy a {
   color: #e64a19;
 }
 
@@ -8090,24 +8003,21 @@ nav a#pull {
 
 /* checkout-sec styling */
 
-
-
-
 /* thankyou-page styling */
-.order-confirmation h2{
+.order-confirmation h2 {
   margin-bottom: 18px;
   font-size: 22px;
   font-weight: 500;
   text-transform: inherit;
 }
 
-.order-confirmation h3{
+.order-confirmation h3 {
   margin-bottom: 18px;
   font-size: 28px;
   font-weight: 500;
 }
 
-.order-confirmation p{
+.order-confirmation p {
   font-weight: 400;
   font-size: 18px;
 }
@@ -8127,8 +8037,8 @@ nav a#pull {
   line-height: 1.2;
 }
 
-.info-item::before{
-  content: '';
+.info-item::before {
+  content: "";
   position: absolute;
   top: 0;
   right: 30px;
@@ -8137,7 +8047,7 @@ nav a#pull {
   border: 1px dashed #dcdcdc;
 }
 
-.info-item:nth-last-child(1)::before{
+.info-item:nth-last-child(1)::before {
   display: none;
 }
 
@@ -8164,7 +8074,8 @@ h3 {
   margin-bottom: 20px;
 }
 
-.order-details th, .order-details td {
+.order-details th,
+.order-details td {
   padding: 10px;
   border-bottom: 1px solid #ddd;
 }
@@ -8178,12 +8089,12 @@ h3 {
   vertical-align: top;
 }
 
-.text-bold{
+.text-bold {
   font-weight: 500;
   font-size: 16px;
 }
 
-.total-num{
+.total-num {
   font-weight: 600;
   font-size: 20px;
 }
@@ -8193,8 +8104,7 @@ h3 {
 }
 /* thankyou-page styling */
 
-
-@media(max-width: 1199px) {
+@media (max-width: 1199px) {
   .cart-btn {
     position: absolute;
     top: 36px;
@@ -8208,23 +8118,21 @@ h3 {
   }
 }
 
-
-
-@media(max-width: 991px) {
+@media (max-width: 991px) {
   /* .order-info{
     display: block !important; 
   } */
 
-  .info-item{
+  .info-item {
     flex: 0 0 50% !important;
     margin-bottom: 22px;
   }
 
-  .info-item::before{
+  .info-item::before {
     display: none;
   }
 
-  .coupon-field-box .field-wrap{
+  .coupon-field-box .field-wrap {
     display: block !important;
   }
 
@@ -8232,12 +8140,12 @@ h3 {
     display: block !important;
   }
 
-  .coupon-field-box .field-wrap input{
+  .coupon-field-box .field-wrap input {
     width: 100% !important;
     margin-bottom: 22px !important;
   }
 
-  .coupon-field-box .field-wrap .apply-btn{
+  .coupon-field-box .field-wrap .apply-btn {
     width: 100% !important;
     margin-left: 0px !important;
   }
@@ -8267,17 +8175,15 @@ h3 {
   }
 
   .navik-menu ul li a {
-    background-color: rgba(160, 160, 160, .05);
+    background-color: rgba(160, 160, 160, 0.05);
   }
 
   #header-1.navik-header {
     padding: 10px 0px !important;
   }
-
 }
 
-
-@media(max-width: 575px) {
+@media (max-width: 575px) {
   .shop-content .top-bar {
     display: block !important;
   }

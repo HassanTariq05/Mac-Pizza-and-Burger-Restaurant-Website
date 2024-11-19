@@ -34,6 +34,9 @@ import Login from "./pages/Login"
 import ForgotPassword from "./pages/ForgotPassword"
 import ResetPassword from "./pages/ResetPassword"
 import Otp from "./pages/Otp"
+import { Toaster } from "react-hot-toast"
+import UserProfile from "./pages/UserProfile"
+import PersonalData from "./pages/PersonalData"
 
 function MainContent() {
   const location = useLocation()
@@ -48,6 +51,7 @@ function MainContent() {
     <>
       {!skipHeaderFooter && <Header />}
       <ScrollToTop />
+      <Toaster />
       <DocumentTitle />
       <Routes>
         <Route path="/signup" element={<Signup />} />
@@ -55,6 +59,8 @@ function MainContent() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/otp-verification" element={<Otp />} />
+        <Route path="/user-profile" element={<UserProfile />} />
+        <Route path="/user-profile/personal-data" element={<PersonalData />} />
         <Route path="/about" element={<About />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/shop/:category" element={<Shop />} />
@@ -81,6 +87,7 @@ function App() {
 
   useEffect(() => {
     localStorage.setItem("basket", JSON.stringify(basket))
+    console.log("Local Storage:", localStorage)
   }, [basket])
 
   return (

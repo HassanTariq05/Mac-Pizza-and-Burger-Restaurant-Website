@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import "../css/signup.css"
 import macburgerLogo from "../images/macburger-logo.png"
 
@@ -6,6 +7,7 @@ const ForgotPassword = () => {
   const [formData, setFormData] = useState({
     email: "",
   })
+  const navigate = useNavigate() // Initialize useNavigate hook
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -17,7 +19,14 @@ const ForgotPassword = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log("Form data:", formData)
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/ // Simple email validation
+    if (emailRegex.test(formData.email)) {
+      console.log("Form data:", formData)
+      navigate("/otp-verification") // Redirect to /otp-verification if email is valid
+    } else {
+      alert("Please enter a valid email address.") // Show alert for invalid email
+    }
   }
 
   return (
@@ -30,8 +39,8 @@ const ForgotPassword = () => {
         />
         <h6 className="signup-heading">Forgot Password?</h6>
         <span className="signup-subtext">
-          Enter your email address and we'll send you confirmation code to reset
-          your password
+          Enter your email address and we'll send you a confirmation code to
+          reset your password
         </span>
 
         <div className="form-group">

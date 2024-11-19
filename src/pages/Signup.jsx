@@ -2,8 +2,15 @@ import React, { useState } from "react"
 import "../css/signup.css"
 import macburgerLogo from "../images/macburger-logo.png"
 import { EyeOff, Eye } from "lucide-react"
+import { Link, useNavigate } from "react-router-dom"
+import authService from "../components/authService"
+import toast from "react-hot-toast"
 
 const Signup = () => {
+  const [passwordVisible, setPasswordVisible] = useState(false)
+  const [loading, setLoading] = useState()
+  const togglePasswordVisibility = () => setPasswordVisible(!passwordVisible)
+
   const [formData, setFormData] = useState({
     phone: "",
     email: "",
@@ -12,6 +19,35 @@ const Signup = () => {
     password: "",
     saveAddress: false,
   })
+  const navigate = useNavigate()
+
+  const registerUser = async (username, password, email, phone, name) => {
+    try {
+      setLoading(true)
+      const params = {
+        username: username,
+        password: password,
+        email: email,
+        phone: phone,
+        name: name,
+      }
+
+      const response = await authService.register(params)
+      const token =
+        response.data.data.token_type + " " + response.data.data.access_token
+      const user = response.data.data.user
+      localStorage.setItem("token", token)
+      localStorage.setItem("user", JSON.stringify(user))
+      if (response.data.status) {
+        toast.success("Signup Successful")
+      }
+      navigate("/home")
+    } catch (error) {
+      toast.error("Signup Failed")
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target
@@ -24,10 +60,13 @@ const Signup = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
     console.log("Form data:", formData)
+    registerUser(
+      formData.firstName + " " + formData.lastName,
+      formData.password,
+      formData.email,
+      formData.phone
+    )
   }
-
-  const [passwordVisible, setPasswordVisible] = useState(false)
-  const togglePasswordVisibility = () => setPasswordVisible(!passwordVisible)
 
   return (
     <div className="signup-container">
@@ -124,16 +163,29 @@ const Signup = () => {
         </div>
         <label className="agreeLabel" htmlFor="agreeLabel">
           I Agree with
-          <span className="red-text"> Terms of Service </span>
+          <Link to={"/about"}>
+            <span className="red-text"> Terms of Service </span>
+          </Link>
           and
-          <span className="red-text"> Privacy Policy</span>
+          <Link to={"/about"}>
+            <span className="red-text"> Privacy Policy</span>
+          </Link>
         </label>
-        <button type="submit" className="signup-button">
-          Sign Up
+        <button
+          type="submit"
+          className={`signup-button ${loading ? "loading" : ""}`}
+        >
+          {loading ? (
+            <div className="loader"></div>
+          ) : (
+            <span className="button-text">Sign Up</span>
+          )}
         </button>
         <div className="existingAccountLabel">
           <span>Already have an account? </span>
-          <span className="red-text"> Sign In</span>
+          <Link to={"/login"}>
+            <span className="red-text"> Sign In</span>
+          </Link>
         </div>
       </form>
     </div>

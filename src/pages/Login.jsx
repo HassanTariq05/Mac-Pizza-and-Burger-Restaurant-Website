@@ -2,6 +2,9 @@ import React, { useState } from "react"
 import "../css/signup.css"
 import macburgerLogo from "../images/macburger-logo.png"
 import { EyeOff, Eye } from "lucide-react"
+import { Link, useNavigate } from "react-router-dom"
+import toast from "react-hot-toast"
+import authService from "../components/authService"
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +13,33 @@ const Login = () => {
   })
 
   const [passwordVisible, setPasswordVisible] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
+
+  const loginUser = async (email, password) => {
+    try {
+      setLoading(true)
+      const params = {
+        email: email,
+        password: password,
+      }
+
+      const response = await authService.authenticate(params)
+      const token =
+        response.data.data.token_type + " " + response.data.data.access_token
+      const user = response.data.data.user
+      localStorage.setItem("token", token)
+      localStorage.setItem("user", JSON.stringify(user))
+      if (response.data.status) {
+        toast.success("Login Successful")
+      }
+      navigate("/home")
+    } catch (error) {
+      toast.error("Login Failed")
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -22,6 +52,8 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
     console.log("Form data:", formData)
+    loginUser(formData.email, formData.password)
+    console.log(localStorage)
   }
 
   const togglePasswordVisibility = () => setPasswordVisible(!passwordVisible)
@@ -70,14 +102,26 @@ const Login = () => {
             </div>
           </div>
         </div>
-        <span className="forgot-password-text"> Forgot Password? </span>
+        <Link to={"/forgot-password"}>
+          <span className="forgot-password-text"> Forgot Password? </span>
+        </Link>
 
-        <button type="submit" className="signup-button">
-          Login
+        <button
+          type="submit"
+          className={`signup-button ${loading ? "loading" : ""}`}
+        >
+          {loading ? (
+            <div className="loader"></div>
+          ) : (
+            <span className="button-text">Login</span>
+          )}
         </button>
+
         <div className="existingAccountLabel">
           <span>Don't have an account? </span>
-          <span className="red-text"> Sign Up</span>
+          <Link to={"/signup"}>
+            <span className="red-text"> Sign Up</span>
+          </Link>
         </div>
       </form>
     </div>

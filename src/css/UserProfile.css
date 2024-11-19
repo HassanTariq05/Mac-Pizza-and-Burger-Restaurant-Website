@@ -1,0 +1,155 @@
+/* Reset basic box-sizing */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: white;
+  min-height: 100vh;
+}
+
+.profile-picture-container {
+  position: relative;
+  margin-top: 20px;
+}
+
+.profile-picture {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+}
+
+.edit-icon {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  background-color: white;
+  border-radius: 50%;
+  padding: 5px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.my-orders-button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #1d4ed8;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.my-orders-button:hover {
+  background-color: #153c9b;
+}
+
+.profile-section {
+  width: 100%;
+  max-width: 400px;
+  margin-top: 20px;
+}
+
+.profile-heading {
+  font-size: 1.5em;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.profile-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile-option-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: 1px solid #e5e5e5;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+.profile-option-button:hover {
+  background-color: #f0f0f0;
+}
+
+.profile-option-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profile-option-link {
+  display: block;
+  width: 100%;
+  text-decoration: none;
+}
+
+.sign-out-button {
+  margin-top: 20px;
+  width: 400px;
+  padding: 12px;
+  background-color: rgb(161, 48, 31);
+  border: none;
+  color: #ffffff;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.sign-out-button:hover {
+  background-color: rgb(128, 38, 23);
+}
+
+.profileName {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.email {
+  font-weight: bold;
+  font-size: 14px;
+  color: grey;
+}
+
+@media (max-width: 768px) {
+  .profile-picture {
+    width: 80px;
+    height: 80px;
+  }
+
+  .my-orders-button,
+  .sign-out-button {
+    width: 100%;
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .profile-section {
+    max-width: 100%;
+    padding: 0 10px;
+  }
+
+  .profile-option-button {
+    padding: 10px 15px;
+  }
+}

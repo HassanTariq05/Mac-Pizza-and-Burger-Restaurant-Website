@@ -1,0 +1,30 @@
+/* Ensuring the cart and profile buttons are aligned */
+.cart-profile-div {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* Ensures they are aligned to the right */
+  gap: 15px; /* Adds space between the cart and profile button */
+}
+
+.cart-btn,
+.profile-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.cart-btn .fas {
+  font-size: 24px;
+}
+
+.profile-btn .fas {
+  font-size: 35px;
+}
+@media (max-width: 768px) {
+  .cart-profile-div {
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+  }
+}
