@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Link, useNavigate, useNavigation } from "react-router-dom"
-import { Navigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { User, ArrowRight, LogOut, MapPin, Logs, Camera } from "lucide-react"
 import defaultProfilePicture from "../images/default-user-pic.webp"
 import imageUploadService from "../components/imageUploadService"
@@ -8,6 +7,7 @@ import "../css/UserProfile.css"
 import { baseURL } from "../components/service"
 import profileUpdateService from "../components/profileUpdateService"
 import toast from "react-hot-toast"
+import RecentOrder from "../components/RecentOrder"
 
 const UserProfile = () => {
   const [email, setEmail] = useState("-")
@@ -129,7 +129,8 @@ const UserProfile = () => {
       <div>
         <span className="email">{email}</span>
       </div>
-      <button className="my-orders-button">My Orders</button>
+
+      <RecentOrder />
 
       <div className="profile-section">
         <h3 className="profile-heading">Profile</h3>

@@ -37,6 +37,8 @@ import Otp from "./pages/Otp"
 import { Toaster } from "react-hot-toast"
 import UserProfile from "./pages/UserProfile"
 import PersonalData from "./pages/PersonalData"
+import AllOrders from "./pages/AllOrders"
+import OrderDetail from "./pages/OrderDetail"
 
 function MainContent() {
   const location = useLocation()
@@ -68,7 +70,9 @@ function MainContent() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/home" element={<Home />} />
         <Route path="/checkout" element={<ProductCheckout />} />
+        <Route path="/orders" element={<AllOrders />} />
         <Route path="/order/:id" element={<Orders />} />
+        <Route path="/orders/order-detail/:id" element={<OrderDetail />} />
         <Route
           path="/shop/add-to-cart/:title/:size"
           element={<AddToCartReceipt />}

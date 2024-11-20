@@ -58,7 +58,7 @@
 
 .profile-section {
   width: 100%;
-  max-width: 400px;
+  max-width: 500px;
   margin-top: 20px;
 }
 
@@ -105,7 +105,7 @@
 
 .sign-out-button {
   margin-top: 20px;
-  width: 400px;
+  width: 500px;
   padding: 12px;
   background-color: rgb(161, 48, 31);
   border: none;
@@ -151,5 +151,245 @@
 
   .profile-option-button {
     padding: 10px 15px;
+  }
+}
+
+.orders-container {
+  background-color: white;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 20px auto;
+  width: 500px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 30px;
+}
+
+.orders-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-img {
+  width: 55px;
+  height: 55px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.orders-header span:first-child {
+  font-weight: bold;
+  font-size: 18px;
+  color: #333;
+}
+
+.orders-header span:last-child {
+  color: #e63946;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.order-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+
+.order-detail span:first-child {
+  color: #888;
+}
+
+.order-detail span:last-child {
+  background-color: #ffdd57;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #555;
+  text-transform: uppercase;
+}
+
+.separator {
+  height: 1px;
+  background-color: #e5e5e5;
+  margin: 8px 0;
+}
+
+.order-item {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.order-item-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-size: 14px;
+  gap: 10px;
+}
+
+.order-item-header span:first-child {
+  font-weight: bold;
+  color: #333;
+}
+
+.order-item-header span:last-child {
+  font-weight: bold;
+  color: #e63946;
+}
+
+.order-item-footer {
+  font-size: 12px;
+  color: #666;
+  text-align: right;
+  align-self: center;
+}
+
+.order-id-heavy {
+  display: inline;
+  color: black;
+  font-weight: bold;
+  font-size: 14px;
+}
+.order-desc-div {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .orders-container {
+    padding: 12px;
+    margin: 16px;
+  }
+
+  .orders-header span:first-child {
+    font-size: 16px;
+  }
+
+  .order-details span:first-child {
+    font-size: 12px;
+  }
+
+  .order-item-header span:last-child {
+    font-size: 12px;
+  }
+}
+
+.orders-wrapper {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 600px;
+  margin: 0 auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 10px;
+}
+
+.tabs-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+  gap: 10px;
+}
+
+.tab-button {
+  background-color: transparent;
+  border: 1px solid #e5e5e5;
+  color: #333;
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tab-button.active {
+  background-color: rgb(161, 48, 31);
+  color: white;
+  border-color: rgb(161, 48, 31);
+}
+
+.tab-button:hover {
+  background-color: rgba(194, 60, 39, 0.632);
+  border-color: rgba(194, 60, 39, 0.632);
+}
+
+.orders-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.order-item {
+  background-color: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.order-item-header {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.order-img {
+  width: 55px;
+  height: 55px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.order-desc-div {
+  display: flex;
+  flex-direction: column;
+}
+
+.order-item-name {
+  font-weight: bold;
+  font-size: 16px;
+  color: #333;
+}
+
+.order-item-price {
+  color: #e63946;
+  font-weight: bold;
+}
+
+.order-item-footer {
+  font-size: 14px;
+  color: #666;
+  text-align: right;
+}
+
+.no-orders-message {
+  text-align: center;
+  font-size: 1.2rem;
+  color: gray;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .orders-wrapper {
+    padding: 16px;
+  }
+
+  .tab-button {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .order-item-name,
+  .order-item-price {
+    font-size: 14px;
   }
 }
