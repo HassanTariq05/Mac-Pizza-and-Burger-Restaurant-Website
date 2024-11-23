@@ -57,7 +57,12 @@ function AllOrders() {
         {filteredOrders.length > 0 ? (
           filteredOrders.map((order, orderIndex) => (
             <Link to={`order-detail/${order.id}`}>
-              <div className="order-item" key={order.id || orderIndex}>
+              <div
+                className={`order-item ${
+                  orderIndex === filteredOrders.length - 1 ? "no-border" : ""
+                }`}
+                key={order.id || orderIndex}
+              >
                 <div className="order-item-header">
                   <div>
                     <img

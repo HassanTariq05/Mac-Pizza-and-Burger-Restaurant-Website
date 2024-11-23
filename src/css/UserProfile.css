@@ -58,7 +58,7 @@
 
 .profile-section {
   width: 100%;
-  max-width: 500px;
+  max-width: 700px;
   margin-top: 20px;
 }
 
@@ -105,7 +105,7 @@
 
 .sign-out-button {
   margin-top: 20px;
-  width: 500px;
+  width: 700px;
   padding: 12px;
   background-color: rgb(161, 48, 31);
   border: none;
@@ -159,8 +159,8 @@
   border-radius: 12px;
   padding: 16px;
   margin: 20px auto;
-  width: 500px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 700px;
+  border: 1px solid rgb(239, 240, 246);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -226,6 +226,17 @@
   cursor: pointer;
 }
 
+.order-item-last {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.order-item.no-border {
+  border-bottom: none;
+}
+
 .order-item-header {
   display: flex;
   flex-direction: row;
@@ -284,12 +295,11 @@
 }
 
 .orders-wrapper {
-  background-color: #f9f9f9;
+  background-color: #ffffff;
   padding: 20px;
   border-radius: 12px;
-  max-width: 600px;
+  max-width: 700px;
   margin: 0 auto;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-top: 10px;
 }
 
@@ -304,7 +314,7 @@
   background-color: transparent;
   border: 1px solid #e5e5e5;
   color: #333;
-  padding: 8px 16px;
+  padding: 8px 32px;
   font-size: 14px;
   border-radius: 20px;
   cursor: pointer;
@@ -317,22 +327,45 @@
   border-color: rgb(161, 48, 31);
 }
 
+.tab-button:focus,
+.tab-button:active {
+  border-color: rgb(161, 48, 31);
+  outline: none;
+}
+
 .tab-button:hover {
   background-color: rgba(194, 60, 39, 0.632);
   border-color: rgba(194, 60, 39, 0.632);
 }
 
 .orders-container {
+  background-color: white;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 20px auto;
+  width: 100%;
+  max-width: 700px;
+  border: 1px solid rgb(239, 240, 246);
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
+  margin-top: 30px;
+}
+
+@media (max-width: 768px) {
+  .orders-container {
+    padding: 12px;
+    margin: 16px auto;
+    gap: 12px;
+    max-width: 100%; /* Use full width on smaller screens */
+    border-radius: 8px; /* Adjust border-radius for smaller screens */
+  }
 }
 
 .order-item {
   background-color: white;
-  border-radius: 12px;
   padding: 16px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgb(239, 240, 246);
 }
 
 .order-item-header {

@@ -1,26 +1,16 @@
-import React, { useEffect } from "react"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import {
-  faHome,
-  faShoppingCart,
-  faUserCircle,
-} from "@fortawesome/free-solid-svg-icons"
-import logo from "../images/macburger-logo.png"
-import "../css/style.css"
-import "../css/responsive.css"
-import { Link, useNavigate } from "react-router-dom"
-import $ from "jquery"
-import "../js/menu" // Adjust the path if necessary
-import menu from "../assets/mac-burger-updated-menu.pdf"
+import { Home, ShoppingCart, Menu, UserCircle, Cross, X } from "lucide-react"
+import { useEffect, useState } from "react"
 import "../css/header.css"
+import { Link } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
+import { baseURL } from "./service"
 
 function Header() {
-  useEffect(() => {
-    // Run the jQuery code once the component mounts
-    $(document).ready(function () {
-      // Your jQuery code from headerScript.js will automatically run
-    })
-  }, [])
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+
+  const toggleDrawer = () => {
+    setIsDrawerOpen((prev) => !prev)
+  }
 
   const navigate = useNavigate()
   const handleProfileButtonClick = () => {
@@ -32,83 +22,133 @@ function Header() {
     }
   }
 
+  const getProfilePic = () => {
+    const user = JSON.parse(localStorage.getItem("user"))
+    if (user) {
+      return `${baseURL}/${user.img}`
+    } else {
+      return require("../images/default-user-pic.webp")
+    }
+  }
+
   return (
-    <header
-      id="header-1"
-      className="header navik-header header-shadow center-menu-1 header-transparent viewport-lg sticky"
-      style={{ marginTop: "0px" }}
-    >
-      <div className="container">
-        <div className="navik-header-container">
-          <Link to="/home" className="header-home">
-            <FontAwesomeIcon className="fas fa-home" icon={faHome} />
-          </Link>
-          <div className="callusbtn">
-            <a href="tel:123456789">
-              <i className="fas fa-phone"></i>
+    <header className="header">
+      <nav className="nav">
+        {/* Left Section: Menu and Home Buttons */}
+        <div className="nav-left">
+          <button
+            className="hamburger"
+            onClick={toggleDrawer}
+            aria-label="Open Menu"
+          >
+            <Menu size={28} className="icon" />
+          </button>
+          <Link to={"/home"}>
+            <a>
+              <Home size={28} className="icon" />
             </a>
-          </div>
-          <div className="logo">
+          </Link>
+        </div>
+
+        {/* Navigation Links (Desktop View) */}
+        <div className="nav-links">
+          <Link to={"/about"}>
+            <a>About</a>
+          </Link>
+          <Link to={"/menu"}>
+            <a>Our Menu</a>
+          </Link>
+          <div className="logo-nav">
             <Link to={"/home"}>
-              <img src={logo} width="177" height="120" alt="header-logo" />
+              <img
+                className="logo-nav-img"
+                src={require("../images/macburger-logo.png")}
+                alt="Mac Burger Logo"
+              />
             </Link>
           </div>
-          <div className="burger-menu">
-            <div className="line-menu line-half first-line"></div>
-            <div className="line-menu"></div>
-            <div className="line-menu line-half last-line"></div>
-          </div>
-          <nav className="navik-menu menu-caret navik-yellow">
-            <ul
-              id="menu-header-menu1"
-              className="top-list"
-              style={{ width: "477.485px" }}
-            >
-              <li className="menu-item">
-                <Link to="/about">About</Link>
-              </li>
-              <li className="menu-item">
-                <a href={menu} target="_blank">
-                  Our Menu
-                </a>
-              </li>
-            </ul>
-            <div className="logoCenter" style={{ width: "103.281px" }}>
-              <div className="logo">
-                <Link to="/home">
-                  <img src={logo} width="177" height="120" alt="header-logo" />
+          <Link to={"/shop"}>
+            <a>Shop</a>
+          </Link>
+          <Link to={"/contact"}>
+            <a>Contact</a>
+          </Link>
+        </div>
+
+        {/* Center Section: Logo */}
+        <div className="logo">
+          <img
+            src={require("../images/macburger-logo.png")}
+            alt="Mac Burger Logo"
+          />
+        </div>
+
+        {/* Right Section: User and Cart Buttons */}
+        <div className="nav-right">
+          <Link to={"/cart"}>
+            <ShoppingCart size={28} className="icon" />
+          </Link>
+
+          {localStorage.getItem("user") !== null ? (
+            <img
+              onClick={handleProfileButtonClick}
+              className="profile-icon-img"
+              src={getProfilePic()}
+              alt=""
+            />
+          ) : (
+            <UserCircle
+              onClick={handleProfileButtonClick}
+              size={28}
+              className="icon"
+            />
+          )}
+        </div>
+      </nav>
+
+      {/* Drawer (For Mobile/Tablet Views) */}
+      {isDrawerOpen && (
+        <div
+          className="drawer-overlay"
+          onClick={() => setIsDrawerOpen(false)} // Close drawer when clicking on overlay
+        >
+          <div
+            className={`drawer ${isDrawerOpen ? "open" : ""}`}
+            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the drawer
+          >
+            <button className="close-drawer" onClick={toggleDrawer}>
+              <X size={18} />
+            </button>
+            <ul className="drawer-links">
+              <li>
+                <Link to={"/home"}>
+                  <a>Home</a>
                 </Link>
-              </div>
-            </div>
-            <ul id="menu-header-menu" style={{ width: "477.485px" }}>
-              <li className="menu-item">
-                <Link to="/shop">Shop</Link>
               </li>
-              <li className="menu-item current-menu-item">
-                <Link to="/contact">Contact</Link>
+              <li>
+                <Link to={"/about"}>
+                  <a>About</a>
+                </Link>
+              </li>
+              <li>
+                <Link to={"/menu"}>
+                  <a>Our Menu</a>
+                </Link>
+              </li>
+              <li>
+                <Link to={"/shop"}>
+                  <a>Shop</a>
+                </Link>
+              </li>
+              <li>
+                <Link to={"/contact"}>
+                  <a>Contact</a>
+                </Link>
               </li>
             </ul>
-          </nav>
-          <div className="cart-profile-div">
-            <div className="cart-btn">
-              <Link to="/cart">
-                <FontAwesomeIcon
-                  className="fas fa-shopping-cart"
-                  icon={faShoppingCart}
-                />
-              </Link>
-            </div>
-            <div className="profile-btn">
-              <FontAwesomeIcon
-                className="fas fa-user-circle"
-                icon={faUserCircle}
-                onClick={handleProfileButtonClick}
-              />
-            </div>
           </div>
         </div>
-      </div>
-      <div className="header-shadow-wrapper"></div>
+      )}
     </header>
   )
 }

@@ -25,58 +25,64 @@ function RecentOrder() {
   }, [])
 
   return (
-    <div class="orders-container">
-      <div class="orders-header">
-        <span class="orders-title">My Orders</span>
-        <Link to={"/orders"}>
-          <span class="orders-see-all">See All</span>
-        </Link>
-      </div>
-
-      <div class="order-detail">
-        <span class="order-id">
-          Order ID{" "}
-          <p className="order-id-heavy">{allOrdersResponse?.[0]?.id || "-"}</p>
-        </span>
-        <span class="order-status">
-          {allOrdersResponse?.[0]?.delivery_type == "point"
-            ? "pickup"
-            : "delivery" || "-"}
-        </span>
-      </div>
-
-      <div class="separator"></div>
-
-      <Link to={`/orders/order-detail/${allOrdersResponse?.[0]?.id}`}>
-        <div class="order-item">
-          <div class="order-item-header">
-            <div>
-              <img
-                class="order-img"
-                src={
-                  `${baseURL}/${allOrdersResponse?.[0]?.details?.[0]?.stock?.product?.img}` ||
-                  defaultProfilePicture
-                }
-                alt="order-img"
-              />
-            </div>
-            <div className="order-desc-div">
-              <span class="order-item-name">
-                {allOrdersResponse?.[0]?.details?.[0]?.stock?.product
-                  ?.translation?.title || "-"}
-              </span>
-              <span class="order-item-price">
-                {`${allOrdersResponse?.[0]?.details?.[0]?.stock?.total_price}.0som` ||
-                  "-"}
-              </span>
-            </div>
+    <>
+      {allOrdersResponse?.[0] && (
+        <div class="orders-container">
+          <div class="orders-header">
+            <span class="orders-title">My Orders</span>
+            <Link to={"/orders"}>
+              <span class="orders-see-all">See All</span>
+            </Link>
           </div>
-          <div class="order-item-footer">
-            {`${allOrdersResponse?.[0]?.details?.length} item(s)` || "-"}
+
+          <div class="order-detail">
+            <span class="order-id">
+              Order ID{" "}
+              <p className="order-id-heavy">
+                {allOrdersResponse?.[0]?.id || "-"}
+              </p>
+            </span>
+            <span class="order-status">
+              {allOrdersResponse?.[0]?.delivery_type == "point"
+                ? "pickup"
+                : "delivery" || "-"}
+            </span>
           </div>
+
+          <div class="separator"></div>
+
+          <Link to={`/orders/order-detail/${allOrdersResponse?.[0]?.id}`}>
+            <div class="order-item-last">
+              <div class="order-item-header">
+                <div>
+                  <img
+                    class="order-img"
+                    src={
+                      `${baseURL}/${allOrdersResponse?.[0]?.details?.[0]?.stock?.product?.img}` ||
+                      defaultProfilePicture
+                    }
+                    alt="order-img"
+                  />
+                </div>
+                <div className="order-desc-div">
+                  <span class="order-item-name">
+                    {allOrdersResponse?.[0]?.details?.[0]?.stock?.product
+                      ?.translation?.title || "-"}
+                  </span>
+                  <span class="order-item-price">
+                    {`${allOrdersResponse?.[0]?.details?.[0]?.stock?.total_price}.0som` ||
+                      "-"}
+                  </span>
+                </div>
+              </div>
+              <div class="order-item-footer">
+                {`${allOrdersResponse?.[0]?.details?.length} item(s)` || "-"}
+              </div>
+            </div>
+          </Link>
         </div>
-      </Link>
-    </div>
+      )}
+    </>
   )
 }
 
