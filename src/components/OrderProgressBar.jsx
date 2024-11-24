@@ -10,7 +10,7 @@ import {
 } from "mdb-react-ui-kit"
 import "../css/OrderProgressBar.css"
 
-export default function OrderProgressBar({ orderNo, status }) {
+export default function OrderProgressBar({ type, orderNo, status }) {
   return (
     <>
       <section className="vh-50" style={{ backgroundColor: "#fff" }}>
@@ -44,69 +44,143 @@ export default function OrderProgressBar({ orderNo, status }) {
                     id="progressbar-2"
                     className="d-flex justify-content-between mx-0 mt-0 mb-4 px-0 pt-0 pb-2"
                   >
-                    {status == "new" && (
+                    {type === "delivery" && (
                       <>
-                        <li
-                          className="step0 active text-center"
-                          id="step1"
-                        ></li>
-                        <li className="step0  text-center" id="step2"></li>
-                        <li className="step0  text-center" id="step3"></li>
-                        <li className="step0  text-center" id="step4"></li>
+                        {status == "new" && (
+                          <>
+                            <li
+                              className="step0 active text-center"
+                              id="step1"
+                            ></li>
+                            <li className="step0  text-center" id="step2"></li>
+                            <li className="step0  text-center" id="step3"></li>
+                            <li className="step0  text-center" id="step4"></li>
+                          </>
+                        )}
+
+                        {status == "accepted" && (
+                          <>
+                            <li
+                              className="step0 active text-center"
+                              id="step1"
+                            ></li>
+                            <li
+                              className="step0  active text-center"
+                              id="step2"
+                            ></li>
+                            <li className="step0  text-center" id="step3"></li>
+                            <li className="step0  text-center" id="step4"></li>
+                          </>
+                        )}
+
+                        {status == "on_a_way" && (
+                          <>
+                            <li
+                              className="step0 active text-center"
+                              id="step1"
+                            ></li>
+                            <li
+                              className="step0  active text-center"
+                              id="step2"
+                            ></li>
+                            <li
+                              className="step0  active text-center"
+                              id="step3"
+                            ></li>
+                            <li className="step0  text-center" id="step4"></li>
+                          </>
+                        )}
+
+                        {status == "delivered" && (
+                          <>
+                            <li
+                              className="step0 active text-center"
+                              id="step1"
+                            ></li>
+                            <li
+                              className="step0  active text-center"
+                              id="step2"
+                            ></li>
+                            <li
+                              className="step0 active text-center"
+                              id="step3"
+                            ></li>
+                            <li
+                              className="step0 active text-center"
+                              id="step4"
+                            ></li>
+                          </>
+                        )}
                       </>
                     )}
 
-                    {status == "accepted" && (
+                    {type === "point" && (
                       <>
-                        <li
-                          className="step0 active text-center"
-                          id="step1"
-                        ></li>
-                        <li
-                          className="step0  active text-center"
-                          id="step2"
-                        ></li>
-                        <li className="step0  text-center" id="step3"></li>
-                        <li className="step0  text-center" id="step4"></li>
-                      </>
-                    )}
+                        {status == "new" && (
+                          <>
+                            <li
+                              className="step0 active text-center"
+                              id="step1"
+                            ></li>
+                            <li className="step0  text-center" id="step2"></li>
+                            <li className="step0  text-center" id="step3"></li>
+                            <li className="step0  text-center" id="step4"></li>
+                          </>
+                        )}
 
-                    {status == "on_a_way" && (
-                      <>
-                        <li
-                          className="step0 active text-center"
-                          id="step1"
-                        ></li>
-                        <li
-                          className="step0  active text-center"
-                          id="step2"
-                        ></li>
-                        <li
-                          className="step0  active text-center"
-                          id="step3"
-                        ></li>
-                        <li className="step0  text-center" id="step4"></li>
-                      </>
-                    )}
+                        {status == "accepted" && (
+                          <>
+                            <li
+                              className="step0 active text-center"
+                              id="step1"
+                            ></li>
+                            <li
+                              className="step0  active text-center"
+                              id="step2"
+                            ></li>
+                            <li className="step0  text-center" id="step3"></li>
+                            <li className="step0  text-center" id="step4"></li>
+                          </>
+                        )}
 
-                    {status == "delivered" && (
-                      <>
-                        <li
-                          className="step0 active text-center"
-                          id="step1"
-                        ></li>
-                        <li
-                          className="step0  active text-center"
-                          id="step2"
-                        ></li>
-                        <li
-                          className="step0 active text-center"
-                          id="step3"
-                        ></li>
-                        <li
-                          className="step0 active text-center"
-                          id="step4"
-                        ></li>
+                        {status == "on_a_way" && (
+                          <>
+                            <li
+                              className="step0 active text-center"
+                              id="step1"
+                            ></li>
+                            <li
+                              className="step0  active text-center"
+                              id="step2"
+                            ></li>
+                            <li
+                              className="step0  active text-center"
+                              id="step3"
+                            ></li>
+                            <li className="step0  text-center" id="step4"></li>
+                          </>
+                        )}
+
+                        {status == "delivered" && (
+                          <>
+                            <li
+                              className="step0 active text-center"
+                              id="step1"
+                            ></li>
+                            <li
+                              className="step0  active text-center"
+                              id="step2"
+                            ></li>
+                            <li
+                              className="step0 active text-center"
+                              id="step3"
+                            ></li>
+                            <li
+                              className="step0 active text-center"
+                              id="step4"
+                            ></li>
+                          </>
+                        )}
                       </>
                     )}
 
@@ -134,8 +208,15 @@ export default function OrderProgressBar({ orderNo, status }) {
                       <p className="fw-bold mb-0">Accepted</p>
                     </div>
                     <div className="d-flex flex-column align-items-center">
-                      <MDBIcon fas icon="road" size="2x" className="mb-2" />
-                      <p className="fw-bold mb-0">On the Way</p>
+                      <MDBIcon
+                        fas
+                        icon={type == "delivery" ? "road" : "check"}
+                        size="2x"
+                        className="mb-2"
+                      />
+                      <p className="fw-bold mb-0">
+                        {type == "delivery" ? "On the Way" : "Ready"}
+                      </p>
                     </div>
                     <div className="d-flex flex-column align-items-center">
                       <MDBIcon

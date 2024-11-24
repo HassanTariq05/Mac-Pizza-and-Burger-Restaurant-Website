@@ -1,5 +1,4 @@
 import React, { useState } from "react"
-import { Link } from "react-router-dom"
 import { useStateValue } from "../components/StateProvider"
 import CurrencyFormat from "react-currency-format"
 import { useEffect } from "react"
@@ -122,7 +121,11 @@ const OrderDetail = () => {
           </div>
         </div>
       </div>
-      <OrderProgressBar orderNo={detail.id} status={detail.status} />
+      <OrderProgressBar
+        type={detail.delivery_type}
+        orderNo={detail.id}
+        status={detail.status}
+      />
     </>
   )
 }

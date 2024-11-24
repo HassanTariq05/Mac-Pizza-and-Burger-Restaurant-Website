@@ -7,6 +7,8 @@ import CurrencyFormat from "react-currency-format"
 import authService from "../components/authService"
 import orderService from "../components/orderService"
 import orderDetailService from "../components/orderDetailService"
+import deleteCartService from "../components/deleteCartService"
+import toast from "react-hot-toast"
 import {
   APIProvider,
   Map,
@@ -249,6 +251,19 @@ const ProductCheckout = () => {
     })
   }
 
+  useEffect(() => {
+    const deleteCart = async () => {
+      try {
+        const headers = {
+          Authorization: localStorage.getItem("token"),
+        }
+        const deleteCartResponse = await deleteCartService.delete(headers)
+      } catch (error) {
+        toast.error("Error deleting cart")
+      }
+    }
+    deleteCart()
+  }, [])
   const [{}, dispatch] = useStateValue()
   const emptyBasket = () => {
     dispatch({

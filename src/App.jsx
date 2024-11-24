@@ -40,6 +40,7 @@ import PersonalData from "./pages/PersonalData"
 import AllOrders from "./pages/AllOrders"
 import OrderDetail from "./pages/OrderDetail"
 import OrderProgressBar from "./components/OrderProgressBar"
+import AddressModal from "./components/AddressModal"
 
 function MainContent() {
   const location = useLocation()
@@ -58,7 +59,7 @@ function MainContent() {
       <DocumentTitle />
       <Routes>
         <Route path="/signup" element={<Signup />} />
-        <Route path="/demo" element={<OrderProgressBar />} />
+        <Route path="/demo" element={<AddressModal />} />
         <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
