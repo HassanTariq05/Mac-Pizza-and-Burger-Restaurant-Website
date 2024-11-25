@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate, Navigate } from "react-router-dom"
 import { User, ArrowRight, LogOut, MapPin, Logs, Camera } from "lucide-react"
 import defaultProfilePicture from "../images/default-user-pic.webp"
 import imageUploadService from "../components/imageUploadService"
@@ -19,6 +19,13 @@ const UserProfile = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
+    const token = localStorage.getItem("token")
+    if (!token) {
+      // Redirect to login if token is not available
+      navigate("/login", { replace: true })
+      return
+    }
+
     const getUserCredentials = () => {
       const userObj = JSON.parse(localStorage.getItem("user"))
       setEmail(userObj?.email || "-")
@@ -31,7 +38,7 @@ const UserProfile = () => {
       setProfilePic(localStorage.getItem("profilePic") || profileImage)
     }
     getUserCredentials()
-  }, [])
+  }, [navigate])
 
   const handleProfilePicChange = (event) => {
     const file = event.target.files[0]
@@ -99,6 +106,11 @@ const UserProfile = () => {
     localStorage.removeItem("profilePic")
     navigate("/home")
     toast.success("Logged out successfully")
+  }
+
+  const token = localStorage.getItem("token")
+  if (!token) {
+    return <Navigate to="/login" replace />
   }
 
   return (

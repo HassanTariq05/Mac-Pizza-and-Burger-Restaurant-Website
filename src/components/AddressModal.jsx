@@ -142,7 +142,20 @@ export default function AddressModal() {
       })
 
       loader.load().then(() => {
+        // Define map options, including center and zoom
+        const mapOptions = {
+          center: { lat: coordinates.lat, lng: coordinates.lng }, // Set initial center
+          zoom: 12, // Adjust zoom level
+        }
+
+        // Initialize map, marker, and infoWindow
         const { map, marker, infoWindow } = initializeMap(coordinates)
+
+        // Define a circular radius using LatLngBounds for Autocomplete
+        const circle = new google.maps.Circle({
+          center: { lat: coordinates.lat, lng: coordinates.lng }, // Center for the radius
+          radius: 5000, // Radius in meters (5km in this case)
+        })
 
         const autocomplete = new google.maps.places.Autocomplete(
           searchInputRef.current,
@@ -152,11 +165,11 @@ export default function AddressModal() {
           }
         )
 
-        autocomplete.setComponentRestrictions({
-          country: ["kg"],
-        })
+        // Restrict autocomplete results to within the circle
+        autocomplete.setBounds(circle.getBounds())
+        autocomplete.setOptions({ strictBounds: true }) // Enforce strict bounds (optional)
 
-        // Show InfoWindow when a place is selected
+        // Handle place selection in Autocomplete
         autocomplete.addListener("place_changed", () => {
           const place = autocomplete.getPlace()
           if (place.geometry) {
@@ -165,7 +178,7 @@ export default function AddressModal() {
               lng: place.geometry.location.lng(),
             }
 
-            setCoordinates(newCoords)
+            setCoordinates(newCoords) // Update coordinates in state
 
             // Move marker and map to the new location
             map.setCenter(newCoords)
@@ -174,33 +187,33 @@ export default function AddressModal() {
             // Update InfoWindow content and position
             infoWindow.setContent(
               `<div style="display: flex; align-items: center; padding: 10px;">
-                <div style="margin-right: 8px;">
-                  <img src="${delivery_scooter}" alt="icon" width="30" />
-                </div>
-                <div>
-                  <p style="margin: 0;"><b>${place.formatted_address}</b></p>
-                  <button 
-                    style="
-                      background: none;
-                      border: none;
-                      color: red;
-                      font-size: 12px;
-                      font-weight: bold;
-                      text-decoration: none;
-                      cursor: pointer;"
-                    onclick="alert('Point confirmed!')"
-                  >
-                    Use this point
-                  </button>
-                </div>
-              </div>`
+                  <div style="margin-right: 8px;">
+                    <img src="${delivery_scooter}" alt="icon" width="30" />
+                  </div>
+                  <div>
+                    <p style="margin: 0;"><b>${place.formatted_address}</b></p>
+                    <button 
+                      style="
+                        background: none;
+                        border: none;
+                        color: red;
+                        font-size: 12px;
+                        font-weight: bold;
+                        text-decoration: none;
+                        cursor: pointer;"
+                      onclick="alert('Point confirmed!')"
+                    >
+                      Use this point
+                    </button>
+                  </div>
+                </div>`
             )
             infoWindow.open(map, marker)
           }
         })
       })
     }
-  }, [open]) // Re-initialize when modal is opened
+  }, [open])
 
   const handleSearchChange = (e) => {
     const query = e.target.value
@@ -211,11 +224,25 @@ export default function AddressModal() {
       const request = {
         query,
         fields: ["place_id", "formatted_address", "geometry"],
+        location: new google.maps.LatLng(coordinates.lat, coordinates.lng),
+        radius: 5000,
       }
 
       service.textSearch(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
-          setSuggestions(results)
+          const filteredResults = results.filter((result) => {
+            const resultLocation = result.geometry.location
+            const distance =
+              google.maps.geometry.spherical.computeDistanceBetween(
+                new google.maps.LatLng(coordinates.lat, coordinates.lng),
+                resultLocation
+              )
+            return distance <= 5000
+          })
+
+          setSuggestions(filteredResults)
+        } else {
+          setSuggestions([])
         }
       })
     } else {
