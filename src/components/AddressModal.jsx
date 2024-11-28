@@ -18,8 +18,10 @@ import { Loader } from "@googlemaps/js-api-loader"
 import { GOOGLE_MAPS_API_KEY } from "./service"
 import delivery_scooter from "../images/delivery-scooter.png"
 import deliveryPriceService from "./deliveryPriceService"
-import { useAsyncError } from "react-router-dom"
 import "../css/AddressModal.css"
+import MarkerInfoWindow from "./MarkerInfoWindow"
+import { createRoot } from "react-dom/client"
+import AddressForm from "./AddressForm"
 
 export default function AddressModal() {
   const [open, setOpen] = useState(true)
@@ -30,6 +32,28 @@ export default function AddressModal() {
   const mapRef = useRef(null)
   const searchInputRef = useRef(null)
   const [maxDeliveryDistance, setMaxDeliveryDistance] = useState()
+  const [showAddressButtons, setShowAddressButtons] = useState(false)
+  const [showMapRef, setShowMapRef] = useState(true)
+  const [selectedButton, setSelectedButton] = useState("Home")
+  const [formattedAddress, setFormattedAddress] = useState()
+  const [entranceMapClicked, setEntranceMapClicked] = useState(false)
+  const [showAddressForm, setShowAddressForm] = useState(false)
+
+  const handleButtonClick = (buttonName) => {
+    setSelectedButton(buttonName)
+  }
+
+  const handleBackButtonClick = () => {
+    setShowAddressButtons(false)
+    setShowAddressForm(false)
+    setShowMapRef(true)
+  }
+
+  useEffect(() => {
+    setShowAddressButtons(false)
+    setShowAddressForm(false)
+    setShowMapRef(true)
+  }, [entranceMapClicked])
 
   useEffect(() => {
     const getDeliveryDistance = async () => {
@@ -93,44 +117,28 @@ export default function AddressModal() {
               lng: place.geometry.location.lng(),
             }
 
+            setFormattedAddress(place.formatted_address)
             setCoordinates(newCoords)
             const distance = calculateDistance(newCoords, orginCoordinates)
-
-            const message =
-              distance <= maxDeliveryDistance
-                ? `<button 
-                      style="
-                        background: none;
-                        border: none;
-                        color: red;
-                        font-size: 12px;
-                        font-weight: bold;
-                        text-decoration: none;
-                        cursor: pointer;"
-                      onclick="alert('Point confirmed!')"
-                    >
-                      Use this point
-                    </button>`
-                : `<p style="margin: 0; color: gray; font-size: 12px; font-weight: bold;">We don't deliver here</p>`
-
-            const content = `
-              <div style="display: flex; align-items: center; padding: 10px;">
-                <div style="margin-right: 8px;">
-                  <img src="${delivery_scooter}" alt="icon" width="30" />
-                </div>
-                <div>
-                  <p style="margin: 0;"><b>${place.formatted_address}</b></p>
-                  ${message}
-                </div>
-              </div>`
-
-            infoWindow.setContent(content)
+            infoWindow.setContent(
+              <MarkerInfoWindow
+                formatted_address={place.formatted_address}
+                distance={distance}
+                maxDeliveryDistance={maxDeliveryDistance}
+              />
+            )
             infoWindow.open(map, marker)
           }
         })
       })
     }
-  }, [open, maxDeliveryDistance, orginCoordinates])
+  }, [
+    open,
+    maxDeliveryDistance,
+    orginCoordinates,
+    showMapRef,
+    entranceMapClicked,
+  ])
 
   const initializeMap = (center) => {
     const map = new google.maps.Map(mapRef.current, {
@@ -149,41 +157,90 @@ export default function AddressModal() {
       },
     })
 
-    const infoWindow = new google.maps.InfoWindow({ disableAutoPan: true })
-
-    const geocoder = new google.maps.Geocoder()
-    const generateInfoWindowContent = (address, distance) => {
-      const withinDeliveryRange = distance <= maxDeliveryDistance
-
-      return `
-        <div style="display: flex; align-items: center; padding: 10px;">
-          <div style="margin-right: 8px;">
-            <img src="${delivery_scooter}" alt="icon" width="30" />
-          </div>
-          <div>
-            <p style="margin: 0;"><b>${address || "Unknown Location"}</b></p>
-            ${
-              withinDeliveryRange
-                ? `<button 
-                    style="
-                      background: none;
-                      border: none;
-                      color: red;
-                      font-size: 12px;
-                      font-weight: bold;
-                      text-decoration: none;
-                      cursor: pointer;"
-                    onclick="alert('Point confirmed!')"
-                  >
-                    Use this point
-                  </button>`
-                : `<p style="margin: 0; color: gray; font-size: 12px; font-weight: bold;">We don't deliver here</p>`
-            }
-          </div>
-        </div>`
+    const handlePointClick = () => {
+      setShowMapRef(false)
+      setShowAddressButtons(true)
+      setShowAddressForm(true)
     }
 
-    // Handle marker drag events
+    // Function to generate content for the InfoWindow
+    const generateInfoWindowContent = (
+      address,
+      distance,
+      maxDeliveryDistance
+    ) => {
+      // Create a new div to hold the React component
+      const container = document.createElement("div")
+
+      // Create a root for rendering the React component
+      const root = createRoot(container)
+
+      // Use root.render to render the MarkerInfoWindow component into this div
+      root.render(
+        <MarkerInfoWindow
+          formatted_address={address}
+          distance={distance}
+          maxDeliveryDistance={maxDeliveryDistance}
+          handlePointClick={handlePointClick} // pass the click handler
+        />
+      )
+
+      // Return the container itself (not innerHTML)
+      return container
+    }
+
+    // MarkerInfoWindow Component
+    function MarkerInfoWindow({
+      distance,
+      maxDeliveryDistance,
+      formatted_address,
+      handlePointClick,
+    }) {
+      return (
+        <div style={{ display: "flex", alignItems: "center", padding: "10px" }}>
+          <div style={{ marginRight: "8px" }}>
+            <img src={delivery_scooter} alt="icon" width="30" />
+          </div>
+          <div>
+            <p style={{ margin: "0" }}>
+              <b>{formatted_address}</b>
+            </p>
+            {distance <= maxDeliveryDistance ? (
+              <button
+                onClick={handlePointClick} // Using onClick with the passed function
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "red",
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  textDecoration: "none",
+                  cursor: "pointer",
+                }}
+              >
+                Use this point
+              </button>
+            ) : (
+              <p
+                style={{
+                  margin: "0",
+                  color: "gray",
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                }}
+              >
+                We don't deliver here
+              </p>
+            )}
+          </div>
+        </div>
+      )
+    }
+
+    // Your Google Maps event handlers
+    const geocoder = new google.maps.Geocoder()
+    const infoWindow = new google.maps.InfoWindow({ disableAutoPan: true })
+
     marker.addListener("dragstart", () => {
       marker.setIcon({
         url: require("../images/pin_floating.png"),
@@ -203,8 +260,14 @@ export default function AddressModal() {
       geocoder.geocode({ location: { lat, lng } }, (results, status) => {
         if (status === "OK" && results[0]) {
           const address = results[0].formatted_address
-          const content = generateInfoWindowContent(address, distance)
+          const content = generateInfoWindowContent(
+            address,
+            distance,
+            maxDeliveryDistance
+          )
+          setFormattedAddress(address)
 
+          // Set the content as the DOM element (not HTML string)
           infoWindow.setContent(content)
           infoWindow.setPosition(newPos)
           infoWindow.open(map, marker)
@@ -293,73 +356,109 @@ export default function AddressModal() {
             }
 
             setCoordinates(newCoords) // Update coordinates in state
+            setFormattedAddress(place.formatted_address)
             const distance = calculateDistance(newCoords, orginCoordinates)
 
             // Move marker and map to the new location
             map.setCenter(newCoords)
             marker.setPosition(newCoords)
 
-            const message =
-              distance <= maxDeliveryDistance
-                ? `<button 
-                      style="
-                        background: none;
-                        border: none;
-                        color: red;
-                        font-size: 12px;
-                        font-weight: bold;
-                        text-decoration: none;
-                        cursor: pointer;"
-                      onclick="alert('Point confirmed!')"
-                    >
-                      Use this point
-                    </button>`
-                : `<p style="margin: 0; color: gray; font-size: 12px; font-weight: bold;">We don't deliver here</p>`
-
-            const content = `
-              <div style="display: flex; align-items: center; padding: 10px;">
-                <div style="margin-right: 8px;">
-                  <img src="${delivery_scooter}" alt="icon" width="30" />
-                </div>
-                <div>
-                  <p style="margin: 0;"><b>${place.formatted_address}</b></p>
-                  ${message}
-                </div>
-              </div>`
+            // Create and render the InfoWindow content dynamically with React
+            const content = generateInfoWindowContent(
+              place.formatted_address,
+              distance,
+              maxDeliveryDistance
+            )
 
             // Set InfoWindow position and content
             infoWindow.setContent(content)
-
-            // // Update InfoWindow content and position
-            // infoWindow.setContent(
-            //   `<div style="display: flex; align-items: center; padding: 10px;">
-            //       <div style="margin-right: 8px;">
-            //         <img src="${delivery_scooter}" alt="icon" width="30" />
-            //       </div>
-            //       <div>
-            //         <p style="margin: 0;"><b>${place.formatted_address}</b></p>
-            //         <button
-            //           style="
-            //             background: none;
-            //             border: none;
-            //             color: red;
-            //             font-size: 12px;
-            //             font-weight: bold;
-            //             text-decoration: none;
-            //             cursor: pointer;"
-            //           onclick="alert('Point confirmed!')"
-            //         >
-            //           Use this point
-            //         </button>
-            //       </div>
-            //     </div>`
-            // )
             infoWindow.open(map, marker)
           }
         })
       })
     }
   }, [open])
+
+  // Function to generate content for the InfoWindow
+  const generateInfoWindowContent = (
+    address,
+    distance,
+    maxDeliveryDistance
+  ) => {
+    // Create a new div to hold the React component
+    const container = document.createElement("div")
+
+    // Create a root for rendering the React component
+    const root = createRoot(container)
+
+    // Use root.render to render the MarkerInfoWindow component into this div
+    root.render(
+      <MarkerInfoWindow
+        formatted_address={address}
+        distance={distance}
+        maxDeliveryDistance={maxDeliveryDistance}
+        handlePointClick={handlePointClick} // pass the click handler
+      />
+    )
+
+    // Return the outer HTML content of the container (this will include the rendered React component)
+    return container.innerHTML
+  }
+
+  // MarkerInfoWindow Component
+  function MarkerInfoWindow({
+    distance,
+    maxDeliveryDistance,
+    formatted_address,
+    handlePointClick,
+  }) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", padding: "10px" }}>
+        <div style={{ marginRight: "8px" }}>
+          <img src={delivery_scooter} alt="icon" width="30" />
+        </div>
+        <div>
+          <p style={{ margin: "0" }}>
+            <b>{formatted_address}</b>
+          </p>
+          {distance <= maxDeliveryDistance ? (
+            <button
+              onClick={handlePointClick} // Using onClick with the passed function
+              style={{
+                background: "none",
+                border: "none",
+                color: "red",
+                fontSize: "12px",
+                fontWeight: "bold",
+                textDecoration: "none",
+                cursor: "pointer",
+              }}
+            >
+              Use this point
+            </button>
+          ) : (
+            <p
+              style={{
+                margin: "0",
+                color: "gray",
+                fontSize: "12px",
+                fontWeight: "bold",
+              }}
+            >
+              We don't deliver here
+            </p>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  // Handle the button click in the InfoWindow
+  const handlePointClick = () => {
+    setShowMapRef(false)
+    setShowAddressButtons(true)
+    setShowAddressForm(true)
+  }
 
   const handleSearchChange = (e) => {
     const query = e.target.value
@@ -407,38 +506,90 @@ export default function AddressModal() {
     // Calculate the distance to check if it is within the delivery radius
     const distance = calculateDistance(coords, orginCoordinates)
 
-    // Determine the message based on the delivery distance
-    const message =
-      distance <= maxDeliveryDistance
-        ? `<button 
-              style="
-                background: none;
-                border: none;
-                color: red;
-                font-size: 12px;
-                font-weight: bold;
-                text-decoration: none;
-                cursor: pointer;"
-              onclick="alert('Point confirmed!')"
-            >
-              Use this point
-            </button>`
-        : `<p style="margin: 0; color: gray; font-size: 12px; font-weight: bold;">We don't deliver here</p>`
+    setFormattedAddress(address)
+    // Generate the DOM element containing the content for the InfoWindow
+    const contentElement = generateInfoWindowContentt(
+      address,
+      distance,
+      maxDeliveryDistance
+    )
 
-    // Set InfoWindow content and position
-    const content = `
-      <div style="display: flex; align-items: center; padding: 10px;">
-        <div style="margin-right: 8px;">
-          <img src="${delivery_scooter}" alt="icon" width="30" />
+    // Set the InfoWindow content and open it
+    infoWindow.setContent(contentElement)
+    infoWindow.open(map, marker)
+  }
+
+  // Function to generate the DOM element for the InfoWindow content
+  const generateInfoWindowContentt = (
+    address,
+    distance,
+    maxDeliveryDistance
+  ) => {
+    // Create a container div for the InfoWindow content
+    const container = document.createElement("div")
+
+    // Render the MarkerInfoWindow React component into the div container
+    const root = createRoot(container)
+
+    root.render(
+      <MarkerInfoWindow
+        formatted_address={address}
+        distance={distance}
+        maxDeliveryDistance={maxDeliveryDistance}
+        handlePointClick={handlePointClick} // pass the click handler
+      />
+    )
+
+    // Return the container div (with React component rendered into it)
+    return container
+  }
+
+  // MarkerInfoWindow Component
+  function MarkerInfoWindow({
+    distance,
+    maxDeliveryDistance,
+    formatted_address,
+    handlePointClick,
+  }) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", padding: "10px" }}>
+        <div style={{ marginRight: "8px" }}>
+          <img src={delivery_scooter} alt="icon" width="30" />
         </div>
         <div>
-          <p style="margin: 0;"><b>${address}</b></p>
-          ${message}
+          <p style={{ margin: "0" }}>
+            <b>{formatted_address}</b>
+          </p>
+          {distance <= maxDeliveryDistance ? (
+            <button
+              onClick={handlePointClick} // Using onClick with the passed function
+              style={{
+                background: "none",
+                border: "none",
+                color: "red",
+                fontSize: "12px",
+                fontWeight: "bold",
+                textDecoration: "none",
+                cursor: "pointer",
+              }}
+            >
+              Use this point
+            </button>
+          ) : (
+            <p
+              style={{
+                margin: "0",
+                color: "gray",
+                fontSize: "12px",
+                fontWeight: "bold",
+              }}
+            >
+              We don't deliver here
+            </p>
+          )}
         </div>
-      </div>`
-
-    infoWindow.setContent(content)
-    infoWindow.open(map, marker)
+      </div>
+    )
   }
 
   return (
@@ -448,7 +599,17 @@ export default function AddressModal() {
         <MDBModalDialog style={{ maxWidth: "80%", height: "90%" }}>
           <MDBModalContent style={{ height: "100%" }}>
             <MDBModalHeader>
-              <MDBModalTitle>Delivery Address</MDBModalTitle>
+              <div className="title-div">
+                <MDBIcon
+                  icon="angle-left"
+                  size="2x"
+                  color="none"
+                  onClick={handleBackButtonClick}
+                  style={{ cursor: "pointer" }}
+                />
+                <MDBModalTitle>Delivery Address</MDBModalTitle>
+              </div>
+
               <div style={{ display: "flex", gap: "60px" }}>
                 <MDBInput
                   ref={searchInputRef}
@@ -487,52 +648,171 @@ export default function AddressModal() {
                 </MDBListGroup>
               )}
 
-              <div
-                ref={mapRef}
-                style={{ height: "400px", width: "100%" }}
-              ></div>
+              {showMapRef && (
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row", // Default: Row for larger screens
+                    flexWrap: "wrap",
+                    gap: "20px",
+                    height: "100%",
+                  }}
+                >
+                  {/* Left: Address List */}
+                  <div
+                    className="address-container"
+                    style={{
+                      flex: 1,
+                      maxWidth: "100%",
+                      overflowY: "auto",
+                      padding: "10px",
+                    }}
+                  >
+                    <h5>Where shall we deliver to?</h5>
+                    <div style={{ marginTop: "10px" }}>
+                      {/* Address Item */}
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          padding: "10px",
+                          borderBottom: "1px solid #ddd",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <div>
+                          <p style={{ fontWeight: "bold", margin: "0" }}>
+                            School:
+                          </p>
+                          <p style={{ margin: "0", fontSize: "0.9rem" }}>
+                            Jash Gvardiya Boulevard, 2, Bishkek, Kyrgyzstan
+                          </p>
+                        </div>
+                        <MDBIcon
+                          icon="pen"
+                          size="2x"
+                          color="none"
+                          onClick={() => {}}
+                          style={{ fontSize: "25px", cursor: "pointer" }}
+                        />
+                      </div>
+                      {/* Another Address Item */}
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          padding: "10px",
+                          borderBottom: "1px solid #ddd",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <div>
+                          <p style={{ fontWeight: "bold", margin: "0" }}>
+                            Flat:
+                          </p>
+                          <p style={{ margin: "0", fontSize: "0.9rem" }}>
+                            Kiev Street, 252, Bishkek, Kyrgyzstan
+                          </p>
+                          <p style={{ margin: "0", fontSize: "0.9rem" }}>
+                            3, 302, Khan House, None
+                          </p>
+                        </div>
+                        <MDBIcon
+                          icon="pen"
+                          color="none"
+                          onClick={() => {}}
+                          style={{ fontSize: "25px", cursor: "pointer" }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right: Map */}
+
+                  <div
+                    className="map-container"
+                    ref={mapRef}
+                    style={{
+                      height: "100%" /* Adjust height for mobile */,
+                      width: "100%",
+                    }}
+                  ></div>
+                </div>
+              )}
+              {showAddressForm && (
+                <AddressForm
+                  selectedButton={selectedButton}
+                  formattedAddress={formattedAddress}
+                  coords={coordinates}
+                  setEntranceMapClicked={setEntranceMapClicked}
+                />
+              )}
             </MDBModalBody>
 
             <MDBModalFooter style={{ height: "100px" }}>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  width: "100%",
-                  alignItems: "center",
-                }}
-              >
-                <div>
-                  <h5>What kind of place is this?</h5>
+              {showAddressButtons && (
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    width: "100%",
+                    alignItems: "center",
+                  }}
+                >
+                  <div>
+                    <h5>What kind of place is this?</h5>
+                  </div>
+                  <div className="res-btns">
+                    <button
+                      className={`icon-button-1 ${
+                        selectedButton === "Home" ? "selected" : ""
+                      }`}
+                      onClick={() => handleButtonClick("Home")}
+                    >
+                      <span className="icon-1">
+                        <i className="fas fa-home"></i>
+                      </span>
+                      <span className="text-1">Home</span>
+                    </button>
+                    <button
+                      className={`icon-button-1 ${
+                        selectedButton === "Apartment" ? "selected" : ""
+                      }`}
+                      onClick={() => handleButtonClick("Apartment")}
+                    >
+                      <span className="icon-1">
+                        <i className="fas fa-building"></i>
+                      </span>
+                      <span className="text-1">Apartment</span>
+                    </button>
+                    <button
+                      className={`icon-button-1 ${
+                        selectedButton === "Office" ? "selected" : ""
+                      }`}
+                      onClick={() => handleButtonClick("Office")}
+                    >
+                      <span className="icon-1">
+                        <i className="fas fa-briefcase"></i>
+                      </span>
+                      <span className="text-1">Office</span>
+                    </button>
+                    <button
+                      className={`icon-button-1 ${
+                        selectedButton === "Other" ? "selected" : ""
+                      }`}
+                      onClick={() => handleButtonClick("Other")}
+                    >
+                      <span className="icon-1">
+                        <i className="fas fa-ellipsis-h"></i>
+                      </span>
+                      <span className="text-1">Other</span>
+                    </button>
+                  </div>
                 </div>
-                <div className="res-btns">
-                  <button className="icon-button-1">
-                    <span className="icon-1">
-                      <i className="fas fa-home"></i>
-                    </span>
-                    <span className="text-1">Home</span>
-                  </button>
-                  <button className="icon-button-1">
-                    <span className="icon-1">
-                      <i className="fas fa-building"></i>
-                    </span>
-                    <span className="text-1">Apartment</span>
-                  </button>
-                  <button className="icon-button-1">
-                    <span className="icon-1">
-                      <i className="fas fa-briefcase"></i>
-                    </span>
-                    <span className="text-1">Office</span>
-                  </button>
-                  <button className="icon-button-1">
-                    <span className="icon-1">
-                      <i className="fas fa-ellipsis-h"></i>
-                    </span>
-                    <span className="text-1">Other</span>
-                  </button>
-                </div>
-              </div>
+              )}
             </MDBModalFooter>
           </MDBModalContent>
         </MDBModalDialog>
