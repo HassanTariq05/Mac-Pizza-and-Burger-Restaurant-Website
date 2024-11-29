@@ -3,12 +3,16 @@ import { useForm } from "react-hook-form"
 import "../css/AddressForm.css"
 import { MDBIcon } from "mdb-react-ui-kit"
 import { GOOGLE_MAPS_API_KEY } from "./service"
+import createAddressService from "./createAddressService"
+import toast from "react-hot-toast"
+import { useState } from "react"
 
 const AddressForm = ({
   selectedButton,
   formattedAddress,
   coords,
-  setEntranceMapClicked,
+  handleEntranceMapClick,
+  handleSaveAddress,
 }) => {
   const {
     register,
@@ -16,12 +20,68 @@ const AddressForm = ({
     formState: { errors },
   } = useForm()
 
-  const onSubmit = (data) => {
-    console.log("Form Data Submitted:", data)
+  const [loading, setLoading] = useState()
+
+  const onSubmit = async (data) => {
+    try {
+      setLoading(true)
+      console.log("Form Data Submitted:", data)
+      const userObj = JSON.parse(localStorage.getItem("user"))
+
+      let tagType
+      if (selectedButton === "Home") {
+        tagType = "Home"
+      } else if (selectedButton === "Apartment") {
+        tagType = "Apartment"
+      } else if (selectedButton === "Office") {
+        tagType = "Office"
+      } else {
+        tagType = "School"
+      }
+
+      const streetHouseObj = {
+        additional: data.additionalInfo,
+        address: formattedAddress,
+        address1: "Bishkek, Kyrgyzstan",
+        building: data.buildingName || "",
+        door: data.doorNumber,
+        floor: data.floorNumber,
+        tag: tagType,
+        type: selectedButton.toLowerCase(),
+      }
+
+      const createAddressPayload = {
+        firstname: userObj.firstname,
+        lastname: userObj.lastname,
+        phone: userObj.phone,
+        zipcode: "65500",
+        region_id: "1",
+        country_id: "1",
+
+        street_house_number: JSON.stringify(streetHouseObj),
+        floor: data.floorNumber,
+        door: data.doorNumber,
+        building: data.buildingName || "",
+        additional: data.additionalInfo,
+        type: selectedButton.toLowerCase(),
+        tag: tagType,
+      }
+
+      const createAddressResponse = await createAddressService.create(
+        createAddressPayload,
+        localStorage.getItem("token")
+      )
+      setLoading(false)
+      handleSaveAddress()
+      toast.success("Address Saved")
+    } catch (error) {
+      toast.error("Unable to save address")
+      setLoading(false)
+    }
   }
 
   const handleMapClick = () => {
-    setEntranceMapClicked(true)
+    handleEntranceMapClick()
   }
 
   return (
@@ -127,14 +187,21 @@ const AddressForm = ({
                 frameBorder="0"
                 style={{ border: "0", pointerEvents: "none" }}
                 referrerPolicy="no-referrer-when-downgrade"
-                src={`https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=${coords?.lat},${coords?.lng}&zoom=15`}
+                src={`https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=${coords?.lat},${coords?.lng}&zoom=19`}
               ></iframe>
               <div class="hover-text">Mark Entrance</div>
             </div>
           </div>
           <div className="save-div">
-            <button type="submit" className="icon-button-2">
-              <span className="text-2">Save</span>
+            <button
+              type="submit"
+              className={`icon-button-2 ${loading ? "loading" : ""}`}
+            >
+              {loading ? (
+                <div className="loader"></div>
+              ) : (
+                <span className="text-2">Save</span>
+              )}
             </button>
           </div>
         </div>

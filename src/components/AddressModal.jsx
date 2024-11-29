@@ -22,6 +22,7 @@ import "../css/AddressModal.css"
 import MarkerInfoWindow from "./MarkerInfoWindow"
 import { createRoot } from "react-dom/client"
 import AddressForm from "./AddressForm"
+import getAddressesService from "./getAddressesService"
 
 export default function AddressModal() {
   const [open, setOpen] = useState(true)
@@ -36,11 +37,29 @@ export default function AddressModal() {
   const [showMapRef, setShowMapRef] = useState(true)
   const [selectedButton, setSelectedButton] = useState("Home")
   const [formattedAddress, setFormattedAddress] = useState()
-  const [entranceMapClicked, setEntranceMapClicked] = useState(false)
   const [showAddressForm, setShowAddressForm] = useState(false)
+  const [selectedAddress, setSelectedAddress] = useState()
 
   const handleButtonClick = (buttonName) => {
     setSelectedButton(buttonName)
+  }
+
+  const [addressesData, setAddressesData] = useState([])
+  const getAddresses = async () => {
+    const token = localStorage.getItem("token")
+    const addressesDataResponse = await getAddressesService.get(token)
+    console.log("Data: ", addressesDataResponse.data.data)
+    setAddressesData(addressesDataResponse.data.data)
+  }
+
+  useEffect(() => {
+    getAddresses()
+  }, [])
+
+  const handleSaveAddress = () => {
+    console.log("Address Saved!")
+    handleBackButtonClick()
+    getAddresses()
   }
 
   const handleBackButtonClick = () => {
@@ -49,11 +68,11 @@ export default function AddressModal() {
     setShowMapRef(true)
   }
 
-  useEffect(() => {
+  const handleEntranceMapClick = () => {
     setShowAddressButtons(false)
     setShowAddressForm(false)
     setShowMapRef(true)
-  }, [entranceMapClicked])
+  }
 
   useEffect(() => {
     const getDeliveryDistance = async () => {
@@ -132,13 +151,7 @@ export default function AddressModal() {
         })
       })
     }
-  }, [
-    open,
-    maxDeliveryDistance,
-    orginCoordinates,
-    showMapRef,
-    entranceMapClicked,
-  ])
+  }, [open, maxDeliveryDistance, orginCoordinates, showMapRef])
 
   const initializeMap = (center) => {
     const map = new google.maps.Map(mapRef.current, {
@@ -592,9 +605,13 @@ export default function AddressModal() {
     )
   }
 
+  const handleCloseModal = () => {
+    setOpen(!open)
+  }
+
   return (
     <>
-      <MDBBtn onClick={() => setOpen(!open)}>LAUNCH DEMO MODAL</MDBBtn>
+      <MDBBtn onClick={handleCloseModal}>LAUNCH DEMO MODAL</MDBBtn>
       <MDBModal open={open} setOpen={setOpen} tabIndex={-1}>
         <MDBModalDialog style={{ maxWidth: "80%", height: "90%" }}>
           <MDBModalContent style={{ height: "100%" }}>
@@ -664,68 +681,68 @@ export default function AddressModal() {
                     style={{
                       flex: 1,
                       maxWidth: "100%",
-                      overflowY: "auto",
                       padding: "10px",
+                      overflow: "hidden",
+                      display: "flex",
+                      flexDirection: "column",
+                      maxHeight: "100%",
                     }}
                   >
                     <h5>Where shall we deliver to?</h5>
-                    <div style={{ marginTop: "10px" }}>
-                      {/* Address Item */}
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          padding: "10px",
-                          borderBottom: "1px solid #ddd",
-                          cursor: "pointer",
-                        }}
-                      >
-                        <div>
-                          <p style={{ fontWeight: "bold", margin: "0" }}>
-                            School:
-                          </p>
-                          <p style={{ margin: "0", fontSize: "0.9rem" }}>
-                            Jash Gvardiya Boulevard, 2, Bishkek, Kyrgyzstan
-                          </p>
-                        </div>
-                        <MDBIcon
-                          icon="pen"
-                          size="2x"
-                          color="none"
-                          onClick={() => {}}
-                          style={{ fontSize: "25px", cursor: "pointer" }}
-                        />
-                      </div>
-                      {/* Another Address Item */}
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          padding: "10px",
-                          borderBottom: "1px solid #ddd",
-                          cursor: "pointer",
-                        }}
-                      >
-                        <div>
-                          <p style={{ fontWeight: "bold", margin: "0" }}>
-                            Flat:
-                          </p>
-                          <p style={{ margin: "0", fontSize: "0.9rem" }}>
-                            Kiev Street, 252, Bishkek, Kyrgyzstan
-                          </p>
-                          <p style={{ margin: "0", fontSize: "0.9rem" }}>
-                            3, 302, Khan House, None
-                          </p>
-                        </div>
-                        <MDBIcon
-                          icon="pen"
-                          color="none"
-                          onClick={() => {}}
-                          style={{ fontSize: "25px", cursor: "pointer" }}
-                        />
-                      </div>
+                    <div
+                      style={{
+                        marginTop: "10px",
+                        maxWidth: "100%",
+                        maxHeight: "calc(100vh - 150px)",
+                        overflowY: "auto",
+                        paddingRight: "10px",
+                        scrollbarWidth: "thin",
+                      }}
+                    >
+                      {addressesData.length > 0 &&
+                        addressesData.map((address, index) => {
+                          const isLast = index === addressesData.length - 1 // Check if it's the last item
+
+                          return (
+                            <div
+                              key={address.id} // Add a unique key for each item
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                padding: "10px",
+                                borderBottom: isLast
+                                  ? "none"
+                                  : "1px solid #ddd", // Remove border for the last item
+                                cursor: "pointer",
+                              }}
+                            >
+                              <div>
+                                <p style={{ fontWeight: "bold", margin: "0" }}>
+                                  {JSON.parse(address.street_house_number)?.type
+                                    ? JSON.parse(address.street_house_number)
+                                        .type.charAt(0)
+                                        .toUpperCase() +
+                                      JSON.parse(
+                                        address.street_house_number
+                                      ).type.slice(1)
+                                    : ""}
+                                </p>
+                                <p style={{ margin: "0", fontSize: "0.9rem" }}>
+                                  {JSON.parse(address.street_house_number)
+                                    ?.address || "No address found"}
+                                </p>
+                              </div>
+                              <MDBIcon
+                                icon="pen"
+                                size="2x"
+                                color="none"
+                                onClick={() => {}}
+                                style={{ fontSize: "20px", cursor: "pointer" }}
+                              />
+                            </div>
+                          )
+                        })}
                     </div>
                   </div>
 
@@ -746,7 +763,8 @@ export default function AddressModal() {
                   selectedButton={selectedButton}
                   formattedAddress={formattedAddress}
                   coords={coordinates}
-                  setEntranceMapClicked={setEntranceMapClicked}
+                  handleEntranceMapClick={handleEntranceMapClick}
+                  handleSaveAddress={handleSaveAddress}
                 />
               )}
             </MDBModalBody>
