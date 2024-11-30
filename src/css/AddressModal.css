@@ -44,12 +44,6 @@
   letter-spacing: 1px; /* Spacing for text */
 }
 
-.res-btns {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-}
-
 .title-div {
   display: flex;
   flex-direction: row;

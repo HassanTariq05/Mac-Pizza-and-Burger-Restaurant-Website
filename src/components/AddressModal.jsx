@@ -24,8 +24,7 @@ import { createRoot } from "react-dom/client"
 import AddressForm from "./AddressForm"
 import getAddressesService from "./getAddressesService"
 
-export default function AddressModal() {
-  const [open, setOpen] = useState(true)
+export default function AddressModal({ isOpen, onClose }) {
   const [coordinates, setCoordinates] = useState({ lat: 42.8746, lng: 74.5698 })
   const [orginCoordinates, setOriginCoordinates] = useState()
   const [suggestions, setSuggestions] = useState([])
@@ -39,6 +38,7 @@ export default function AddressModal() {
   const [formattedAddress, setFormattedAddress] = useState()
   const [showAddressForm, setShowAddressForm] = useState(false)
   const [selectedAddress, setSelectedAddress] = useState()
+  const [selectedEditAddress, setEditSelectedAddress] = useState()
 
   const handleButtonClick = (buttonName) => {
     setSelectedButton(buttonName)
@@ -74,6 +74,33 @@ export default function AddressModal() {
     setShowMapRef(true)
   }
 
+  const handleAddressClick = (address) => {
+    setSelectedAddress(address)
+    localStorage.setItem("currentAddress", JSON.stringify(address))
+    handleCloseModal()
+    console.log("Current Address: ", localStorage.getItem("currentAddress"))
+  }
+
+  const handleEditAddressClick = (address) => {
+    let selectedEditButton
+    if (JSON.parse(address.street_house_number).type == "apartment") {
+      selectedEditButton = "Apartment"
+    } else if (JSON.parse(address.street_house_number).type == "home") {
+      selectedEditButton = "Home"
+    } else if (JSON.parse(address.street_house_number).type == "office") {
+      selectedEditButton = "Office"
+    } else {
+      selectedEditButton = "Other"
+    }
+
+    console.log("Edit: ", address)
+    setSelectedButton(selectedEditButton)
+    setEditSelectedAddress(address)
+    setShowMapRef(false)
+    setShowAddressButtons(true)
+    setShowAddressForm(true)
+  }
+
   useEffect(() => {
     const getDeliveryDistance = async () => {
       const getDeliveryDistanceResponse = await deliveryPriceService.getPrice()
@@ -102,7 +129,7 @@ export default function AddressModal() {
   }, []) // This effect fetches the delivery distance only once
 
   useEffect(() => {
-    if (open && maxDeliveryDistance && orginCoordinates) {
+    if (isOpen && maxDeliveryDistance && orginCoordinates) {
       const loader = new Loader({
         apiKey: GOOGLE_MAPS_API_KEY,
         libraries: ["places"],
@@ -151,7 +178,7 @@ export default function AddressModal() {
         })
       })
     }
-  }, [open, maxDeliveryDistance, orginCoordinates, showMapRef])
+  }, [isOpen, maxDeliveryDistance, orginCoordinates, showMapRef])
 
   const initializeMap = (center) => {
     const map = new google.maps.Map(mapRef.current, {
@@ -171,6 +198,7 @@ export default function AddressModal() {
     })
 
     const handlePointClick = () => {
+      setEditSelectedAddress(null)
       setShowMapRef(false)
       setShowAddressButtons(true)
       setShowAddressForm(true)
@@ -324,7 +352,7 @@ export default function AddressModal() {
   }
 
   useEffect(() => {
-    if (open) {
+    if (isOpen) {
       const loader = new Loader({
         apiKey: GOOGLE_MAPS_API_KEY,
         libraries: ["places"],
@@ -390,7 +418,7 @@ export default function AddressModal() {
         })
       })
     }
-  }, [open])
+  }, [isOpen])
 
   // Function to generate content for the InfoWindow
   const generateInfoWindowContent = (
@@ -527,7 +555,7 @@ export default function AddressModal() {
       maxDeliveryDistance
     )
 
-    // Set the InfoWindow content and open it
+    // Set the InfoWindow content and isOpen it
     infoWindow.setContent(contentElement)
     infoWindow.open(map, marker)
   }
@@ -606,13 +634,12 @@ export default function AddressModal() {
   }
 
   const handleCloseModal = () => {
-    setOpen(!open)
+    onClose()
   }
 
   return (
     <>
-      <MDBBtn onClick={handleCloseModal}>LAUNCH DEMO MODAL</MDBBtn>
-      <MDBModal open={open} setOpen={setOpen} tabIndex={-1}>
+      <MDBModal open={isOpen} tabIndex={-1}>
         <MDBModalDialog style={{ maxWidth: "80%", height: "90%" }}>
           <MDBModalContent style={{ height: "100%" }}>
             <MDBModalHeader>
@@ -640,7 +667,7 @@ export default function AddressModal() {
                   icon="times"
                   size="1x"
                   color="none"
-                  onClick={() => setOpen(!open)}
+                  onClick={handleCloseModal}
                   style={{ cursor: "pointer" }}
                 />
               </div>
@@ -701,11 +728,11 @@ export default function AddressModal() {
                     >
                       {addressesData.length > 0 &&
                         addressesData.map((address, index) => {
-                          const isLast = index === addressesData.length - 1 // Check if it's the last item
+                          const isLast = index === addressesData.length - 1
 
                           return (
                             <div
-                              key={address.id} // Add a unique key for each item
+                              key={address.id}
                               style={{
                                 display: "flex",
                                 justifyContent: "space-between",
@@ -713,9 +740,14 @@ export default function AddressModal() {
                                 padding: "10px",
                                 borderBottom: isLast
                                   ? "none"
-                                  : "1px solid #ddd", // Remove border for the last item
+                                  : "1px solid #ddd",
                                 cursor: "pointer",
+                                backgroundColor:
+                                  selectedAddress?.id === address.id
+                                    ? "#f0f8ff"
+                                    : "transparent",
                               }}
+                              onClick={() => handleAddressClick(address)}
                             >
                               <div>
                                 <p style={{ fontWeight: "bold", margin: "0" }}>
@@ -733,13 +765,40 @@ export default function AddressModal() {
                                     ?.address || "No address found"}
                                 </p>
                               </div>
-                              <MDBIcon
-                                icon="pen"
-                                size="2x"
-                                color="none"
-                                onClick={() => {}}
-                                style={{ fontSize: "20px", cursor: "pointer" }}
-                              />
+                              <div
+                                style={{
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  width: "40px",
+                                  height: "40px",
+                                  borderRadius: "50%",
+                                  transition: "background-color 0.3s ease",
+                                  cursor: "pointer",
+                                }}
+                                onMouseEnter={(e) =>
+                                  (e.currentTarget.style.backgroundColor =
+                                    "#f0f0f0")
+                                }
+                                onMouseLeave={(e) =>
+                                  (e.currentTarget.style.backgroundColor =
+                                    "transparent")
+                                }
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  handleEditAddressClick(address)
+                                }}
+                              >
+                                <MDBIcon
+                                  icon="pen"
+                                  size="2x"
+                                  color="none"
+                                  style={{
+                                    fontSize: "20px",
+                                    cursor: "pointer",
+                                  }}
+                                />
+                              </div>
                             </div>
                           )
                         })}
@@ -765,6 +824,7 @@ export default function AddressModal() {
                   coords={coordinates}
                   handleEntranceMapClick={handleEntranceMapClick}
                   handleSaveAddress={handleSaveAddress}
+                  selectedEditAddress={selectedEditAddress}
                 />
               )}
             </MDBModalBody>

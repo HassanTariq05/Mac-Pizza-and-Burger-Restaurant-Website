@@ -6,6 +6,8 @@ import { GOOGLE_MAPS_API_KEY } from "./service"
 import createAddressService from "./createAddressService"
 import toast from "react-hot-toast"
 import { useState } from "react"
+import updateAddressService from "./updateAddressService"
+import deleteAddressService from "./deleteAddressService"
 
 const AddressForm = ({
   selectedButton,
@@ -13,6 +15,7 @@ const AddressForm = ({
   coords,
   handleEntranceMapClick,
   handleSaveAddress,
+  selectedEditAddress,
 }) => {
   const {
     register,
@@ -21,10 +24,10 @@ const AddressForm = ({
   } = useForm()
 
   const [loading, setLoading] = useState()
+  const [deleteLoading, setDeleteLoading] = useState()
 
   const onSubmit = async (data) => {
     try {
-      setLoading(true)
       console.log("Form Data Submitted:", data)
       const userObj = JSON.parse(localStorage.getItem("user"))
 
@@ -59,6 +62,7 @@ const AddressForm = ({
         country_id: "1",
 
         street_house_number: JSON.stringify(streetHouseObj),
+        location: { longitude: coords.lng, latitude: coords.lat },
         floor: data.floorNumber,
         door: data.doorNumber,
         building: data.buildingName || "",
@@ -67,16 +71,52 @@ const AddressForm = ({
         tag: tagType,
       }
 
-      const createAddressResponse = await createAddressService.create(
-        createAddressPayload,
-        localStorage.getItem("token")
-      )
-      setLoading(false)
-      handleSaveAddress()
-      toast.success("Address Saved")
+      setLoading(true)
+      if (selectedEditAddress === null) {
+        const createAddressResponse = await createAddressService.create(
+          createAddressPayload,
+          localStorage.getItem("token")
+        )
+        setLoading(false)
+        handleSaveAddress()
+        toast.success("Address Saved")
+      } else {
+        const updateAddressResponse = await updateAddressService.update(
+          selectedEditAddress.id,
+          createAddressPayload,
+          localStorage.getItem("token")
+        )
+        setLoading(false)
+        handleSaveAddress()
+        toast.success("Address Updated")
+      }
     } catch (error) {
       toast.error("Unable to save address")
       setLoading(false)
+    }
+  }
+
+  const handleDeleteAddress = async () => {
+    try {
+      setDeleteLoading(true)
+      const body = {
+        ids: [selectedEditAddress.id.toString()],
+      }
+      const token = localStorage.getItem("token")
+      console.log("token: ", token)
+      console.log("body: ", body)
+      console.log("id: ", selectedEditAddress.id)
+      const response = await deleteAddressService.delete(
+        selectedEditAddress.id,
+        body,
+        token
+      )
+      setDeleteLoading(false)
+      handleSaveAddress()
+      toast.success("Address deleted")
+    } catch (error) {
+      toast.error("Unable to delete address")
+      setDeleteLoading(false)
     }
   }
 
@@ -98,7 +138,9 @@ const AddressForm = ({
                   style={{ cursor: "pointer" }}
                 />
               </span>{" "}
-              {formattedAddress}
+              {selectedEditAddress !== null
+                ? JSON.parse(selectedEditAddress?.street_house_number)?.address
+                : formattedAddress}
             </p>
             <p style={{ marginBottom: "0px" }} className="address-subtitle">
               Bishkek, Kyrgyzstan
@@ -113,6 +155,12 @@ const AddressForm = ({
               <input
                 id="floor-number"
                 type="text"
+                defaultValue={
+                  selectedEditAddress
+                    ? JSON.parse(selectedEditAddress?.street_house_number)
+                        ?.floor || ""
+                    : ""
+                }
                 placeholder="Floor Number"
                 className="field-input"
                 {...register("floorNumber", {
@@ -132,6 +180,12 @@ const AddressForm = ({
                 id="door-number"
                 type="text"
                 placeholder="Door Number"
+                defaultValue={
+                  selectedEditAddress
+                    ? JSON.parse(selectedEditAddress?.street_house_number)
+                        ?.door || ""
+                    : ""
+                }
                 className="field-input"
                 {...register("doorNumber", {
                   required: "Door Number is required",
@@ -152,6 +206,12 @@ const AddressForm = ({
                 id="building-name"
                 type="text"
                 placeholder="Building Name"
+                defaultValue={
+                  selectedEditAddress
+                    ? JSON.parse(selectedEditAddress?.street_house_number)
+                        ?.building || ""
+                    : ""
+                }
                 className="field-input"
                 {...register("buildingName", {
                   required: "Building Name is required",
@@ -169,6 +229,12 @@ const AddressForm = ({
             </label>
             <textarea
               id="additional-info"
+              defaultValue={
+                selectedEditAddress
+                  ? JSON.parse(selectedEditAddress?.street_house_number)
+                      ?.additional || ""
+                  : ""
+              }
               placeholder="Additional Information"
               className="field-textarea"
               {...register("additionalInfo")}
@@ -187,12 +253,31 @@ const AddressForm = ({
                 frameBorder="0"
                 style={{ border: "0", pointerEvents: "none" }}
                 referrerPolicy="no-referrer-when-downgrade"
-                src={`https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=${coords?.lat},${coords?.lng}&zoom=19`}
+                src={`https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=${
+                  selectedEditAddress !== null
+                    ? selectedEditAddress?.location?.latitude
+                    : coords?.lat
+                },${
+                  selectedEditAddress !== null
+                    ? selectedEditAddress?.location?.longitude
+                    : coords?.lng
+                }&zoom=19`}
               ></iframe>
               <div class="hover-text">Mark Entrance</div>
             </div>
           </div>
           <div className="save-div">
+            <button
+              type="button"
+              onClick={handleDeleteAddress}
+              className={`icon-button-3 ${loading ? "loading" : ""}`}
+            >
+              {deleteLoading ? (
+                <div className="loader-1"></div>
+              ) : (
+                <span className="text-3">Delete</span>
+              )}
+            </button>
             <button
               type="submit"
               className={`icon-button-2 ${loading ? "loading" : ""}`}

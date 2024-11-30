@@ -8,6 +8,7 @@ import { baseURL } from "../components/service"
 import profileUpdateService from "../components/profileUpdateService"
 import toast from "react-hot-toast"
 import RecentOrder from "../components/RecentOrder"
+import AddressModal from "../components/AddressModal"
 
 const UserProfile = () => {
   const [email, setEmail] = useState("-")
@@ -15,6 +16,16 @@ const UserProfile = () => {
   const [profilePic, setProfilePic] = useState(
     localStorage.getItem("profilePic") || defaultProfilePicture
   )
+
+  const [AddressModalOpen, setAddressModalOpen] = useState(false)
+
+  const onClose = () => {
+    setAddressModalOpen(false)
+  }
+
+  const handleAddressModalOpen = () => {
+    setAddressModalOpen(true)
+  }
 
   const navigate = useNavigate()
 
@@ -160,13 +171,17 @@ const UserProfile = () => {
             </button>
           </Link>
 
-          <button className="profile-option-button">
+          <button
+            onClick={handleAddressModalOpen}
+            className="profile-option-button"
+          >
             <div className="profile-option-content">
               <MapPin />
               <span>My Addresses</span>
             </div>
             <ArrowRight />
           </button>
+          <AddressModal isOpen={AddressModalOpen} onClose={onClose} />
 
           <button className="profile-option-button">
             <div className="profile-option-content">
