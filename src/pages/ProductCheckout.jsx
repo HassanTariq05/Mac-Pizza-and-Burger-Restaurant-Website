@@ -423,12 +423,15 @@ const ProductCheckout = () => {
             ? {
                 country_id: 1,
                 city_id: 1,
-                street_house_number: 8322991,
-                zip_code: "65500",
+                street_house_number: JSON.parse(
+                  localStorage.getItem("currentAddress")
+                ).street_house_number.toString(),
+                zip_code: "",
                 location: {
                   latitude: latLong.lat,
                   longitude: latLong.lng,
                 },
+                phone: formData.phone,
               }
             : {},
         delivery_date: getDeliveryDate(),

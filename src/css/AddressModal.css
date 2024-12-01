@@ -44,6 +44,49 @@
   letter-spacing: 1px; /* Spacing for text */
 }
 
+.res-btns {
+  display: flex;
+  flex-wrap: wrap; /* Allow buttons to wrap */
+  gap: 10px; /* Spacing between buttons */
+  justify-content: center; /* Center buttons */
+}
+
+/* Adjust button size */
+.icon-button-1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Spacing between icon and text */
+  padding: 6px 12px; /* Smaller padding for compact size */
+  font-size: 14px; /* Slightly smaller font */
+  border-radius: 16px; /* Adjusted for smaller buttons */
+  transition: all 0.3s ease; /* Retain smooth hover effect */
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  .res-btns {
+    display: grid; /* Switch to grid layout */
+    grid-template-columns: repeat(2, 1fr); /* 2 columns with equal width */
+    gap: 8px; /* Reduce gap for compact spacing */
+  }
+
+  .icon-button-1 {
+    padding: 4px 10px; /* Compact padding on mobile */
+    font-size: 12px; /* Further reduce font size */
+    border-radius: 14px; /* Smaller button corners */
+  }
+
+  .icon-1 {
+    font-size: 18px; /* Adjust icon size */
+  }
+
+  .text-1 {
+    font-size: 12px; /* Adjust text size */
+    letter-spacing: 0.5px; /* Tighter spacing for compact look */
+  }
+}
+
 .title-div {
   display: flex;
   flex-direction: row;

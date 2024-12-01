@@ -23,6 +23,7 @@ import MarkerInfoWindow from "./MarkerInfoWindow"
 import { createRoot } from "react-dom/client"
 import AddressForm from "./AddressForm"
 import getAddressesService from "./getAddressesService"
+import toast from "react-hot-toast"
 
 export default function AddressModal({ isOpen, onClose }) {
   const [coordinates, setCoordinates] = useState({ lat: 42.8746, lng: 74.5698 })
@@ -78,6 +79,7 @@ export default function AddressModal({ isOpen, onClose }) {
     setSelectedAddress(address)
     localStorage.setItem("currentAddress", JSON.stringify(address))
     handleCloseModal()
+    toast.success("Delivery Address Selected")
     console.log("Current Address: ", localStorage.getItem("currentAddress"))
   }
 
