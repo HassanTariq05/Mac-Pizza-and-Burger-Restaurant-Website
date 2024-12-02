@@ -24,10 +24,11 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons"
 import DialogModal from "../components/LoginConfirmationModal"
 import LoginConfirmationModal from "../components/LoginConfirmationModal"
 import createCartService from "../components/createCartService"
+import "../css/ProductCheckout.css"
 
 const CouponSection = ({
   warnings,
-  showBilling,
+  delivery,
   discount,
   setDiscount,
   subTotalPrice,
@@ -191,7 +192,7 @@ const CouponSection = ({
         </div>
       )}
 
-      {warnings.length > 0 && showBilling && (
+      {warnings.length > 0 && delivery && (
         <div className="warnings">
           <ul className="warnIcon">
             <FontAwesomeIcon icon={faExclamationCircle} />
@@ -286,7 +287,7 @@ const ProductCheckout = () => {
   const navigate = useNavigate()
   const [{ basket }] = useStateValue()
 
-  const [showBilling, setShowBilling] = useState(true)
+  const [delivery, setdelivery] = useState(true)
   const [selectedShipping, setSelectedShipping] = useState("delivery")
 
   const handleChange = (e) => {
@@ -297,7 +298,7 @@ const ProductCheckout = () => {
   const handleShippingChange = (e) => {
     const value = e.target.value
     setSelectedShipping(value)
-    setShowBilling(value !== "point")
+    setdelivery(value !== "point")
   }
 
   const [shippingCost, setShippingCost] = useState(0)
@@ -352,11 +353,11 @@ const ProductCheckout = () => {
       newWarnings.push("Billing Last name is a required field.")
     if (!formData.phone) newWarnings.push("Billing Phone is a required field.")
 
-    if (showBilling) {
+    if (delivery) {
       setWarnings(newWarnings)
     }
 
-    if (!showBilling || newWarnings.length === 0) {
+    if (!delivery || newWarnings.length === 0) {
       loginUser()
     }
   }
@@ -516,7 +517,7 @@ const ProductCheckout = () => {
           />
           <CouponSection
             warnings={warnings}
-            showBilling={showBilling}
+            delivery={delivery}
             discount={discount}
             setDiscount={setDiscount}
             subTotalPrice={subTotalPrice}
@@ -525,139 +526,14 @@ const ProductCheckout = () => {
           />
           <div className="checkout-content-box">
             <div className="row1">
-              <div className="col-lg-6 col-12">
-                <div className="checkout-from-wrapper">
-                  <h3>BILLING</h3>
-                  {showBilling && (
-                    <div className="">
-                      <div id="" style={{ width: "100%", height: "450px" }}>
-                        <APIProvider
-                          apiKey={GOOGLE_MAPS_API_KEY}
-                          onLoad={(map) => {
-                            setMap(map)
-                          }}
-                        >
-                          <Map
-                            mapId="1"
-                            onClick={handleMapClick}
-                            defaultZoom={17}
-                            defaultCenter={{ lat: 42.8724925, lng: 74.6121651 }}
-                            onCameraChanged={(ev) => {
-                              setMap(ev.map)
-                            }}
-                          >
-                            <AdvancedMarker
-                              key="User"
-                              position={userMarker}
-                            ></AdvancedMarker>
-                          </Map>
-                        </APIProvider>
-                      </div>
-                    </div>
-                  )}
-                  <div className="checkout-from">
-                    <form>
-                      <div className="row">
-                        <div className="col-lg-12">
-                          <div className="input-wrap">
-                            <label>
-                              Email address <span>*</span>
-                            </label>
-                            <input
-                              type="email"
-                              name="email"
-                              value={formData.email}
-                              onChange={handleChange}
-                            />
-                          </div>
-                        </div>
-                        <div className="col-lg-6 col-12">
-                          <div className="input-wrap">
-                            <label>
-                              First name <span>*</span>
-                            </label>
-                            <input
-                              type="text"
-                              name="firstName"
-                              value={formData.firstName}
-                              onChange={handleChange}
-                            />
-                          </div>
-                        </div>
-                        <div className="col-lg-6 col-12">
-                          <div className="input-wrap">
-                            <label>
-                              Last name <span>*</span>
-                            </label>
-                            <input
-                              type="text"
-                              name="lastName"
-                              value={formData.lastName}
-                              onChange={handleChange}
-                            />
-                          </div>
-                        </div>
-                        {showBilling && (
-                          <div className="col-lg-12 col-12">
-                            <div className="input-wrap">
-                              <label>
-                                Country / Region <span>*</span>
-                              </label>
-                              <p>Kyrgyzstan</p>
-                            </div>
-                          </div>
-                        )}
-                        <div className="col-lg-12">
-                          <div className="input-wrap">
-                            <label>
-                              Street address <span>*</span>
-                            </label>
-                            <input
-                              type="text"
-                              placeholder="House number and street name"
-                              name="streetAddress"
-                              value={formData.streetAddress}
-                              onChange={handleChange}
-                            />
-                          </div>
-                        </div>
-                        <div className="col-lg-12">
-                          <div className="input-wrap">
-                            <label>
-                              Phone <span>*</span>
-                            </label>
-                            <input
-                              type="text"
-                              name="phone"
-                              value={formData.phone}
-                              onChange={handleChange}
-                            />
-                          </div>
-                        </div>
-                        <div className="col-lg-12 col-12">
-                          <h3 className="mb-3">ADDITIONAL INFORMATION</h3>
-                          <div className="input-wrap">
-                            <label>Order notes (optional)</label>
-                            <textarea
-                              rows="5"
-                              cols="10"
-                              placeholder={
-                                showBilling
-                                  ? "Notes about your order, e.g special notes for delivery."
-                                  : "Notes about your order, e.g special notes for pickup."
-                              }
-                              name="orderNotes"
-                              value={formData.orderNotes}
-                              onChange={handleChange}
-                            ></textarea>
-                          </div>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-              <div className="col-lg-6 col-12">
+              <div
+                style={{
+                  border: "1px solid gainsboro",
+                  borderRadius: "8px",
+                  paddingBottom: "20px",
+                }}
+                className="col-lg-6 col-12"
+              >
                 <div className="checkout-container">
                   <table className="table">
                     <thead>
@@ -735,7 +611,7 @@ const ProductCheckout = () => {
                       </tr>
                     </tbody>
                   </table>
-                  {showBilling ? (
+                  {delivery ? (
                     <div className="payment-method-wrapper">
                       <div className="payment-method">
                         <div className="payment-method-title">
@@ -779,6 +655,161 @@ const ProductCheckout = () => {
                           Place order
                         </button>
                       </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div style={{ border: "none" }} className="col-lg-6 col-12">
+                <div className="checkout-from-wrapper">
+                  {delivery && (
+                    <div className="deliver-to-container">
+                      <h3>Deliver To:</h3>
+                      <table className="details-table">
+                        <tbody>
+                          <tr>
+                            <td className="label">Name</td>
+                            <td className="value">
+                              {JSON.parse(localStorage.getItem("user"))
+                                .firstname +
+                                " " +
+                                JSON.parse(localStorage.getItem("user"))
+                                  .lastname}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="label">Phone No.</td>
+                            <td className="value">
+                              {JSON.parse(localStorage.getItem("user")).phone}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="label">Address</td>
+                            <td className="value">
+                              {
+                                JSON.parse(
+                                  JSON.parse(
+                                    localStorage.getItem("currentAddress")
+                                  ).street_house_number
+                                ).address
+                              }
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="label">City</td>
+                            <td className="value">
+                              {
+                                JSON.parse(
+                                  JSON.parse(
+                                    localStorage.getItem("currentAddress")
+                                  ).street_house_number
+                                ).address1
+                              }
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                  {!delivery && (
+                    <div className="checkout-from">
+                      <form>
+                        <div className="row">
+                          <div className="col-lg-12">
+                            <div className="input-wrap">
+                              <label>
+                                Email address <span>*</span>
+                              </label>
+                              <input
+                                type="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-lg-6 col-12">
+                            <div className="input-wrap">
+                              <label>
+                                First name <span>*</span>
+                              </label>
+                              <input
+                                type="text"
+                                name="firstName"
+                                value={formData.firstName}
+                                onChange={handleChange}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-lg-6 col-12">
+                            <div className="input-wrap">
+                              <label>
+                                Last name <span>*</span>
+                              </label>
+                              <input
+                                type="text"
+                                name="lastName"
+                                value={formData.lastName}
+                                onChange={handleChange}
+                              />
+                            </div>
+                          </div>
+                          {delivery && (
+                            <div className="col-lg-12 col-12">
+                              <div className="input-wrap">
+                                <label>
+                                  Country / Region <span>*</span>
+                                </label>
+                                <p>Kyrgyzstan</p>
+                              </div>
+                            </div>
+                          )}
+                          <div className="col-lg-12">
+                            <div className="input-wrap">
+                              <label>
+                                Street address <span>*</span>
+                              </label>
+                              <input
+                                type="text"
+                                placeholder="House number and street name"
+                                name="streetAddress"
+                                value={formData.streetAddress}
+                                onChange={handleChange}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-lg-12">
+                            <div className="input-wrap">
+                              <label>
+                                Phone <span>*</span>
+                              </label>
+                              <input
+                                type="text"
+                                name="phone"
+                                value={formData.phone}
+                                onChange={handleChange}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-lg-12 col-12">
+                            <h3 className="mb-3">ADDITIONAL INFORMATION</h3>
+                            <div className="input-wrap">
+                              <label>Order notes (optional)</label>
+                              <textarea
+                                rows="5"
+                                cols="10"
+                                placeholder={
+                                  delivery
+                                    ? "Notes about your order, e.g special notes for delivery."
+                                    : "Notes about your order, e.g special notes for pickup."
+                                }
+                                name="orderNotes"
+                                value={formData.orderNotes}
+                                onChange={handleChange}
+                              ></textarea>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
                     </div>
                   )}
                 </div>

@@ -11,9 +11,12 @@ import couponService from "../components/couponService"
 import authService from "../components/authService"
 import toast from "react-hot-toast"
 import deleteCartService from "../components/deleteCartService"
+import AddressModal from "../components/AddressModal"
+import deliveryPriceService from "../components/deliveryPriceService"
 
 const Cart = () => {
   const [products, setProducts] = useState([])
+  const [deliveryPrice, setDeliveryPrice] = useState()
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -47,12 +50,30 @@ const Cart = () => {
   const [showCouponInput, setShowCouponInput] = useState(false)
   const [couponCode, setCouponCode] = useState("")
   const [emptyBasket, setEmptyBasket] = useState(true)
+  const [AddressModalOpen, setAddressModalOpen] = useState(false)
+
+  const onClose = () => {
+    setAddressModalOpen(false)
+  }
+
+  const handleAddressModalOpen = () => {
+    setAddressModalOpen(true)
+  }
 
   useEffect(() => {
     setEmptyBasket(basket.length === 0)
   }, [basket])
 
   const totalPrice = () => {
+    const basketPrice = basket
+      .reduce((total, item) => total + item.price * item.quantity, 0)
+      .toFixed(2)
+
+    const total = parseInt(basketPrice) + parseInt(deliveryPrice)
+    return total + ".00"
+  }
+
+  const subTotalPrice = () => {
     return basket
       .reduce((total, item) => total + item.price * item.quantity, 0)
       .toFixed(2)
@@ -98,6 +119,74 @@ const Cart = () => {
     } catch (error) {
       console.error("Error creating coupon:", error)
     }
+  }
+  const calculateDistance = (coord1, coord2) => {
+    if (!coord1 || !coord2) return Infinity
+
+    const R = 6371e3 // Earth's radius in meters
+    const lat1 = (coord1.lat * Math.PI) / 180
+    const lat2 = (coord2.lat * Math.PI) / 180
+    const deltaLat = ((coord2.lat - coord1.lat) * Math.PI) / 180
+    const deltaLng = ((coord2.lng - coord1.lng) * Math.PI) / 180
+
+    const a =
+      Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+      Math.cos(lat1) *
+        Math.cos(lat2) *
+        Math.sin(deltaLng / 2) *
+        Math.sin(deltaLng / 2)
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+
+    return (R * c) / 1000
+  }
+
+  const getUserAddress = () => {
+    getDeliveryPrice()
+    return JSON.parse(
+      JSON.parse(localStorage.getItem("currentAddress")).street_house_number
+    ).address
+  }
+
+  const matchPrice = (calculatedDistance, data) => {
+    const matchedItem = data.find(
+      (item) =>
+        calculatedDistance >= item.min_distance_km &&
+        calculatedDistance <= item.max_distance_km
+    )
+    return matchedItem
+      ? matchedItem.price
+      : "No price available for the given distance"
+  }
+
+  const getDeliveryPrice = async () => {
+    const lat = JSON.parse(localStorage.getItem("currentAddress")).location
+      .latitude
+
+    const lng = JSON.parse(localStorage.getItem("currentAddress")).location
+      .longitude
+
+    const addressCoordsObj = {
+      lat,
+      lng,
+    }
+
+    const getDeliveryDistanceResponse = await deliveryPriceService.getPrice()
+
+    const distances = getDeliveryDistanceResponse.data.data
+
+    const maxDistanceObj = distances.reduce((maxObj, item) => {
+      return item.max_distance_km > (maxObj?.max_distance_km || 0)
+        ? item
+        : maxObj
+    }, null)
+
+    const calculatedDistance = calculateDistance(addressCoordsObj, {
+      lat: maxDistanceObj.shop.lat_long.latitude,
+      lng: maxDistanceObj.shop.lat_long.longitude,
+    })
+
+    const price = matchPrice(calculatedDistance, distances)
+    setDeliveryPrice(price)
   }
 
   return (
@@ -200,6 +289,45 @@ const Cart = () => {
               </div>
               <div className="col-md-4">
                 <div className="cart-checkout">
+                  <table>
+                    <tbody>
+                      <tr className="trrr">
+                        <td>
+                          <span
+                            className={
+                              getUserAddress()
+                                ? "address-text label-text"
+                                : "not-selected-text label-text"
+                            }
+                          >
+                            Delivery Location:{" "}
+                          </span>
+
+                          {getUserAddress() || "Not Selected"}
+                        </td>
+                        <td className="text-right">
+                          <button
+                            onClick={handleAddressModalOpen}
+                            id="cbtn"
+                            href="#"
+                            className="btn btn-md btn-salmon tra-salmon-hover"
+                            style={{
+                              width: "100px",
+                              height: "60px",
+                              fontSize: "12px",
+                              padding: "4px",
+                              marginLeft: "10px",
+                            }}
+                          >
+                            Change Location
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <AddressModal isOpen={AddressModalOpen} onClose={onClose} />
+                <div className="cart-checkout">
                   <p className="c">CART TOTALS</p>
                   <table>
                     <tbody>
@@ -211,7 +339,7 @@ const Cart = () => {
                         <td>Subtotal</td>
                         <td className="text-right">
                           <CurrencyFormat
-                            value={totalPrice()}
+                            value={subTotalPrice()}
                             displayType={"text"}
                             thousandSeparator={true}
                             suffix={"som"}
@@ -222,7 +350,10 @@ const Cart = () => {
                       <tr>
                         <td>Shipping</td>
                         <td className="text-right">
-                          <div>On Checkout</div>
+                          <div>
+                            {`${deliveryPrice}.00som` ||
+                              "Select address to view"}
+                          </div>
                         </td>
                       </tr>
                       <tr className="last-tr">

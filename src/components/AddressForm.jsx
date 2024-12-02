@@ -138,7 +138,7 @@ const AddressForm = ({
                   style={{ cursor: "pointer" }}
                 />
               </span>{" "}
-              {selectedEditAddress !== null
+              {selectedEditAddress
                 ? JSON.parse(selectedEditAddress?.street_house_number)?.address
                 : formattedAddress}
             </p>
