@@ -47,10 +47,17 @@ export default function AddressModal({ isOpen, onClose }) {
 
   const [addressesData, setAddressesData] = useState([])
   const getAddresses = async () => {
-    const token = localStorage.getItem("token")
-    const addressesDataResponse = await getAddressesService.get(token)
-    console.log("Data: ", addressesDataResponse.data.data)
-    setAddressesData(addressesDataResponse.data.data)
+    try {
+      const token = localStorage.getItem("token")
+      if (!token) {
+        return
+      }
+      const addressesDataResponse = await getAddressesService.get(token)
+      console.log("Data: ", addressesDataResponse.data.data)
+      setAddressesData(addressesDataResponse.data.data)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   useEffect(() => {

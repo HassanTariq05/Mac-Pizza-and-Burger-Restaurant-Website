@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import CartProduct from "../components/CartProduct"
 import { useStateValue } from "../components/StateProvider"
 import CurrencyFormat from "react-currency-format"
-import "../css/Cart.css" // Import the CSS file
+import "../css/Cart.css"
 import ShopProduct from "../components/ShopProduct"
 import { baseURL } from "../components/service"
 import productService from "../components/productService"
@@ -13,10 +13,12 @@ import toast from "react-hot-toast"
 import deleteCartService from "../components/deleteCartService"
 import AddressModal from "../components/AddressModal"
 import deliveryPriceService from "../components/deliveryPriceService"
+import { error } from "jquery"
+import useUser from "../components/useUser"
 
 const Cart = () => {
   const [products, setProducts] = useState([])
-  const [deliveryPrice, setDeliveryPrice] = useState()
+  const [deliveryPrice, setDeliveryPrice] = useState("")
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -35,19 +37,25 @@ const Cart = () => {
   useEffect(() => {
     const deleteCart = async () => {
       try {
+        if (!localStorage.getItem("token")) {
+          throw error
+        }
         const headers = {
           Authorization: localStorage.getItem("token"),
         }
         const deleteCartResponse = await deleteCartService.delete(headers)
       } catch (error) {
-        toast.error("Error deleting cart")
+        if (loggedIn) {
+          toast.error("Error deleting cart")
+        } else {
+          console.log("Not logged in")
+        }
       }
     }
     deleteCart()
   }, [])
 
   const [{ basket }, dispatch] = useStateValue()
-  const [showCouponInput, setShowCouponInput] = useState(false)
   const [couponCode, setCouponCode] = useState("")
   const [emptyBasket, setEmptyBasket] = useState(true)
   const [AddressModalOpen, setAddressModalOpen] = useState(false)
@@ -70,7 +78,7 @@ const Cart = () => {
       .toFixed(2)
 
     const total = parseInt(basketPrice) + parseInt(deliveryPrice)
-    return total + ".00"
+    return deliveryPrice !== "" ? total + ".00" : "Select Address to view"
   }
 
   const subTotalPrice = () => {
@@ -141,10 +149,25 @@ const Cart = () => {
   }
 
   const getUserAddress = () => {
-    getDeliveryPrice()
-    return JSON.parse(
-      JSON.parse(localStorage.getItem("currentAddress")).street_house_number
-    ).address
+    const currentAddress = localStorage.getItem("currentAddress")
+
+    if (!currentAddress) {
+      return null
+    }
+
+    try {
+      const parsedAddress = JSON.parse(currentAddress)
+
+      if (!parsedAddress?.street_house_number) {
+        return null
+      }
+
+      const address = JSON.parse(parsedAddress.street_house_number).address
+
+      return address || null
+    } catch (error) {
+      return null
+    }
   }
 
   const matchPrice = (calculatedDistance, data) => {
@@ -188,6 +211,8 @@ const Cart = () => {
     const price = matchPrice(calculatedDistance, distances)
     setDeliveryPrice(price)
   }
+
+  const { loggedIn } = useUser()
 
   return (
     <div id="page" className="page">
@@ -351,22 +376,15 @@ const Cart = () => {
                         <td>Shipping</td>
                         <td className="text-right">
                           <div>
-                            {`${deliveryPrice}.00som` ||
-                              "Select address to view"}
+                            {deliveryPrice !== ""
+                              ? `${deliveryPrice}.00som`
+                              : "Select address to view"}{" "}
                           </div>
                         </td>
                       </tr>
                       <tr className="last-tr">
                         <td>Total</td>
-                        <td className="text-right">
-                          <CurrencyFormat
-                            value={totalPrice()}
-                            displayType={"text"}
-                            thousandSeparator={true}
-                            suffix={"som"}
-                            renderText={(value) => <div>{value}</div>}
-                          />
-                        </td>
+                        <td className="text-right">{totalPrice()}</td>
                       </tr>
                     </tbody>
                   </table>
