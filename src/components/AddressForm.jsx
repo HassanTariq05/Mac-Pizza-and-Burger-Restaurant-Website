@@ -56,7 +56,7 @@ const AddressForm = ({
       const createAddressPayload = {
         firstname: userObj.firstname,
         lastname: userObj.lastname,
-        phone: userObj.phone,
+        phone: userObj.phone || "12345",
         zipcode: "65500",
         region_id: "1",
         country_id: "1",

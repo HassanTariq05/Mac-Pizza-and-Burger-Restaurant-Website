@@ -15,7 +15,8 @@ function Header() {
   const navigate = useNavigate()
   const handleProfileButtonClick = () => {
     const user = localStorage.getItem("user")
-    if (user) {
+    const isGuestUser = localStorage.getItem("isGuestUser")
+    if (user && isGuestUser == "false") {
       navigate("/user-profile")
     } else {
       navigate("/login")
@@ -89,7 +90,8 @@ function Header() {
             <ShoppingCart size={28} className="icon" />
           </Link>
 
-          {localStorage.getItem("user") !== null ? (
+          {localStorage.getItem("user") !== null &&
+          localStorage.getItem("isGuestUser") === "false" ? (
             <img
               onClick={handleProfileButtonClick}
               className="profile-icon-img"

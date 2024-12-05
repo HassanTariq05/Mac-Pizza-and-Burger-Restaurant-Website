@@ -39,8 +39,9 @@ import UserProfile from "./pages/UserProfile"
 import PersonalData from "./pages/PersonalData"
 import AllOrders from "./pages/AllOrders"
 import OrderDetail from "./pages/OrderDetail"
-import OrderProgressBar from "./components/OrderProgressBar"
 import AddressModal from "./components/AddressModal"
+import useUser from "./components/useUser"
+import ProtectedRoute from "./components/ProtectedRoute"
 
 function MainContent() {
   const location = useLocation()
@@ -64,8 +65,22 @@ function MainContent() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/otp-verification" element={<Otp />} />
-        <Route path="/user-profile" element={<UserProfile />} />
-        <Route path="/user-profile/personal-data" element={<PersonalData />} />
+        <Route
+          path="/user-profile"
+          element={
+            <ProtectedRoute allowedForGuests={false}>
+              <UserProfile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/user-profile/personal-data"
+          element={
+            <ProtectedRoute allowedForGuests={false}>
+              <PersonalData />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/about" element={<About />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/shop/:category" element={<Shop />} />
@@ -73,9 +88,23 @@ function MainContent() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/home" element={<Home />} />
         <Route path="/checkout" element={<ProductCheckout />} />
-        <Route path="/orders" element={<AllOrders />} />
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoute allowedForGuests={false}>
+              <AllOrders />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/order/:id" element={<Orders />} />
-        <Route path="/orders/order-detail/:id" element={<OrderDetail />} />
+        <Route
+          path="/orders/order-detail/:id"
+          element={
+            <ProtectedRoute allowedForGuests={false}>
+              <OrderDetail />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/shop/add-to-cart/:title/:size"
           element={<AddToCartReceipt />}
@@ -92,10 +121,30 @@ function MainContent() {
 function App() {
   const [{ basket }, dispatch] = useStateValue("")
 
+  const { loginGuestUser, isUserLoggedIn } = useUser()
+
+  // Sync basket with local storage
   useEffect(() => {
     localStorage.setItem("basket", JSON.stringify(basket))
-    console.log("Local Storage:", localStorage)
+    console.log("Local Storage (Basket):", localStorage.getItem("basket"))
   }, [basket])
+
+  // Check and handle user login
+  useEffect(() => {
+    const handleUserLogin = async () => {
+      const isGuestUser = localStorage.getItem("isGuestUser") === "true"
+
+      if (isUserLoggedIn() && !isGuestUser) {
+        console.log("User already logged in")
+      } else {
+        console.log("Logging in as guest...")
+        await loginGuestUser()
+        console.log("Guest user successfully logged in")
+      }
+    }
+
+    handleUserLogin()
+  }, [loginGuestUser, isUserLoggedIn])
 
   return (
     <Router basename="/">

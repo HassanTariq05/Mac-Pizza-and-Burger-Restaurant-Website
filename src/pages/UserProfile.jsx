@@ -113,8 +113,7 @@ const UserProfile = () => {
   }
 
   const handleLogout = () => {
-    localStorage.removeItem("user")
-    localStorage.removeItem("profilePic")
+    localStorage.clear()
     navigate("/home")
     toast.success("Logged out successfully")
   }
@@ -183,13 +182,15 @@ const UserProfile = () => {
           </button>
           <AddressModal isOpen={AddressModalOpen} onClose={onClose} />
 
-          <button className="profile-option-button">
-            <div className="profile-option-content">
-              <Logs />
-              <span>My Orders</span>
-            </div>
-            <ArrowRight />
-          </button>
+          <Link to={"/orders"}>
+            <button className="profile-option-button">
+              <div className="profile-option-content">
+                <Logs />
+                <span>My Orders</span>
+              </div>
+              <ArrowRight />
+            </button>
+          </Link>
         </div>
       </div>
 

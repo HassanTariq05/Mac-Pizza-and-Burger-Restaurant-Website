@@ -182,35 +182,64 @@ const Cart = () => {
   }
 
   const getDeliveryPrice = async () => {
-    const lat = JSON.parse(localStorage.getItem("currentAddress")).location
-      .latitude
+    try {
+      const currentAddress = JSON.parse(localStorage.getItem("currentAddress"))
+      if (!currentAddress || !currentAddress.location) {
+        setDeliveryPrice("Select address to view")
+        return
+      }
 
-    const lng = JSON.parse(localStorage.getItem("currentAddress")).location
-      .longitude
+      const { latitude: lat, longitude: lng } = currentAddress.location
+      if (!lat || !lng) {
+        setDeliveryPrice("Select address to view")
+        return
+      }
 
-    const addressCoordsObj = {
-      lat,
-      lng,
+      const addressCoordsObj = { lat, lng }
+
+      const getDeliveryDistanceResponse = await deliveryPriceService.getPrice()
+      const distances = getDeliveryDistanceResponse?.data?.data
+
+      if (!Array.isArray(distances) || distances.length === 0) {
+        setDeliveryPrice("No delivery options available")
+        return
+      }
+
+      const maxDistanceObj = distances.reduce(
+        (maxObj, item) =>
+          item.max_distance_km > (maxObj?.max_distance_km || 0) ? item : maxObj,
+        null
+      )
+
+      if (
+        !maxDistanceObj ||
+        !maxDistanceObj.shop ||
+        !maxDistanceObj.shop.lat_long
+      ) {
+        setDeliveryPrice("No delivery options available")
+        return
+      }
+
+      const calculatedDistance = calculateDistance(addressCoordsObj, {
+        lat: maxDistanceObj.shop.lat_long.latitude,
+        lng: maxDistanceObj.shop.lat_long.longitude,
+      })
+
+      const price = matchPrice(calculatedDistance, distances)
+
+      setDeliveryPrice(
+        price !== "" ? `${price}.00som` : "Select address to view"
+      )
+    } catch (error) {
+      console.error("Error fetching delivery price:", error)
+      setDeliveryPrice("Error fetching delivery price")
     }
-
-    const getDeliveryDistanceResponse = await deliveryPriceService.getPrice()
-
-    const distances = getDeliveryDistanceResponse.data.data
-
-    const maxDistanceObj = distances.reduce((maxObj, item) => {
-      return item.max_distance_km > (maxObj?.max_distance_km || 0)
-        ? item
-        : maxObj
-    }, null)
-
-    const calculatedDistance = calculateDistance(addressCoordsObj, {
-      lat: maxDistanceObj.shop.lat_long.latitude,
-      lng: maxDistanceObj.shop.lat_long.longitude,
-    })
-
-    const price = matchPrice(calculatedDistance, distances)
-    setDeliveryPrice(price)
   }
+
+  useEffect(() => {
+    getDeliveryPrice()
+    console.log("Local storage: ", localStorage)
+  }, [onClose])
 
   const { loggedIn } = useUser()
 
@@ -375,11 +404,7 @@ const Cart = () => {
                       <tr>
                         <td>Shipping</td>
                         <td className="text-right">
-                          <div>
-                            {deliveryPrice !== ""
-                              ? `${deliveryPrice}.00som`
-                              : "Select address to view"}{" "}
-                          </div>
+                          <div>{deliveryPrice}</div>
                         </td>
                       </tr>
                       <tr className="last-tr">

@@ -465,6 +465,11 @@ const ProductCheckout = () => {
     }
   }
 
+  const isGuestUser = () => {
+    const isGuest = localStorage.getItem("isGuestUser") === "true"
+    return isGuest
+  }
+
   return (
     <>
       <div id="page" className="page">
@@ -661,7 +666,7 @@ const ProductCheckout = () => {
               </div>
               <div style={{ border: "none" }} className="col-lg-6 col-12">
                 <div className="checkout-from-wrapper">
-                  {delivery && (
+                  {delivery && !isGuestUser() && (
                     <div className="deliver-to-container">
                       <h3>Deliver To:</h3>
                       <table className="details-table">
@@ -710,10 +715,13 @@ const ProductCheckout = () => {
                       </table>
                     </div>
                   )}
-                  {!delivery && (
+                  {isGuestUser() && (
                     <div className="checkout-from">
                       <form>
-                        <div className="row">
+                        <div
+                          style={{ justifyContent: "center" }}
+                          className="row"
+                        >
                           <div className="col-lg-12">
                             <div className="input-wrap">
                               <label>
@@ -753,30 +761,6 @@ const ProductCheckout = () => {
                               />
                             </div>
                           </div>
-                          {delivery && (
-                            <div className="col-lg-12 col-12">
-                              <div className="input-wrap">
-                                <label>
-                                  Country / Region <span>*</span>
-                                </label>
-                                <p>Kyrgyzstan</p>
-                              </div>
-                            </div>
-                          )}
-                          <div className="col-lg-12">
-                            <div className="input-wrap">
-                              <label>
-                                Street address <span>*</span>
-                              </label>
-                              <input
-                                type="text"
-                                placeholder="House number and street name"
-                                name="streetAddress"
-                                value={formData.streetAddress}
-                                onChange={handleChange}
-                              />
-                            </div>
-                          </div>
                           <div className="col-lg-12">
                             <div className="input-wrap">
                               <label>
@@ -790,22 +774,29 @@ const ProductCheckout = () => {
                               />
                             </div>
                           </div>
-                          <div className="col-lg-12 col-12">
-                            <h3 className="mb-3">ADDITIONAL INFORMATION</h3>
-                            <div className="input-wrap">
-                              <label>Order notes (optional)</label>
-                              <textarea
-                                rows="5"
-                                cols="10"
-                                placeholder={
-                                  delivery
-                                    ? "Notes about your order, e.g special notes for delivery."
-                                    : "Notes about your order, e.g special notes for pickup."
-                                }
-                                name="orderNotes"
-                                value={formData.orderNotes}
-                                onChange={handleChange}
-                              ></textarea>
+
+                          <div
+                            className="acc-div"
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              textAlign: "center",
+                              gap: "8px",
+                              height: "100%",
+                            }}
+                          >
+                            <div className="col-lg-12">
+                              <span>
+                                Register to avail rewards and discounts
+                              </span>
+                            </div>
+                            <div className="col-lg-12">
+                              <span>OR</span>
+                            </div>
+                            <div className="col-lg-12">
+                              <span>Already have an account? Sign In</span>
                             </div>
                           </div>
                         </div>
