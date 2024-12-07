@@ -9,6 +9,7 @@ import profileUpdateService from "../components/profileUpdateService"
 import toast from "react-hot-toast"
 import RecentOrder from "../components/RecentOrder"
 import AddressModal from "../components/AddressModal"
+import useUser from "../components/useUser"
 
 const UserProfile = () => {
   const [email, setEmail] = useState("-")
@@ -112,10 +113,13 @@ const UserProfile = () => {
     }
   }
 
+  const { loginGuestUser } = useUser()
+
   const handleLogout = () => {
     localStorage.clear()
     navigate("/home")
     toast.success("Logged out successfully")
+    loginGuestUser()
   }
 
   const token = localStorage.getItem("token")

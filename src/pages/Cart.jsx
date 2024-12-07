@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import CartProduct from "../components/CartProduct"
 import { useStateValue } from "../components/StateProvider"
 import CurrencyFormat from "react-currency-format"
@@ -15,10 +15,15 @@ import AddressModal from "../components/AddressModal"
 import deliveryPriceService from "../components/deliveryPriceService"
 import { error } from "jquery"
 import useUser from "../components/useUser"
+import DeliveryTypeModal from "../components/DeliveryTypeModal"
+import PickupAddressModal from "../components/PickupAddressModal"
 
 const Cart = () => {
   const [products, setProducts] = useState([])
-  const [deliveryPrice, setDeliveryPrice] = useState("")
+  const [deliveryPrice, setDeliveryPrice] = useState({
+    value: "",
+    validation: false,
+  })
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -59,13 +64,38 @@ const Cart = () => {
   const [couponCode, setCouponCode] = useState("")
   const [emptyBasket, setEmptyBasket] = useState(true)
   const [AddressModalOpen, setAddressModalOpen] = useState(false)
+  const [DeliveryTypeModalOpen, setDeliveryTypeModalOpen] = useState(false)
+  const [PickupAddressModalOpen, setPickupAddressModalOpen] = useState(false)
 
   const onClose = () => {
     setAddressModalOpen(false)
+    getDeliveryPrice()
+  }
+
+  const onDeliveryTypeModalClose = () => {
+    setDeliveryTypeModalOpen(false)
+  }
+
+  const onPickupAddressModalClose = () => {
+    setPickupAddressModalOpen(false)
   }
 
   const handleAddressModalOpen = () => {
     setAddressModalOpen(true)
+  }
+
+  const onDeliveryButtonClick = () => {
+    onDeliveryTypeModalClose()
+    handleAddressModalOpen()
+  }
+
+  const onPickupButtonClick = () => {
+    onDeliveryTypeModalClose()
+    setPickupAddressModalOpen(true)
+  }
+
+  const handleDeliveryTypeModalOpen = () => {
+    setDeliveryTypeModalOpen(true)
   }
 
   useEffect(() => {
@@ -77,8 +107,16 @@ const Cart = () => {
       .reduce((total, item) => total + item.price * item.quantity, 0)
       .toFixed(2)
 
-    const total = parseInt(basketPrice) + parseInt(deliveryPrice)
-    return deliveryPrice !== "" ? total + ".00" : "Select Address to view"
+    const deliveryPriceNumber = parseFloat(deliveryPrice.value)
+    const basketPriceNumber = parseFloat(basketPrice) || 0
+    const total =
+      localStorage.getItem("deliveryType") === "pickup"
+        ? basketPriceNumber
+        : basketPriceNumber + deliveryPriceNumber
+
+    return deliveryPrice !== "" && !isNaN(total)
+      ? total.toFixed(2) + "som"
+      : "Select Address to view"
   }
 
   const subTotalPrice = () => {
@@ -155,6 +193,10 @@ const Cart = () => {
       return null
     }
 
+    if (localStorage.getItem("deliveryType") === "pickup") {
+      return localStorage.getItem("currentAddress")
+    }
+
     try {
       const parsedAddress = JSON.parse(currentAddress)
 
@@ -176,6 +218,8 @@ const Cart = () => {
         calculatedDistance >= item.min_distance_km &&
         calculatedDistance <= item.max_distance_km
     )
+
+    localStorage.setItem("deliveryPriceId", matchedItem.id)
     return matchedItem
       ? matchedItem.price
       : "No price available for the given distance"
@@ -185,13 +229,13 @@ const Cart = () => {
     try {
       const currentAddress = JSON.parse(localStorage.getItem("currentAddress"))
       if (!currentAddress || !currentAddress.location) {
-        setDeliveryPrice("Select address to view")
+        setDeliveryPrice({ value: "Select address to view", validation: false })
         return
       }
 
       const { latitude: lat, longitude: lng } = currentAddress.location
       if (!lat || !lng) {
-        setDeliveryPrice("Select address to view")
+        setDeliveryPrice({ value: "Select address to view", validation: false })
         return
       }
 
@@ -201,7 +245,10 @@ const Cart = () => {
       const distances = getDeliveryDistanceResponse?.data?.data
 
       if (!Array.isArray(distances) || distances.length === 0) {
-        setDeliveryPrice("No delivery options available")
+        setDeliveryPrice({
+          value: "No delivery options available",
+          validation: false,
+        })
         return
       }
 
@@ -216,7 +263,10 @@ const Cart = () => {
         !maxDistanceObj.shop ||
         !maxDistanceObj.shop.lat_long
       ) {
-        setDeliveryPrice("No delivery options available")
+        setDeliveryPrice({
+          value: "No delivery options available",
+          validation: false,
+        })
         return
       }
 
@@ -227,21 +277,67 @@ const Cart = () => {
 
       const price = matchPrice(calculatedDistance, distances)
 
-      setDeliveryPrice(
-        price !== "" ? `${price}.00som` : "Select address to view"
-      )
+      setDeliveryPrice({
+        value: price !== "" ? `${price}.00som` : "Select address to view",
+        validation: true,
+      })
+      localStorage.setItem("shippingFee", price)
     } catch (error) {
       console.error("Error fetching delivery price:", error)
-      setDeliveryPrice("Error fetching delivery price")
+      setDeliveryPrice({
+        value: "Error fetching delivery price",
+        validation: false,
+      })
     }
   }
 
+  const getLocationTagType = () => {
+    const type = localStorage.getItem("deliveryType")
+    let tag
+    if (type !== null) {
+      if (type === "delivery") {
+        tag = "Delivery Location: "
+      } else if (type === "pickup") {
+        tag = "Pickup Location: "
+      }
+    } else {
+      tag = "Location: "
+    }
+
+    return tag
+  }
+
   useEffect(() => {
-    getDeliveryPrice()
-    console.log("Local storage: ", localStorage)
-  }, [onClose])
+    if (localStorage.getItem("isGuestUser") === "false") {
+      getDeliveryPrice()
+    }
+  }, [])
 
   const { loggedIn } = useUser()
+
+  const navigate = useNavigate()
+  const handleCheckoutClick = () => {
+    const currentAddress = localStorage.getItem("currentAddress")
+
+    console.log(localStorage)
+    if (currentAddress !== null) {
+      navigate("/checkout")
+    } else {
+      toast.error("Select address to proceed")
+    }
+  }
+
+  const getShippingFee = () => {
+    const fee = localStorage.getItem("shippingFee")
+    if (fee !== null) {
+      return fee
+    } else {
+      return "Address not selected"
+    }
+    // {deliveryPrice.validation
+    //   ? deliveryPrice.value
+    //   : "Address not selected"}
+  }
 
   return (
     <div id="page" className="page">
@@ -354,26 +450,27 @@ const Cart = () => {
                                 : "not-selected-text label-text"
                             }
                           >
-                            Delivery Location:{" "}
+                            {getLocationTagType()}
                           </span>
 
                           {getUserAddress() || "Not Selected"}
                         </td>
                         <td className="text-right">
                           <button
-                            onClick={handleAddressModalOpen}
+                            onClick={handleDeliveryTypeModalOpen}
                             id="cbtn"
                             href="#"
                             className="btn btn-md btn-salmon tra-salmon-hover"
                             style={{
                               width: "100px",
-                              height: "60px",
+                              height: "45px",
                               fontSize: "12px",
                               padding: "4px",
                               marginLeft: "10px",
+                              justifySelf: "end",
                             }}
                           >
-                            Change Location
+                            Change
                           </button>
                         </td>
                       </tr>
@@ -381,6 +478,16 @@ const Cart = () => {
                   </table>
                 </div>
                 <AddressModal isOpen={AddressModalOpen} onClose={onClose} />
+                <DeliveryTypeModal
+                  isOpen={DeliveryTypeModalOpen}
+                  onDeliveryTypeModalClose={onDeliveryTypeModalClose}
+                  onDeliveryButtonClick={onDeliveryButtonClick}
+                  onPickupButtonClick={onPickupButtonClick}
+                />
+                <PickupAddressModal
+                  isOpen={PickupAddressModalOpen}
+                  onPickupAddressModalClose={onPickupAddressModalClose}
+                />
                 <div className="cart-checkout">
                   <p className="c">CART TOTALS</p>
                   <table>
@@ -401,12 +508,18 @@ const Cart = () => {
                           />
                         </td>
                       </tr>
-                      <tr>
-                        <td>Shipping</td>
-                        <td className="text-right">
-                          <div>{deliveryPrice}</div>
-                        </td>
-                      </tr>
+                      {localStorage.getItem("deliveryType") !== "pickup" && (
+                        <tr>
+                          <td>Shipping</td>
+                          <td className="text-right">
+                            <div>
+                              {getShippingFee()}
+                              {".00som"}
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+
                       <tr className="last-tr">
                         <td>Total</td>
                         <td className="text-right">{totalPrice()}</td>
@@ -414,15 +527,14 @@ const Cart = () => {
                     </tbody>
                   </table>
                   <div className="checkout-button-sticky">
-                    <Link to={"/checkout"}>
-                      <button
-                        id="cbtn"
-                        href="#"
-                        className="btn btn-md btn-salmon tra-salmon-hover"
-                      >
-                        Proceed To Checkout
-                      </button>
-                    </Link>
+                    <button
+                      id="cbtn"
+                      href="#"
+                      className="btn btn-md btn-salmon tra-salmon-hover"
+                      onClick={handleCheckoutClick}
+                    >
+                      Proceed To Checkout
+                    </button>
                   </div>
                   <Link to={"/shop"}>
                     <button

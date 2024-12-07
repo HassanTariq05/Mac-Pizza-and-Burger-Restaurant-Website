@@ -345,16 +345,19 @@ const ProductCheckout = () => {
 
   const placeOrder = () => {
     const newWarnings = []
-    if (!formData.email)
-      newWarnings.push("Billing Email address is a required field.")
-    if (!formData.firstName)
-      newWarnings.push("Billing First name is a required field.")
-    if (!formData.lastName)
-      newWarnings.push("Billing Last name is a required field.")
-    if (!formData.phone) newWarnings.push("Billing Phone is a required field.")
+    if (isGuestUser()) {
+      if (!formData.email)
+        newWarnings.push("Billing Email address is a required field.")
+      if (!formData.firstName)
+        newWarnings.push("Billing First name is a required field.")
+      if (!formData.lastName)
+        newWarnings.push("Billing Last name is a required field.")
+      if (!formData.phone)
+        newWarnings.push("Billing Phone is a required field.")
 
-    if (delivery) {
-      setWarnings(newWarnings)
+      if (delivery) {
+        setWarnings(newWarnings)
+      }
     }
 
     if (!delivery || newWarnings.length === 0) {
@@ -363,11 +366,12 @@ const ProductCheckout = () => {
   }
 
   const totalPrice = () => {
-    return (
-      basket.reduce((total, item) => total + item.price * item.quantity, 0) -
-      discount +
-      shippingCost
-    ).toFixed(2)
+    return localStorage.getItem("deliveryType") === "delivery"
+      ? basket.reduce((total, item) => total + item.price * item.quantity, 0) -
+          discount +
+          parseInt(localStorage.getItem("shippingFee"))
+      : basket.reduce((total, item) => total + item.price * item.quantity, 0) -
+          discount
   }
   const subTotalPrice = () => {
     return basket
@@ -383,7 +387,18 @@ const ProductCheckout = () => {
       console.log("User: ", user)
       const token = localStorage.getItem("token")
       createCart(user.phone)
-      // createOrder(token, user.phone)
+    }
+  }
+
+  const getDeliveryType = () => {
+    const type = localStorage.getItem("deliveryType")
+
+    if (type === "delivery") {
+      return "delivery"
+    } else if (type === "pickup") {
+      return "point"
+    } else {
+      return null
     }
   }
 
@@ -411,16 +426,23 @@ const ProductCheckout = () => {
   }
 
   const createOrder = async (token, guestUserPhone, cart_id) => {
+    console.log("Creating ORder...")
     try {
       const params = {
-        user_id: 108,
+        user_id: JSON.parse(localStorage.getItem("user")).id,
         currency_id: 2,
         rate: 1,
         payment_id: 1,
-        delivery_price_id: selectedShipping === "delivery" ? 1 : null,
-        delivery_point_id: selectedShipping === "point" ? 1 : null,
+        delivery_price_id:
+          localStorage.getItem("deliveryType") === "delivery"
+            ? parseInt(localStorage.getItem("deliveryPriceId"))
+            : null,
+        delivery_point_id:
+          localStorage.getItem("deliveryType") === "pickup"
+            ? parseInt(localStorage.getItem("deliveryPointId"))
+            : null,
         address:
-          selectedShipping === "delivery"
+          localStorage.getItem("deliveryType") === "delivery"
             ? {
                 country_id: 1,
                 city_id: 1,
@@ -429,18 +451,22 @@ const ProductCheckout = () => {
                 ).street_house_number.toString(),
                 zip_code: "",
                 location: {
-                  latitude: latLong.lat,
-                  longitude: latLong.lng,
+                  latitude: JSON.parse(localStorage.getItem("currentAddress"))
+                    .latitude,
+                  longitude: JSON.parse(localStorage.getItem("currentAddress"))
+                    .longitude,
                 },
-                phone: formData.phone,
+                phone: JSON.parse(localStorage.getItem("user")).phone,
               }
             : {},
         delivery_date: getDeliveryDate(),
-        delivery_type: selectedShipping,
-        phone: formData.phone,
+        delivery_type: getDeliveryType(),
+        phone: formData.phone || "123",
         cart_id: cart_id,
         notes: {
-          501: `${formData.email},${formData.firstName}, ${formData.lastName}, ${formData.streetAddress}, ${formData.orderNotes}, ${guestUserPhone}`,
+          501: isGuestUser()
+            ? `${formData.email},${formData.firstName}, ${formData.lastName}, ${formData.streetAddress}, ${formData.orderNotes}, ${guestUserPhone}`
+            : "",
         },
         coupon: couponCode == "" ? {} : { 501: couponCode },
         data: [
@@ -461,7 +487,7 @@ const ProductCheckout = () => {
       navigate(`/order/${orderId}`)
       emptyBasket()
     } catch (error) {
-      // console.error('Error creating order:', error.message);
+      console.error("Error creating order:", error.message)
     }
   }
 
@@ -544,19 +570,7 @@ const ProductCheckout = () => {
                     <thead>
                       <tr>
                         <td style={{ borderTop: "none" }}>
-                          <label className="sizeLabel" htmlFor="shipping">
-                            Shipping
-                          </label>
-                        </td>
-                        <td style={{ borderTop: "none" }}>
-                          <select
-                            className="select-shipping"
-                            value={selectedShipping}
-                            onChange={handleShippingChange}
-                          >
-                            <option value="delivery">Deliver</option>
-                            <option value="point">Local pickup</option>
-                          </select>
+                          <h3>Order Details</h3>
                         </td>
                       </tr>
                       <tr>
@@ -585,12 +599,12 @@ const ProductCheckout = () => {
                           />
                         </td>
                       </tr>
-                      {selectedShipping === "delivery" && (
+                      {localStorage.getItem("deliveryType") === "delivery" && (
                         <tr>
                           <td>Shipping</td>
                           <td className="text-right">
                             <span className="">
-                              {shippingCost.toFixed(2)}som
+                              {localStorage.getItem("shippingFee")}.00som
                             </span>
                           </td>
                         </tr>
@@ -665,10 +679,17 @@ const ProductCheckout = () => {
                 </div>
               </div>
               <div style={{ border: "none" }} className="col-lg-6 col-12">
-                <div className="checkout-from-wrapper">
+                <div
+                  style={{ border: "1px solid gainsboro", borderRadius: "8px" }}
+                  className="checkout-from-wrapper"
+                >
                   {delivery && !isGuestUser() && (
                     <div className="deliver-to-container">
-                      <h3>Deliver To:</h3>
+                      <h3>
+                        {localStorage.getItem("deliveryType") === "delivery"
+                          ? "Deliver To:"
+                          : "Pickup Details"}
+                      </h3>
                       <table className="details-table">
                         <tbody>
                           <tr>
@@ -687,30 +708,47 @@ const ProductCheckout = () => {
                               {JSON.parse(localStorage.getItem("user")).phone}
                             </td>
                           </tr>
-                          <tr>
-                            <td className="label">Address</td>
-                            <td className="value">
-                              {
-                                JSON.parse(
+                          {localStorage.getItem("deliveryType") ===
+                            "delivery" && (
+                            <tr>
+                              <td className="label">Address</td>
+                              <td className="value">
+                                {
                                   JSON.parse(
-                                    localStorage.getItem("currentAddress")
-                                  ).street_house_number
-                                ).address
-                              }
-                            </td>
-                          </tr>
-                          <tr>
-                            <td className="label">City</td>
-                            <td className="value">
-                              {
-                                JSON.parse(
+                                    JSON.parse(
+                                      localStorage.getItem("currentAddress")
+                                    ).street_house_number
+                                  ).address
+                                }
+                              </td>
+                            </tr>
+                          )}
+
+                          {localStorage.getItem("deliveryType") ===
+                            "delivery" && (
+                            <tr>
+                              <td className="label">City</td>
+                              <td className="value">
+                                {
                                   JSON.parse(
-                                    localStorage.getItem("currentAddress")
-                                  ).street_house_number
-                                ).address1
-                              }
-                            </td>
-                          </tr>
+                                    JSON.parse(
+                                      localStorage.getItem("currentAddress")
+                                    ).street_house_number
+                                  ).address1
+                                }
+                              </td>
+                            </tr>
+                          )}
+
+                          {localStorage.getItem("deliveryType") ===
+                            "pickup" && (
+                            <tr>
+                              <td className="label">Pickup Location</td>
+                              <td className="value">
+                                {localStorage.getItem("currentAddress")}
+                              </td>
+                            </tr>
+                          )}
                         </tbody>
                       </table>
                     </div>
@@ -722,6 +760,9 @@ const ProductCheckout = () => {
                           style={{ justifyContent: "center" }}
                           className="row"
                         >
+                          <div>
+                            <h4>Customer Information</h4>
+                          </div>
                           <div className="col-lg-12">
                             <div className="input-wrap">
                               <label>
@@ -789,14 +830,30 @@ const ProductCheckout = () => {
                           >
                             <div className="col-lg-12">
                               <span>
-                                Register to avail rewards and discounts
+                                <Link to={"/signup"}>
+                                  <span
+                                    style={{ color: "red", cursor: "pointer" }}
+                                  >
+                                    Register
+                                  </span>{" "}
+                                </Link>
+                                to avail rewards and discounts
                               </span>
                             </div>
                             <div className="col-lg-12">
-                              <span>OR</span>
+                              <span style={{ color: "secondary" }}>OR</span>
                             </div>
                             <div className="col-lg-12">
-                              <span>Already have an account? Sign In</span>
+                              <span>
+                                Already have an account?{" "}
+                                <Link to={"/login"}>
+                                  <span
+                                    style={{ color: "red", cursor: "pointer" }}
+                                  >
+                                    Sign In
+                                  </span>
+                                </Link>
+                              </span>
                             </div>
                           </div>
                         </div>

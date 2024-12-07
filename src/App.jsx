@@ -5,6 +5,7 @@ import {
   Routes,
   Navigate,
   useLocation,
+  useNavigate,
 } from "react-router-dom"
 import Header from "./components/Header"
 import Footer from "./components/Footer"
@@ -20,7 +21,6 @@ import ProductView from "./pages/ProductView"
 import AddToCartReceipt from "./pages/AddtoCartReceipt"
 import ProductCheckout from "./pages/ProductCheckout"
 import Orders from "./pages/Orders"
-
 import "./css/bootstrap.min.css"
 import "./css/flaticon.css"
 import "./css/menu.css"
@@ -42,9 +42,25 @@ import OrderDetail from "./pages/OrderDetail"
 import AddressModal from "./components/AddressModal"
 import useUser from "./components/useUser"
 import ProtectedRoute from "./components/ProtectedRoute"
+import DeliveryTypeModal from "./components/DeliveryTypeModal"
 
 function MainContent() {
   const location = useLocation()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      if (localStorage.length === 0 || !localStorage.getItem("someKey")) {
+        navigate("/")
+      }
+    }
+
+    window.addEventListener("storage", handleStorageChange)
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange)
+    }
+  }, [navigate])
 
   const skipHeaderFooter =
     location.pathname === "/signup" ||
@@ -52,6 +68,7 @@ function MainContent() {
     location.pathname === "/forgot-password" ||
     location.pathname === "/reset-password" ||
     location.pathname === "/otp-verification"
+
   return (
     <>
       {!skipHeaderFooter && <Header />}
@@ -60,7 +77,7 @@ function MainContent() {
       <DocumentTitle />
       <Routes>
         <Route path="/signup" element={<Signup />} />
-        <Route path="/demo" element={<AddressModal />} />
+        <Route path="/demo" element={<DeliveryTypeModal />} />
         <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
@@ -119,17 +136,14 @@ function MainContent() {
 }
 
 function App() {
-  const [{ basket }, dispatch] = useStateValue("")
-
+  const [{ basket }, dispatch] = useStateValue()
   const { loginGuestUser, isUserLoggedIn } = useUser()
 
-  // Sync basket with local storage
   useEffect(() => {
     localStorage.setItem("basket", JSON.stringify(basket))
     console.log("Local Storage (Basket):", localStorage.getItem("basket"))
   }, [basket])
 
-  // Check and handle user login
   useEffect(() => {
     const handleUserLogin = async () => {
       const isGuestUser = localStorage.getItem("isGuestUser") === "true"

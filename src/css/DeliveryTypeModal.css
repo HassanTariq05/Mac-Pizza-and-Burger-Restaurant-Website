@@ -1,0 +1,108 @@
+.icon-button-4 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Spacing between icon and text */
+  padding: 8px 16px; /* Adjust for desired button size */
+  border: 1px solid rgb(118, 26, 18); /* Border color similar to the image */
+  border-radius: 20px; /* Rounded corners */
+  background-color: rgb(118, 26, 18); /* Transparent background */
+  color: rgb(255, 255, 255); /* Text and icon color */
+  font-size: 16px; /* Font size */
+  font-weight: 500; /* Slightly bold text */
+  cursor: pointer;
+  transition: all 0.3s ease; /* Smooth hover effect */
+  width: 100%;
+}
+
+.icon-button-4:hover {
+  background-color: white;
+  color: rgb(118, 26, 18);
+}
+
+.icon-button-4.selected:hover {
+  background-color: white;
+  color: rgb(118, 26, 18);
+}
+.icon-button-4.selected {
+  border-color: rgb(118, 26, 18);
+  color: rgb(118, 26, 18);
+}
+
+.icon-button-4:active,
+.icon-button-4:focus {
+  border-color: rgb(118, 26, 18);
+  outline: none;
+}
+
+.icon-button-5 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Spacing between icon and text */
+  padding: 8px 16px; /* Adjust for desired button size */
+  border: 1px solid gainsboro; /* Border color similar to the image */
+  border-radius: 20px; /* Rounded corners */
+  background-color: rgb(245, 245, 245); /* Transparent background */
+  color: black; /* Text and icon color */
+  font-size: 16px; /* Font size */
+  font-weight: 500; /* Slightly bold text */
+  cursor: pointer;
+  transition: all 0.3s ease; /* Smooth hover effect */
+  width: 100%;
+}
+
+.icon-button-5:hover {
+  background-color: white;
+  color: black;
+}
+
+.icon-button-5.selected:hover {
+  background-color: white;
+  color: black;
+}
+.icon-button-5.selected {
+  border-color: rgb(255, 255, 255);
+  color: black;
+}
+
+.icon-button-5:active,
+.icon-button-5:focus {
+  border-color: gainsboro;
+  outline: none;
+}
+
+.btn-div {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  flex-wrap: nowrap;
+}
+
+@media (max-width: 768px) {
+  .btn-div {
+    flex-wrap: wrap;
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .icon-button-4,
+  .icon-button-5 {
+    padding: 10px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .btn-div {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .icon-button-4,
+  .icon-button-5 {
+    padding: 8px;
+    font-size: 12px;
+    width: 100%;
+  }
+}

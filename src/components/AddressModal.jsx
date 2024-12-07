@@ -84,6 +84,7 @@ export default function AddressModal({ isOpen, onClose }) {
 
   const handleAddressClick = (address) => {
     setSelectedAddress(address)
+    localStorage.setItem("deliveryType", "delivery")
     localStorage.setItem("currentAddress", JSON.stringify(address))
     handleCloseModal()
     toast.success("Delivery Address Selected")
