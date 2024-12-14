@@ -30,7 +30,8 @@ const Login = () => {
       const user = response.data.data.user
       localStorage.setItem("token", token)
       localStorage.setItem("user", JSON.stringify(user))
-      localStorage.setItem("isGuestUser", false)
+      localStorage.setItem("isGuestUser", "false")
+      localStorage.removeItem("guestAddresses")
       if (response.data.status) {
         toast.success("Login Successful")
       }

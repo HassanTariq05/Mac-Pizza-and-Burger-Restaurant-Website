@@ -49,7 +49,10 @@ export default function AddressModal({ isOpen, onClose }) {
   const getAddresses = async () => {
     try {
       const token = localStorage.getItem("token")
-      if (!token) {
+      if (!token && localStorage.getItem("isGuestUser") === "true") {
+        setAddressesData(
+          JSON.parse(localStorage.getItem("guestAddresses")) || []
+        )
         return
       }
       const addressesDataResponse = await getAddressesService.get(token)
@@ -136,7 +139,7 @@ export default function AddressModal({ isOpen, onClose }) {
       })
     }
     getDeliveryDistance()
-  }, []) // This effect fetches the delivery distance only once
+  }, [])
 
   useEffect(() => {
     if (isOpen && maxDeliveryDistance && orginCoordinates) {
@@ -706,7 +709,7 @@ export default function AddressModal({ isOpen, onClose }) {
                 <div
                   style={{
                     display: "flex",
-                    flexDirection: "row", // Default: Row for larger screens
+                    flexDirection: "row",
                     flexWrap: "wrap",
                     gap: "20px",
                     height: "100%",

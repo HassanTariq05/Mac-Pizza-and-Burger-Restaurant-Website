@@ -125,29 +125,6 @@ const Cart = () => {
       .toFixed(2)
   }
 
-  const loginGuestUser = async () => {
-    try {
-      const params = {
-        email: "guestseller@macburger.kg",
-        password: "12345678",
-      }
-
-      const response = await authService.authenticate(params)
-      const token =
-        response.data.data.token_type + " " + response.data.data.access_token
-      localStorage.setItem("token", token)
-    } catch (error) {
-      console.error("Error fetching Auth:", error)
-    }
-  }
-
-  const handleApplyCoupon = (event) => {
-    event.preventDefault()
-    loginGuestUser().then(() => {
-      createCoupon(couponCode)
-    })
-  }
-
   const createCoupon = async (couponCode) => {
     try {
       const token = localStorage.getItem("token")

@@ -26,11 +26,75 @@ const AddressForm = ({
   const [loading, setLoading] = useState()
   const [deleteLoading, setDeleteLoading] = useState()
 
+  const saveGuestAddress = (data, tagType, selectedEditAddress) => {
+    setLoading(true)
+
+    const streetHouseObj = {
+      additional: data.additionalInfo,
+      address: formattedAddress,
+      address1: "Bishkek, Kyrgyzstan",
+      building: data.buildingName || "",
+      door: data.doorNumber,
+      floor: data.floorNumber,
+      tag: tagType,
+      type: selectedButton.toLowerCase(),
+    }
+
+    const createAddressObj = {
+      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      firstname: "",
+      lastname: "",
+      phone: "12345",
+      zipcode: "65500",
+      region_id: "1",
+      country_id: "1",
+      street_house_number: JSON.stringify(streetHouseObj),
+      location: { longitude: coords.lng, latitude: coords.lat },
+      floor: data.floorNumber,
+      door: data.doorNumber,
+      building: data.buildingName || "",
+      additional: data.additionalInfo,
+      type: selectedButton.toLowerCase(),
+      tag: tagType,
+    }
+
+    let guestAddresses =
+      JSON.parse(localStorage.getItem("guestAddresses")) || []
+
+    if (selectedEditAddress) {
+      const editAddressIndex = guestAddresses.findIndex((address) => {
+        return (
+          address.street_house_number ===
+          selectedEditAddress.street_house_number
+        )
+      })
+
+      if (editAddressIndex !== -1) {
+        guestAddresses[editAddressIndex] = createAddressObj
+      }
+    } else {
+      const existingAddressIndex = guestAddresses.findIndex((address) => {
+        return (
+          address.street_house_number === createAddressObj.street_house_number
+        )
+      })
+
+      if (existingAddressIndex !== -1) {
+        guestAddresses[existingAddressIndex] = createAddressObj
+      } else {
+        guestAddresses.push(createAddressObj)
+      }
+    }
+    localStorage.setItem("guestAddresses", JSON.stringify(guestAddresses))
+
+    setLoading(false)
+    handleSaveAddress()
+    toast.success("Address Saved")
+  }
+
   const onSubmit = async (data) => {
     try {
       console.log("Form Data Submitted:", data)
-      const userObj = JSON.parse(localStorage.getItem("user"))
-
       let tagType
       if (selectedButton === "Home") {
         tagType = "Home"
@@ -41,6 +105,12 @@ const AddressForm = ({
       } else {
         tagType = "School"
       }
+      if (localStorage.getItem("isGuestUser") === "true") {
+        saveGuestAddress(data, tagType, selectedEditAddress)
+        return
+      }
+
+      const userObj = JSON.parse(localStorage.getItem("user"))
 
       const streetHouseObj = {
         additional: data.additionalInfo,
@@ -81,9 +151,40 @@ const AddressForm = ({
         handleSaveAddress()
         toast.success("Address Saved")
       } else {
+        const streetHouseObj = {
+          additional: data.additionalInfo,
+          address: JSON.parse(selectedEditAddress.street_house_number).address,
+          address1: "Bishkek, Kyrgyzstan",
+          building: data.buildingName || "",
+          door: data.doorNumber,
+          floor: data.floorNumber,
+          tag: tagType,
+          type: selectedButton.toLowerCase(),
+        }
+
+        const updateAddressPayload = {
+          firstname: userObj.firstname,
+          lastname: userObj.lastname,
+          phone: userObj.phone || "12345",
+          zipcode: "65500",
+          region_id: "1",
+          country_id: "1",
+
+          street_house_number: JSON.stringify(streetHouseObj),
+          location: { longitude: coords.lng, latitude: coords.lat },
+          floor: data.floorNumber,
+          door: data.doorNumber,
+          building: data.buildingName || "",
+          additional: data.additionalInfo,
+          type: selectedButton.toLowerCase(),
+          tag: tagType,
+        }
+
+        console.log(selectedEditAddress)
+        console.log(updateAddressPayload)
         const updateAddressResponse = await updateAddressService.update(
           selectedEditAddress.id,
-          createAddressPayload,
+          updateAddressPayload,
           localStorage.getItem("token")
         )
         setLoading(false)
@@ -96,8 +197,23 @@ const AddressForm = ({
     }
   }
 
+  const deleteGuestAddress = (id) => {
+    setDeleteLoading(true)
+    let guestAddresses =
+      JSON.parse(localStorage.getItem("guestAddresses")) || []
+    guestAddresses = guestAddresses.filter((address) => address.id !== id)
+    localStorage.setItem("guestAddresses", JSON.stringify(guestAddresses))
+    setDeleteLoading(false)
+    handleSaveAddress()
+    toast.success("Address Deleted")
+  }
+
   const handleDeleteAddress = async () => {
     try {
+      if (localStorage.getItem("isGuestUser") === "true") {
+        deleteGuestAddress(selectedEditAddress.id.toString())
+        return
+      }
       setDeleteLoading(true)
       const body = {
         ids: [selectedEditAddress.id.toString()],

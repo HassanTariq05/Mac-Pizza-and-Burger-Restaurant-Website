@@ -263,7 +263,9 @@ const ProductCheckout = () => {
         toast.error("Error deleting cart")
       }
     }
-    deleteCart()
+    if (localStorage.getItem("isGuesUser") === "false") {
+      deleteCart()
+    }
   }, [])
   const [{}, dispatch] = useStateValue()
   const emptyBasket = () => {
@@ -379,13 +381,34 @@ const ProductCheckout = () => {
       .toFixed(2)
   }
 
+  const loginGuestUser = async () => {
+    try {
+      const params = {
+        email: "guestseller@macburger.kg",
+        password: "12345678",
+      }
+
+      const response = await authService.authenticate(params)
+      const token =
+        response.data.data.token_type + " " + response.data.data.access_token
+      console.log("token: ", token)
+
+      const user = JSON.stringify(response.data.data.user)
+      console.log(JSON.stringify(response.data.data.user))
+      localStorage.setItem("token", token)
+      localStorage.setItem("user", user)
+
+      createCart("")
+    } catch (error) {
+      // console.error('Error fetching Auth:', error);
+    }
+  }
+
   const loginUser = () => {
-    const user = JSON.parse(localStorage.getItem("user"))
-    if (!user) {
-      handleOpenModal()
+    const user = localStorage.getItem("user")
+    if (!user && localStorage.getItem("isGuestUser") === "true") {
+      loginGuestUser()
     } else {
-      console.log("User: ", user)
-      const token = localStorage.getItem("token")
       createCart(user.phone)
     }
   }
@@ -427,6 +450,7 @@ const ProductCheckout = () => {
 
   const createOrder = async (token, guestUserPhone, cart_id) => {
     console.log("Creating ORder...")
+    console.log(localStorage)
     try {
       const params = {
         user_id: JSON.parse(localStorage.getItem("user")).id,
@@ -476,12 +500,14 @@ const ProductCheckout = () => {
           },
         ],
       }
+      console.log("here")
 
       const headers = {
         Authorization: token,
       }
 
       const response = await orderService.create(params, headers)
+
       const orderId = response.data.data[0].id
       setOrders(response.data.data)
       navigate(`/order/${orderId}`)

@@ -113,13 +113,11 @@ const UserProfile = () => {
     }
   }
 
-  const { loginGuestUser } = useUser()
-
   const handleLogout = () => {
     localStorage.clear()
     navigate("/home")
     toast.success("Logged out successfully")
-    loginGuestUser()
+    localStorage.setItem("isGuestUser", "true")
   }
 
   const token = localStorage.getItem("token")

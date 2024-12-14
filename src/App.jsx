@@ -137,7 +137,6 @@ function MainContent() {
 
 function App() {
   const [{ basket }, dispatch] = useStateValue()
-  const { loginGuestUser, isUserLoggedIn } = useUser()
 
   useEffect(() => {
     localStorage.setItem("basket", JSON.stringify(basket))
@@ -145,20 +144,14 @@ function App() {
   }, [basket])
 
   useEffect(() => {
-    const handleUserLogin = async () => {
-      const isGuestUser = localStorage.getItem("isGuestUser") === "true"
-
-      if (isUserLoggedIn() && !isGuestUser) {
-        console.log("User already logged in")
-      } else {
-        console.log("Logging in as guest...")
-        await loginGuestUser()
-        console.log("Guest user successfully logged in")
+    const verifyUser = () => {
+      const token = localStorage.getItem("token")
+      if (!token) {
+        localStorage.setItem("isGuestUser", "true")
       }
     }
-
-    handleUserLogin()
-  }, [loginGuestUser, isUserLoggedIn])
+    verifyUser()
+  }, [])
 
   return (
     <Router basename="/">
