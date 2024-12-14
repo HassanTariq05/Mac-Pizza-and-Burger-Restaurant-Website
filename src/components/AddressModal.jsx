@@ -734,12 +734,13 @@ export default function AddressModal({ isOpen, onClose }) {
                         marginTop: "10px",
                         maxWidth: "100%",
                         maxHeight: "calc(100vh - 150px)",
+                        height: "100%",
                         overflowY: "auto",
                         paddingRight: "10px",
                         scrollbarWidth: "thin",
                       }}
                     >
-                      {addressesData.length > 0 &&
+                      {addressesData.length > 0 ? (
                         addressesData.map((address, index) => {
                           const isLast = index === addressesData.length - 1
 
@@ -814,7 +815,22 @@ export default function AddressModal({ isOpen, onClose }) {
                               </div>
                             </div>
                           )
-                        })}
+                        })
+                      ) : (
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "100%",
+                            textAlign: "center",
+                          }}
+                        >
+                          <p style={{ fontSize: "1.2rem", color: "#888" }}>
+                            No addresses found
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
 

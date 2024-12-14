@@ -118,6 +118,7 @@ const UserProfile = () => {
     navigate("/home")
     toast.success("Logged out successfully")
     localStorage.setItem("isGuestUser", "true")
+    localStorage.removeItem("guestAddresses")
   }
 
   const token = localStorage.getItem("token")

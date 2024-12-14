@@ -307,7 +307,7 @@ const Cart = () => {
   const getShippingFee = () => {
     const fee = localStorage.getItem("shippingFee")
     if (fee !== null) {
-      return fee
+      return fee + ".00som"
     } else {
       return "Address not selected"
     }
@@ -489,10 +489,7 @@ const Cart = () => {
                         <tr>
                           <td>Shipping</td>
                           <td className="text-right">
-                            <div>
-                              {getShippingFee()}
-                              {".00som"}
-                            </div>
+                            <div>{getShippingFee()}</div>
                           </td>
                         </tr>
                       )}
