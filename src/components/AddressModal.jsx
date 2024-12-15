@@ -40,6 +40,7 @@ export default function AddressModal({ isOpen, onClose }) {
   const [showAddressForm, setShowAddressForm] = useState(false)
   const [selectedAddress, setSelectedAddress] = useState()
   const [selectedEditAddress, setEditSelectedAddress] = useState()
+  const [mapToggle, setMapToggle] = useState()
 
   const handleButtonClick = (buttonName) => {
     setSelectedButton(buttonName)
@@ -191,7 +192,7 @@ export default function AddressModal({ isOpen, onClose }) {
         })
       })
     }
-  }, [isOpen, maxDeliveryDistance, orginCoordinates, showMapRef])
+  }, [isOpen, maxDeliveryDistance, orginCoordinates, showMapRef, mapToggle])
 
   const initializeMap = (center) => {
     const map = new google.maps.Map(mapRef.current, {
@@ -217,33 +218,26 @@ export default function AddressModal({ isOpen, onClose }) {
       setShowAddressForm(true)
     }
 
-    // Function to generate content for the InfoWindow
     const generateInfoWindowContent = (
       address,
       distance,
       maxDeliveryDistance
     ) => {
-      // Create a new div to hold the React component
       const container = document.createElement("div")
 
-      // Create a root for rendering the React component
       const root = createRoot(container)
 
-      // Use root.render to render the MarkerInfoWindow component into this div
       root.render(
         <MarkerInfoWindow
           formatted_address={address}
           distance={distance}
           maxDeliveryDistance={maxDeliveryDistance}
-          handlePointClick={handlePointClick} // pass the click handler
+          handlePointClick={handlePointClick}
         />
       )
-
-      // Return the container itself (not innerHTML)
       return container
     }
 
-    // MarkerInfoWindow Component
     function MarkerInfoWindow({
       distance,
       maxDeliveryDistance,
@@ -261,7 +255,7 @@ export default function AddressModal({ isOpen, onClose }) {
             </p>
             {distance <= maxDeliveryDistance ? (
               <button
-                onClick={handlePointClick} // Using onClick with the passed function
+                onClick={handlePointClick}
                 style={{
                   background: "none",
                   border: "none",
@@ -291,7 +285,6 @@ export default function AddressModal({ isOpen, onClose }) {
       )
     }
 
-    // Your Google Maps event handlers
     const geocoder = new google.maps.Geocoder()
     const infoWindow = new google.maps.InfoWindow({ disableAutoPan: true })
 
@@ -310,7 +303,6 @@ export default function AddressModal({ isOpen, onClose }) {
 
       const distance = calculateDistance({ lat, lng }, orginCoordinates)
 
-      // Reverse geocode to get address
       geocoder.geocode({ location: { lat, lng } }, (results, status) => {
         if (status === "OK" && results[0]) {
           const address = results[0].formatted_address
@@ -320,8 +312,6 @@ export default function AddressModal({ isOpen, onClose }) {
             maxDeliveryDistance
           )
           setFormattedAddress(address)
-
-          // Set the content as the DOM element (not HTML string)
           infoWindow.setContent(content)
           infoWindow.setPosition(newPos)
           infoWindow.open(map, marker)
@@ -385,7 +375,7 @@ export default function AddressModal({ isOpen, onClose }) {
         // Define a circular radius using LatLngBounds for Autocomplete
         const circle = new google.maps.Circle({
           center: { lat: coordinates.lat, lng: coordinates.lng }, // Center for the radius
-          radius: 5000, // Radius in meters (5km in this case)
+          radius: 10000, // Radius in meters (5km in this case)
         })
 
         const autocomplete = new google.maps.places.Autocomplete(
@@ -507,8 +497,8 @@ export default function AddressModal({ isOpen, onClose }) {
     )
   }
 
-  // Handle the button click in the InfoWindow
   const handlePointClick = () => {
+    setEditSelectedAddress(null)
     setShowMapRef(false)
     setShowAddressButtons(true)
     setShowAddressForm(true)
@@ -554,35 +544,27 @@ export default function AddressModal({ isOpen, onClose }) {
     setCoordinates(coords)
     setSuggestions([])
 
-    // Initialize map components with the selected coordinates
     const { map, marker, infoWindow } = initializeMap(coords)
 
-    // Calculate the distance to check if it is within the delivery radius
     const distance = calculateDistance(coords, orginCoordinates)
 
     setFormattedAddress(address)
-    // Generate the DOM element containing the content for the InfoWindow
     const contentElement = generateInfoWindowContentt(
       address,
       distance,
       maxDeliveryDistance
     )
-
-    // Set the InfoWindow content and isOpen it
     infoWindow.setContent(contentElement)
     infoWindow.open(map, marker)
   }
 
-  // Function to generate the DOM element for the InfoWindow content
   const generateInfoWindowContentt = (
     address,
     distance,
     maxDeliveryDistance
   ) => {
-    // Create a container div for the InfoWindow content
     const container = document.createElement("div")
 
-    // Render the MarkerInfoWindow React component into the div container
     const root = createRoot(container)
 
     root.render(
@@ -590,15 +572,12 @@ export default function AddressModal({ isOpen, onClose }) {
         formatted_address={address}
         distance={distance}
         maxDeliveryDistance={maxDeliveryDistance}
-        handlePointClick={handlePointClick} // pass the click handler
+        handlePointClick={handlePointClick}
       />
     )
-
-    // Return the container div (with React component rendered into it)
     return container
   }
 
-  // MarkerInfoWindow Component
   function MarkerInfoWindow({
     distance,
     maxDeliveryDistance,
@@ -650,6 +629,12 @@ export default function AddressModal({ isOpen, onClose }) {
     onClose()
   }
 
+  useEffect(() => {
+    if (searchText.trim() === "") {
+      mapToggle ? setMapToggle(false) : setMapToggle(true)
+    }
+  }, [searchText])
+
   return (
     <>
       <MDBModal open={isOpen} tabIndex={-1}>
@@ -687,7 +672,7 @@ export default function AddressModal({ isOpen, onClose }) {
             </MDBModalHeader>
             <MDBModalBody style={{ overflowY: "auto", height: "380px" }}>
               {suggestions.length > 0 && (
-                <MDBListGroup className="mt-3">
+                <MDBListGroup className="mt-3 mb-3">
                   {suggestions.map((suggestion) => (
                     <MDBListGroupItem
                       key={suggestion.place_id}
@@ -784,8 +769,8 @@ export default function AddressModal({ isOpen, onClose }) {
                                   display: "inline-flex",
                                   alignItems: "center",
                                   justifyContent: "center",
-                                  width: "40px",
-                                  height: "40px",
+                                  minWidth: "40px",
+                                  minHeight: "40px",
                                   borderRadius: "50%",
                                   transition: "background-color 0.3s ease",
                                   cursor: "pointer",
@@ -836,14 +821,16 @@ export default function AddressModal({ isOpen, onClose }) {
 
                   {/* Right: Map */}
 
-                  <div
-                    className="map-container"
-                    ref={mapRef}
-                    style={{
-                      height: "100%" /* Adjust height for mobile */,
-                      width: "100%",
-                    }}
-                  ></div>
+                  {showMapRef && (
+                    <div
+                      className="map-container"
+                      ref={mapRef}
+                      style={{
+                        height: "100%" /* Adjust height for mobile */,
+                        width: "100%",
+                      }}
+                    ></div>
+                  )}
                 </div>
               )}
               {showAddressForm && (

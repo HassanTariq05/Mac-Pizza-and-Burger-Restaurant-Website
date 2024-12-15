@@ -67,11 +67,25 @@ function Shop() {
 
   const handlePageChange = (event, value) => {
     setPage(value)
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    })
   }
 
   const handleSortChange = (event) => {
     setSortOption(event.target.value)
   }
+
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false)
+    }, 200)
+
+    return () => clearTimeout(timer)
+  }, [sortedProducts])
 
   return (
     <div id="page" className="page">
@@ -115,7 +129,12 @@ function Shop() {
         <div className="container">
           <div className="shop-main d-flex flex-wrap">
             <CategorySidebar onCategorySelect={setSelectedCategory} />
-            {sortedProducts.length > 0 ? (
+            {loading ? (
+              <div className="loading-spinner">
+                {/* Replace this with a spinner or loading animation */}
+                <p>...</p>
+              </div>
+            ) : sortedProducts.length > 0 ? (
               <div className="shop-content">
                 <div className="top-bar">
                   <div className="leftbox">
@@ -175,7 +194,11 @@ function Shop() {
             ) : (
               <div className="placeHolderDiv">
                 <div className="text-center">
-                  <img src={placeHolderImg1} className="placeHolderImg"></img>
+                  <img
+                    src={placeHolderImg1}
+                    className="placeHolderImg"
+                    alt="No Products"
+                  />
                   <h2>No Products Available</h2>
                 </div>
               </div>
