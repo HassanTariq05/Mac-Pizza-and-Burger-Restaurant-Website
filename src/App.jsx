@@ -123,9 +123,10 @@ function MainContent() {
           }
         />
         <Route
-          path="/shop/add-to-cart/:title/:size"
+          path="/shop/add-to-cart/:title/:size/:addonTitles"
           element={<AddToCartReceipt />}
         />
+
         <Route path="/product/:uuid/:categoryUUID" element={<ProductView />} />
         <Route path="/" element={<Navigate to="/home" />} />
         <Route path="*" element={<Navigate to="/home" />} />

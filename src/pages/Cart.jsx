@@ -104,11 +104,17 @@ const Cart = () => {
 
   const totalPrice = () => {
     const basketPrice = basket
-      .reduce((total, item) => total + item.price * item.quantity, 0)
+      .reduce((total, item) => {
+        const addonsTotal = item.addons
+          ? item.addons.reduce((sum, addon) => sum + addon.max_price, 0)
+          : 0
+        return total + (item.price + addonsTotal) * item.quantity
+      }, 0)
       .toFixed(2)
 
-    const deliveryPriceNumber = parseFloat(deliveryPrice.value)
+    const deliveryPriceNumber = parseFloat(deliveryPrice.value) || 0
     const basketPriceNumber = parseFloat(basketPrice) || 0
+
     const total =
       localStorage.getItem("deliveryType") === "pickup"
         ? basketPriceNumber
@@ -121,7 +127,12 @@ const Cart = () => {
 
   const subTotalPrice = () => {
     return basket
-      .reduce((total, item) => total + item.price * item.quantity, 0)
+      .reduce((total, item) => {
+        const addonsTotal = item.addons
+          ? item.addons.reduce((sum, addon) => sum + addon.max_price, 0)
+          : 0
+        return total + (item.price + addonsTotal) * item.quantity
+      }, 0)
       .toFixed(2)
   }
 
@@ -408,6 +419,7 @@ const Cart = () => {
                           price={item.price}
                           quantity={item.quantity}
                           size={item.size}
+                          addons={item.addons}
                         />
                       ))}
                     </tbody>

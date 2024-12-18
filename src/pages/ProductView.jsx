@@ -8,6 +8,7 @@ import ShopProduct from "../components/ShopProduct"
 import singleProductService from "../components/singleProductService"
 import { baseURL } from "../components/service"
 import productService from "../components/productService"
+import toast from "react-hot-toast"
 
 const ProductView = () => {
   const { uuid, categoryUUID } = useParams()
@@ -50,6 +51,17 @@ const ProductView = () => {
 
   const [products, setProducts] = useState([])
 
+  const [selectedAddons, setSelectedAddons] = useState([])
+
+  const handleAddonSelect = (addon) => {
+    setSelectedAddons((prevSelected) =>
+      prevSelected.some((selected) => selected.id === addon.id)
+        ? prevSelected.filter((selected) => selected.id !== addon.id)
+        : [...prevSelected, addon]
+    )
+    console.log(selectedAddons)
+  }
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -69,9 +81,25 @@ const ProductView = () => {
   }
 
   const addToBasket = () => {
-    const itemIndex = basket.findIndex(
-      (item) => item.title === product.translation.title && item.size === size
-    )
+    const itemIndex = basket.findIndex((item) => {
+      const addonsMatch =
+        item.addons && selectedAddons.length > 0
+          ? item.addons.length === selectedAddons.length &&
+            item.addons.every((addon, index) =>
+              selectedAddons[index]
+                ? addon.id === selectedAddons[index].id
+                : false
+            )
+          : item.addons === selectedAddons ||
+            (item.addons === null && selectedAddons.length === 0)
+
+      return (
+        item.title === product.translation.title &&
+        item.size === size &&
+        addonsMatch
+      )
+    })
+
     if (itemIndex >= 0) {
       dispatch({
         type: "UPDATE_QUANTITY",
@@ -79,6 +107,7 @@ const ProductView = () => {
           title: product.translation.title,
           quantity: basket[itemIndex].quantity + quantity,
           size: size,
+          addons: basket[itemIndex].addons,
         },
       })
     } else {
@@ -92,13 +121,27 @@ const ProductView = () => {
           quantity: quantity,
           size: size,
           stockId: stockId,
+          addons: selectedAddons.length > 0 ? selectedAddons : null,
         },
       })
     }
+
+    const addonTitles = selectedAddons
+      .map((addon) => addon.translation.title)
+      .join(",")
+
     if (size === "") {
-      navigate(`/shop/add-to-cart/${product.translation.title}/${"none"}`)
+      navigate(
+        `/shop/add-to-cart/${product.translation.title}/size_none/${
+          addonTitles || "addon_none"
+        }`
+      )
     } else {
-      navigate(`/shop/add-to-cart/${product.translation.title}/${size}`)
+      navigate(
+        `/shop/add-to-cart/${product.translation.title}/${
+          size || "size_none"
+        }/${addonTitles || "addon_none"}`
+      )
     }
   }
 
@@ -135,7 +178,12 @@ const ProductView = () => {
 
   const handleAddToCartClick = () => {
     if (product.stocks.length > 1 && size === "") {
-      alert("Choose a size")
+      toast.error("Select a size")
+    } else if (
+      product.addon_categories.length > 0 &&
+      selectedAddons.length == 0
+    ) {
+      toast.error("Please select required addon(s)")
     } else {
       addToBasket()
     }
@@ -215,13 +263,114 @@ const ProductView = () => {
                   </option>
                 ))}
               </select>
+              {additionalPrice !== 0 && (
+                <p className="product-price">{`${additionalPrice}.00som`}</p>
+              )}
+            </div>
+          )}
+
+          {product.addon_categories.length > 0 && (
+            <div className="adon-div">
+              <div className="adon-title-div">
+                <div>
+                  <p className="adon-name">
+                    {
+                      product.addon_categories[0].addon_category.translation
+                        .title
+                    }
+                  </p>
+                  <p className="adon-desc">
+                    {
+                      product.addon_categories[0].addon_category.translation
+                        .description
+                    }
+                  </p>
+                </div>
+                <div>
+                  <p className="badge-required">Required</p>
+                </div>
+              </div>
+              <div className="listStyle">
+                {product.addon_categories.length > 0 &&
+                  product.addon_categories[0].addon_category.products.map(
+                    (addon, index) => {
+                      const isLast =
+                        index ===
+                        product.addon_categories[0].addon_category.products
+                          .length -
+                          1
+
+                      const isSelected = selectedAddons.some(
+                        (selected) => selected.id === addon.id
+                      )
+
+                      return (
+                        <div
+                          key={addon.id}
+                          className="addon-item"
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            padding: "10px",
+                            borderBottom: isLast ? "none" : "1px solid #ddd",
+                          }}
+                        >
+                          <div
+                            className="custom-checkbox-container"
+                            onClick={() => handleAddonSelect(addon)}
+                            style={{ marginRight: "10px", cursor: "pointer" }}
+                          >
+                            <input
+                              type="checkbox"
+                              id={`addon-${addon.id}`}
+                              checked={isSelected}
+                              style={{ display: "none" }}
+                            />
+                            <div
+                              className={`custom-checkbox ${
+                                isSelected ? "checked" : ""
+                              }`}
+                              style={{
+                                width: "20px",
+                                height: "20px",
+                                borderRadius: "50%",
+                                border: "2px solid rgb(118, 26, 18)",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                backgroundColor: isSelected
+                                  ? "rgb(118, 26, 18)"
+                                  : "transparent",
+                                transition: "background-color 0.3s",
+                              }}
+                            >
+                              {isSelected && (
+                                <span
+                                  style={{
+                                    color: "white",
+                                    fontWeight: "bold",
+                                    fontSize: "12px",
+                                  }}
+                                >
+                                  ✔
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          <label
+                            htmlFor={`addon-${addon.id}`}
+                            style={{ cursor: "pointer", margin: 0 }}
+                          >
+                            {addon.translation.title}
+                          </label>
+                        </div>
+                      )
+                    }
+                  )}
+              </div>
             </div>
           )}
           <hr className="separator-line" />
-
-          {additionalPrice !== 0 && (
-            <p className="product-price">{`${additionalPrice}.00som`}</p>
-          )}
 
           <div className="product-quantity">
             <input

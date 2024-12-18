@@ -7,18 +7,39 @@ import { Link, useParams, useNavigate } from "react-router-dom"
 import { useStateValue } from "../components/StateProvider"
 
 const AddToCartReceipt = () => {
-  const { title, size } = useParams()
+  const { title, size, addonTitles } = useParams()
   const [{ basket }, dispatch] = useStateValue()
   const [isActive, setIsActive] = useState(false)
   const [isRemoved, setIsRemoved] = useState(false)
   const navigate = useNavigate()
 
-  const matchedProduct = basket.find(
-    (item) => item.title === title && (item.size === size || item.size === "")
-  )
+  const addonTitlesArray = addonTitles ? addonTitles.split(",") : []
+
+  const matchedProduct = basket.find((item) => {
+    const isSizeNone = size === "size_none"
+    const isAddonNone = addonTitles === "addon_none"
+
+    const addonsMatch = isAddonNone
+      ? !item.addons || item.addons.length === 0
+      : item.addons &&
+        addonTitlesArray.length > 0 &&
+        item.addons.length === addonTitlesArray.length &&
+        item.addons.every((addon) =>
+          addonTitlesArray.includes(addon.translation.title)
+        )
+
+    if (isSizeNone && isAddonNone) {
+      return item.title === title
+    }
+
+    return item.title === title && item.size === size && addonsMatch
+  })
 
   useEffect(() => {
     setIsActive(true)
+    console.log("Params:", { title, size, addonTitles })
+    console.log("Basket:", basket)
+    console.log("Matched Product:", matchedProduct)
   }, [matchedProduct])
 
   const handleCloseModal = () => {
@@ -27,23 +48,50 @@ const AddToCartReceipt = () => {
   }
 
   const handleRemoveProduct = () => {
-    dispatch({ type: "REMOVE_FROM_BASKET", title, size })
+    const isSizeNone = size === "size_none"
+    const isAddonNone = addonTitles === "addon_none"
+
+    if (isSizeNone || isAddonNone) {
+      dispatch({ type: "REMOVE_FROM_BASKET", title, size })
+    } else {
+      dispatch({
+        type: "REMOVE_FROM_BASKET_WITH_TITLE",
+        title,
+        size,
+        addonTitles,
+      })
+    }
+
     setIsRemoved(true)
   }
 
-  const totalPrice = (() => {
-    return matchedProduct ? matchedProduct.price * matchedProduct.quantity : 0
-  })()
+  const totalPrice = matchedProduct
+    ? matchedProduct.price * matchedProduct.quantity
+    : 0
 
   const handleQuantityChange = (newQuantity) => {
-    dispatch({
-      type: "UPDATE_QUANTITY",
-      item: {
-        title: title,
-        quantity: newQuantity,
-        size: size,
-      },
-    })
+    const isSizeNone = size === "size_none"
+    const isAddonNone = addonTitles === "addon_none"
+    if (isSizeNone || isAddonNone) {
+      dispatch({
+        type: "UPDATE_QUANTITY",
+        item: {
+          title: title,
+          quantity: newQuantity,
+          size: size === "size_none" ? "" : size,
+        },
+      })
+    } else {
+      dispatch({
+        type: "UPDATE_QUANTITY_WITH_TITLE_NAMES",
+        item: {
+          title: title,
+          quantity: newQuantity,
+          size: size,
+          addonTitles: addonTitlesArray,
+        },
+      })
+    }
   }
 
   const increaseQuantity = () => {
@@ -97,7 +145,7 @@ const AddToCartReceipt = () => {
                     <td className="xoo-cp-ptitle">
                       <a href="#">{matchedProduct.title}</a>
                       <br />
-                      {size && `Size: ${size}`}
+                      {size && size === "size_none" ? "" : `Size:  ${size}`}
                     </td>
                     <td className="xoo-cp-pprice">
                       <span className="woocommerce-Price-amount amount">

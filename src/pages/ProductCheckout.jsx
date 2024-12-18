@@ -232,7 +232,6 @@ const ProductCheckout = () => {
     map.panTo(ev.detail.latLng)
     setUserMarker(ev.detail.latLng)
     handleMarkerAddress(ev.detail.latLng)
-    console.log("ev.detail:", ev.detail)
     setLatLong(ev.detail.latLng)
   })
 
@@ -339,11 +338,30 @@ const ProductCheckout = () => {
   }
 
   const getProducts = () => {
-    return basket.map((item) => ({
-      stock_id: item.stockId,
-      quantity: item.quantity,
-    }))
+    const products = []
+
+    basket.forEach((item) => {
+      products.push({
+        stock_id: item.stockId,
+        quantity: item.quantity,
+      })
+
+      if (item.addons && item.addons.length > 0) {
+        item.addons.forEach((addon) => {
+          products.push({
+            stock_id: addon.stocks[0]?.id,
+            quantity: item.quantity,
+          })
+        })
+      }
+    })
+
+    return products
   }
+
+  useEffect(() => {
+    console.log(basket)
+  }, [])
 
   const placeOrder = () => {
     const newWarnings = []
@@ -368,16 +386,34 @@ const ProductCheckout = () => {
   }
 
   const totalPrice = () => {
-    return localStorage.getItem("deliveryType") === "delivery"
-      ? basket.reduce((total, item) => total + item.price * item.quantity, 0) -
-          discount +
-          parseInt(localStorage.getItem("shippingFee"))
-      : basket.reduce((total, item) => total + item.price * item.quantity, 0) -
-          discount
+    const basketTotal = basket.reduce((total, item) => {
+      const addonTotal = item.addons
+        ? item.addons.reduce((sum, addon) => sum + addon.max_price, 0)
+        : 0
+
+      const itemTotal = (item.price + addonTotal) * item.quantity
+
+      return total + itemTotal
+    }, 0)
+
+    const shippingFee =
+      localStorage.getItem("deliveryType") === "delivery"
+        ? parseInt(localStorage.getItem("shippingFee"), 10) || 0
+        : 0
+
+    return (basketTotal - discount + shippingFee).toFixed(2)
   }
+
   const subTotalPrice = () => {
     return basket
-      .reduce((total, item) => total + item.price * item.quantity, 0)
+      .reduce((total, item) => {
+        const addonTotal = item.addons
+          ? item.addons.reduce((sum, addon) => sum + addon.max_price, 0)
+          : 0
+        const itemTotal = (item.price + addonTotal) * item.quantity
+
+        return total + itemTotal
+      }, 0)
       .toFixed(2)
   }
 
@@ -391,10 +427,8 @@ const ProductCheckout = () => {
       const response = await authService.authenticate(params)
       const token =
         response.data.data.token_type + " " + response.data.data.access_token
-      console.log("token: ", token)
 
       const user = JSON.stringify(response.data.data.user)
-      console.log(JSON.stringify(response.data.data.user))
       localStorage.setItem("token", token)
       localStorage.setItem("user", user)
 
@@ -443,14 +477,11 @@ const ProductCheckout = () => {
 
       const createCartResponse = await createCartService.create(params, headers)
       const cart_id = createCartResponse.data.data.id
-      console.log(cart_id)
       createOrder(token, phone, cart_id)
     } catch (error) {}
   }
 
   const createOrder = async (token, guestUserPhone, cart_id) => {
-    console.log("Creating ORder...")
-    console.log(localStorage)
     try {
       const params = {
         user_id: JSON.parse(localStorage.getItem("user")).id,
@@ -500,7 +531,6 @@ const ProductCheckout = () => {
           },
         ],
       }
-      console.log("here")
 
       const headers = {
         Authorization: token,
@@ -605,14 +635,38 @@ const ProductCheckout = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {basket.map((item, index) => (
-                        <tr key={index}>
-                          <td>{`${item.title} × ${item.quantity}`}</td>
-                          <td className="text-right">
-                            {(item.price * item.quantity).toFixed(2)}som
-                          </td>
-                        </tr>
-                      ))}
+                      {basket.map((item, index) => {
+                        // Calculate the total price for addons
+                        const addonTotal = item.addons
+                          ? item.addons.reduce(
+                              (sum, addon) => sum + addon.max_price,
+                              0
+                            )
+                          : 0
+
+                        const totalPrice =
+                          (item.price + addonTotal) * item.quantity
+
+                        return (
+                          <tr key={index}>
+                            <td>
+                              {`${item.title} × ${item.quantity}`}
+                              {item.addons && item.addons.length > 0 && (
+                                <div className="text-sm text-gray-500">
+                                  Addons:{" "}
+                                  {item.addons
+                                    .map((addon) => addon.translation.title)
+                                    .join(", ")}
+                                </div>
+                              )}
+                            </td>
+                            <td className="text-right">
+                              {totalPrice.toFixed(2)}som
+                            </td>
+                          </tr>
+                        )
+                      })}
+
                       <tr>
                         <td>Subtotal</td>
                         <td className="text-right">
