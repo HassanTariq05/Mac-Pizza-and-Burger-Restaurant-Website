@@ -67,21 +67,59 @@ const OrderDetail = () => {
             </h3>
           </div>
           <div class="order-items">
-            {detail.details.map((item) => (
-              <div class="order-itemss">
-                <img
-                  src={`${baseURL}/${item.stock.product.img}`}
-                  alt="RayBan sunglasses"
-                  class="item-image"
-                />
-                <div class="item-details">
-                  <h4>{item.stock.product.translation.title}</h4>
-                </div>
-                <div class="item-pricing">{item.stock.price}</div>
-                <div class="item-pricing">{item.quantity}</div>
-                <div class="item-pricing">{item.total_price.toFixed(2)}</div>
-              </div>
-            ))}
+            {detail.details.map((item, index) => {
+              if (item.stock.product.addon === 0) {
+                // Collect all subsequent addons until the next non-addon item
+                const addons = []
+                let addonsTotalPrice = 0 // Variable to store the total price of addons
+                for (let i = index + 1; i < detail.details.length; i++) {
+                  if (detail.details[i].stock.product.addon === 1) {
+                    addons.push({
+                      title: detail.details[i].stock.product.translation.title,
+                      price: detail.details[i].stock.price ?? 0,
+                    })
+                    addonsTotalPrice += detail.details[i].stock.price ?? 0
+                  } else {
+                    break // Stop if the next non-addon item is found
+                  }
+                }
+
+                const totalPrice = (item.stock.price ?? 0) + addonsTotalPrice
+
+                return (
+                  <div className="order-itemss" key={item.id}>
+                    <img
+                      src={`${baseURL}/${item.stock.product.img}`}
+                      alt={item.stock.product.translation.title}
+                      className="item-image"
+                    />
+                    <div className="item-details">
+                      <h4>
+                        {item.stock.product.translation.title}
+                        {addons.length > 0 && (
+                          <div className="addon-titles">
+                            {addons.map((addon, addonIndex) => (
+                              <div
+                                style={{ color: "gray", fontSize: "14px" }}
+                                key={addonIndex}
+                              >
+                                {`↳ ${addon.title} (${addon.price.toFixed(2)})`}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </h4>
+                    </div>
+                    <div className="item-pricing">{totalPrice.toFixed(2)}</div>
+                    <div className="item-pricing">{item.quantity}</div>
+                    <div className="item-pricing">
+                      {(totalPrice * item.quantity).toFixed(2)}
+                    </div>
+                  </div>
+                )
+              }
+              return null // Skip rendering addon items
+            })}
           </div>
           <div class="order-summary">
             <h3>Order Summary</h3>

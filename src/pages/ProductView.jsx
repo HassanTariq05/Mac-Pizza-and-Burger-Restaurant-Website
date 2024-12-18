@@ -308,11 +308,13 @@ const ProductView = () => {
                         <div
                           key={addon.id}
                           className="addon-item"
+                          onClick={() => handleAddonSelect(addon)}
                           style={{
                             display: "flex",
                             alignItems: "center",
                             padding: "10px",
                             borderBottom: isLast ? "none" : "1px solid #ddd",
+                            cursor: "pointer",
                           }}
                         >
                           <div
