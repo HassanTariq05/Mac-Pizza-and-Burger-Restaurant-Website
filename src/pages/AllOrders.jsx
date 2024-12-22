@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react"
 import "../css/UserProfile.css"
 import defaultProfilePicture from "../images/default-user-pic.webp"
-import { baseURL } from "../components/service"
-import allOrdersService from "../components/allOrdersService"
+import { BASE_URL } from "../env/env"
+import allOrdersService from "../services/api/allOrdersService"
 import { Link } from "react-router-dom"
 
 function AllOrders() {
@@ -69,7 +69,7 @@ function AllOrders() {
                       className="order-img"
                       src={
                         order?.details?.[0]?.stock?.product?.img
-                          ? `${baseURL}/${order.details[0].stock.product.img}`
+                          ? `${BASE_URL}/${order.details[0].stock.product.img}`
                           : defaultProfilePicture
                       }
                       alt="order-img"

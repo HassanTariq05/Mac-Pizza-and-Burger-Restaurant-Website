@@ -4,26 +4,17 @@ import { Link, useNavigate } from "react-router-dom"
 import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons"
 import { useStateValue } from "../components/StateProvider"
 import CurrencyFormat from "react-currency-format"
-import authService from "../components/authService"
-import orderService from "../components/orderService"
-import orderDetailService from "../components/orderDetailService"
-import deleteCartService from "../components/deleteCartService"
+import authService from "../services/api/authService"
+import orderService from "../services/api/orderService"
+import deleteCartService from "../services/api/deleteCartService"
 import toast from "react-hot-toast"
-import {
-  APIProvider,
-  Map,
-  AdvancedMarker,
-  Pin,
-} from "@vis.gl/react-google-maps"
-import { GOOGLE_MAPS_API_KEY } from "../components/service"
 import { useCallback } from "react"
-import couponService from "../components/couponService"
-import deliveryPriceService from "../components/deliveryPriceService"
+import couponService from "../services/api/couponService"
+import deliveryPriceService from "../services/api/deliveryPriceService"
 import { faCheck } from "@fortawesome/free-solid-svg-icons"
 import { faXmark } from "@fortawesome/free-solid-svg-icons"
-import DialogModal from "../components/LoginConfirmationModal"
 import LoginConfirmationModal from "../components/LoginConfirmationModal"
-import createCartService from "../components/createCartService"
+import createCartService from "../services/api/createCartService"
 import "../css/ProductCheckout.css"
 
 const CouponSection = ({

@@ -5,14 +5,14 @@ import { useStateValue } from "../components/StateProvider"
 import CurrencyFormat from "react-currency-format"
 import "../css/Cart.css"
 import ShopProduct from "../components/ShopProduct"
-import { baseURL } from "../components/service"
-import productService from "../components/productService"
-import couponService from "../components/couponService"
-import authService from "../components/authService"
+import { BASE_URL } from "../env/env"
+import productService from "../services/api/productService"
+import couponService from "../services/api/couponService"
+import authService from "../services/api/authService"
 import toast from "react-hot-toast"
-import deleteCartService from "../components/deleteCartService"
+import deleteCartService from "../services/api/deleteCartService"
 import AddressModal from "../components/AddressModal"
-import deliveryPriceService from "../components/deliveryPriceService"
+import deliveryPriceService from "../services/api/deliveryPriceService"
 import { error } from "jquery"
 import useUser from "../components/useUser"
 import DeliveryTypeModal from "../components/DeliveryTypeModal"
@@ -382,7 +382,7 @@ const Cart = () => {
                       title={item.translation.title}
                       description={item.translation.description}
                       price={[item.min_price, item.max_price]}
-                      image={`${baseURL}/${item.img}`}
+                      image={`${BASE_URL}/${item.img}`}
                       quantity={item.min_qty}
                       maxQuantity={item.max_qty}
                       stocks={item.stocks}

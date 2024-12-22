@@ -10,9 +10,9 @@ import "../js/contact-form"
 import "../js/jquery.scrollto"
 import ShopProduct from "../components/ShopProduct"
 import CategorySidebar from "../components/CategorySidebar"
-import productService from "../components/productService"
-import { baseURL } from "../components/service"
-import allCategoryProductService from "../components/allCategoryProductsService"
+import productService from "../services/api/productService"
+import { BASE_URL } from "../env/env"
+import allCategoryProductService from "../services/api/allCategoryProductsService"
 import Pagination from "@mui/material/Pagination"
 import Stack from "@mui/material/Stack"
 import placeHolderImg1 from "../images/placeHolderImg1.png"
@@ -163,7 +163,7 @@ function Shop() {
                           title={item.translation.title}
                           description={item.translation.description}
                           price={[item.min_price, item.max_price]}
-                          image={`${baseURL}/${item.img}`}
+                          image={`${BASE_URL}/${item.img}`}
                           quantity={item.min_qty}
                           maxQuantity={item.max_qty}
                           stocks={item.stocks}

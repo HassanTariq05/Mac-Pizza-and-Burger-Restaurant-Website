@@ -1,8 +1,9 @@
-import service from "./service"
+import service from "../network/service"
+import { BASE_USER_URL } from "../../env/env"
 
 const deleteAddressService = {
   delete: (id, body, token) =>
-    service.delete(`public/api/v1/dashboard/user/addresses/${id}`, {
+    service.delete(`${BASE_USER_URL}/addresses/${id}`, {
       headers: {
         Authorization: `${token}`,
         "Content-Type": "application/json",

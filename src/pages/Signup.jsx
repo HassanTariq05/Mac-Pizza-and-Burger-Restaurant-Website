@@ -3,7 +3,7 @@ import "../css/signup.css"
 import macburgerLogo from "../images/macburger-logo.png"
 import { EyeOff, Eye } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
-import authService from "../components/authService"
+import authService from "../services/api/authService"
 import toast from "react-hot-toast"
 
 const Signup = () => {

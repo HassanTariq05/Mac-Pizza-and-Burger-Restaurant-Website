@@ -4,7 +4,7 @@ import macburgerLogo from "../images/macburger-logo.png"
 import { EyeOff, Eye } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
-import authService from "../components/authService"
+import authService from "../services/api/authService"
 
 const Login = () => {
   const [formData, setFormData] = useState({

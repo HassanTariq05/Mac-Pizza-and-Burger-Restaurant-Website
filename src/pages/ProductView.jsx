@@ -5,9 +5,9 @@ import "../css/responsive.css"
 import { useNavigate, useParams, Link } from "react-router-dom"
 import { useStateValue } from "../components/StateProvider"
 import ShopProduct from "../components/ShopProduct"
-import singleProductService from "../components/singleProductService"
-import { baseURL } from "../components/service"
-import productService from "../components/productService"
+import singleProductService from "../services/api/singleProductService"
+import { BASE_URL } from "../env/env"
+import productService from "../services/api/productService"
 import toast from "react-hot-toast"
 
 const ProductView = () => {
@@ -115,7 +115,7 @@ const ProductView = () => {
         type: "ADD_TO_BASKET",
         item: {
           title: product.translation.title,
-          image: `${baseURL}/${product.img}`,
+          image: `${BASE_URL}/${product.img}`,
           price: additionalPrice === 0 ? product.min_price : additionalPrice,
           description: product.translation.description,
           quantity: quantity,
@@ -231,7 +231,7 @@ const ProductView = () => {
       <div className="product-view">
         <div className="product-image">
           <img
-            src={`${baseURL}/${product.img}`}
+            src={`${BASE_URL}/${product.img}`}
             alt={product.translation.title}
           />
         </div>
@@ -405,7 +405,7 @@ const ProductView = () => {
                 title={item.translation.title}
                 description={item.translation.description}
                 price={[item.min_price, item.max_price]}
-                image={`${baseURL}/${item.img}`}
+                image={`${BASE_URL}/${item.img}`}
                 quantity={item.min_qty}
                 maxQuantity={item.max_qty}
                 stocks={item.stocks}

@@ -1,7 +1,6 @@
 /* global google */
 import React, { useEffect, useRef, useState } from "react"
 import {
-  MDBBtn,
   MDBModal,
   MDBModalDialog,
   MDBModalContent,
@@ -15,15 +14,15 @@ import {
   MDBListGroupItem,
 } from "mdb-react-ui-kit"
 import { Loader } from "@googlemaps/js-api-loader"
-import { GOOGLE_MAPS_API_KEY } from "./service"
+import { GOOGLE_MAPS_API_KEY } from "../env/env"
 import delivery_scooter from "../images/delivery-scooter.png"
-import deliveryPriceService from "./deliveryPriceService"
+import deliveryPriceService from "../services/api/deliveryPriceService"
 import "../css/AddressModal.css"
 import MarkerInfoWindow from "./MarkerInfoWindow"
-import { createRoot } from "react-dom/client"
 import AddressForm from "./AddressForm"
-import getAddressesService from "./getAddressesService"
+import getAddressesService from "../services/api/getAddressesService"
 import toast from "react-hot-toast"
+import { createRoot } from "react-dom/client"
 
 export default function AddressModal({ isOpen, onClose }) {
   const [coordinates, setCoordinates] = useState({ lat: 42.8746, lng: 74.5698 })

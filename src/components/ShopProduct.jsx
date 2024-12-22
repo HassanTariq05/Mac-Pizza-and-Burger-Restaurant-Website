@@ -3,7 +3,7 @@ import { useStateValue } from "./StateProvider"
 import "../css/ProductView.css"
 import { Link } from "react-router-dom"
 import { useEffect } from "react"
-import singleProductService from "./singleProductService"
+import singleProductService from "../services/api/singleProductService"
 
 function ShopProduct({
   image,

@@ -1,4 +1,4 @@
-import service from "../components/service"
+import service from "../network/service"
 
 const imageUploadService = {
   uploadImage: (formData, token) =>

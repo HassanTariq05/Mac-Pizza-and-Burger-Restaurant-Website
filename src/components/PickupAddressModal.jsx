@@ -10,7 +10,7 @@ import {
 } from "mdb-react-ui-kit"
 import "../css/DeliveryTypeModal.css"
 import "../css/AddressModal.css"
-import getDeliveryPoints from "./getDeliveryPoints"
+import getDeliveryPoints from "../services/api/getDeliveryPoints"
 import toast from "react-hot-toast"
 
 export default function PickupAddressModal({

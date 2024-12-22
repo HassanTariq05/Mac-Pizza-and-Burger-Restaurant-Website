@@ -1,12 +1,12 @@
 import React, { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import authService from "../components/authService"
+import authService from "../services/api/authService"
 import toast from "react-hot-toast"
 import { Camera } from "lucide-react"
 import defaultProfilePicture from "../images/default-user-pic.webp"
-import imageUploadService from "../components/imageUploadService"
-import profileUpdateService from "../components/profileUpdateService"
-import { baseURL } from "../components/service"
+import imageUploadService from "../services/api/imageUploadService"
+import profileUpdateService from "../services/api/profileUpdateService"
+import { BASE_URL } from "../env/env"
 import { useEffect } from "react"
 import "../css/PersonalData.css"
 
@@ -52,9 +52,9 @@ function PersonalData() {
         gender,
       })
 
-      const profileImage = userObj?.img?.startsWith(baseURL)
+      const profileImage = userObj?.img?.startsWith(BASE_URL)
         ? userObj?.img
-        : `${baseURL}/${userObj?.img}`
+        : `${BASE_URL}/${userObj?.img}`
       setProfilePic(localStorage.getItem("profilePic") || profileImage)
     }
     getUserCredentials()
@@ -100,7 +100,7 @@ function PersonalData() {
 
           const extractedImage = profileUpdateResponse.data?.data?.img
           const fullImageUrl = imageUrl
-            ? `${baseURL}/${extractedImage}`
+            ? `${BASE_URL}/${extractedImage}`
             : URL.createObjectURL(file)
           localStorage.setItem("profilePic", fullImageUrl)
 

@@ -2,14 +2,13 @@ import React, { useEffect, useState } from "react"
 import { Link, useNavigate, Navigate } from "react-router-dom"
 import { User, ArrowRight, LogOut, MapPin, Logs, Camera } from "lucide-react"
 import defaultProfilePicture from "../images/default-user-pic.webp"
-import imageUploadService from "../components/imageUploadService"
+import imageUploadService from "../services/api/imageUploadService"
 import "../css/UserProfile.css"
-import { baseURL } from "../components/service"
-import profileUpdateService from "../components/profileUpdateService"
+import { BASE_URL } from "../env/env"
+import profileUpdateService from "../services/api/profileUpdateService"
 import toast from "react-hot-toast"
 import RecentOrder from "../components/RecentOrder"
 import AddressModal from "../components/AddressModal"
-import useUser from "../components/useUser"
 
 const UserProfile = () => {
   const [email, setEmail] = useState("-")
@@ -43,9 +42,9 @@ const UserProfile = () => {
       setEmail(userObj?.email || "-")
       setName(`${userObj?.firstname} ${userObj?.lastname}` || "-")
 
-      const profileImage = userObj?.img?.startsWith(baseURL)
+      const profileImage = userObj?.img?.startsWith(BASE_URL)
         ? userObj?.img
-        : `${baseURL}/${userObj?.img}`
+        : `${BASE_URL}/${userObj?.img}`
 
       setProfilePic(localStorage.getItem("profilePic") || profileImage)
     }
@@ -99,7 +98,7 @@ const UserProfile = () => {
 
           const extractedImage = profileUpdateResponse.data?.data?.img
           const fullImageUrl = imageUrl
-            ? `${baseURL}/${extractedImage}`
+            ? `${BASE_URL}/${extractedImage}`
             : URL.createObjectURL(file)
           localStorage.setItem("profilePic", fullImageUrl)
           setProfilePic(fullImageUrl)

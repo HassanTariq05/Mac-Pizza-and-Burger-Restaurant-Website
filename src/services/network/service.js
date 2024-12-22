@@ -1,7 +1,8 @@
 import axios from "axios"
+import { BASE_URL } from "../../env/env"
 
 const service = axios.create({
-  baseURL: "https://api.macburger.kg",
+  BASE_URL: BASE_URL,
   timeout: 16000,
   withCredentials: false,
 })
@@ -20,6 +21,3 @@ service.interceptors.response.use(
 )
 
 export default service
-
-export const baseURL = "https://api.macburger.kg/public"
-export const GOOGLE_MAPS_API_KEY = "AIzaSyBiohy_1HfSjWgJBKgAs57BAHguyjH6bIU"

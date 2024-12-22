@@ -1,0 +1,7 @@
+export const BASE_URL = "https://api.macburger.kg/public"
+export const BASE_SERVICE_URL = BASE_URL + "/api/v1/rest"
+export const BASE_AUTH_URL = BASE_URL + "/api/v1/auth"
+export const BASE_DASHBOARD_URL = BASE_URL + "/api/v1/dashboard"
+export const BASE_ADMIN_URL = BASE_DASHBOARD_URL + "/admin"
+export const BASE_USER_URL = BASE_DASHBOARD_URL + "/user"
+export const GOOGLE_MAPS_API_KEY = "AIzaSyBiohy_1HfSjWgJBKgAs57BAHguyjH6bIU"

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import "../css/header.css"
 import { Link } from "react-router-dom"
 import { useNavigate } from "react-router-dom"
-import { baseURL } from "./service"
+import { BASE_URL } from "../env/env"
 
 function Header() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
@@ -26,7 +26,7 @@ function Header() {
   const getProfilePic = () => {
     const user = JSON.parse(localStorage.getItem("user"))
     if (user) {
-      return `${baseURL}/${user.img}`
+      return `${BASE_URL}/${user.img}`
     } else {
       return require("../images/default-user-pic.webp")
     }

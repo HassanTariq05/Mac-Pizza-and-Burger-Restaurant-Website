@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import authService from "./authService"
+import authService from "../services/api/authService"
 
 const useUser = () => {
   const isUserLoggedIn = () => {

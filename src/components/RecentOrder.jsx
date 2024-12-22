@@ -1,9 +1,9 @@
 import React, { useState } from "react"
 import "../css/UserProfile.css"
 import defaultProfilePicture from "../images/default-user-pic.webp"
-import allOrdersService from "./allOrdersService"
+import allOrdersService from "../services/api/allOrdersService"
 import { useEffect } from "react"
-import { baseURL } from "./service"
+import { BASE_URL } from "../env/env"
 import { Link } from "react-router-dom"
 
 function RecentOrder() {
@@ -58,7 +58,7 @@ function RecentOrder() {
                   <img
                     class="order-img"
                     src={
-                      `${baseURL}/${allOrdersResponse?.[0]?.details?.[0]?.stock?.product?.img}` ||
+                      `${BASE_URL}/${allOrdersResponse?.[0]?.details?.[0]?.stock?.product?.img}` ||
                       defaultProfilePicture
                     }
                     alt="order-img"

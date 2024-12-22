@@ -1,8 +1,9 @@
-import service from "../components/service"
+import service from "../network/service"
+import { BASE_USER_URL } from "../../env/env"
 
 const profileUpdateService = {
   updateProfile: (body, token) =>
-    service.put("public/api/v1/dashboard/user/profile/update", body, {
+    service.put(`${BASE_USER_URL}/profile/update`, body, {
       headers: {
         Authorization: token,
         "Content-Type": "application/json",

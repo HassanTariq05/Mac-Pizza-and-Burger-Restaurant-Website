@@ -1,8 +1,9 @@
-import service from "../components/service"
+import service from "../network/service"
+import { BASE_USER_URL } from "../../env/env"
 
 const getAddressesService = {
   get: (token) => {
-    return service.get(`public/api/v1/dashboard/user/addresses`, {
+    return service.get(`${BASE_USER_URL}/addresses`, {
       headers: {
         Authorization: `${token}`,
       },

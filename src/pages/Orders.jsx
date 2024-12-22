@@ -4,7 +4,7 @@ import { useStateValue } from "../components/StateProvider"
 import CurrencyFormat from "react-currency-format"
 import { useEffect } from "react"
 import { useParams } from "react-router-dom"
-import orderDetailService from "../components/orderDetailService"
+import orderDetailService from "../services/api/orderDetailService"
 import moment from "moment"
 
 const OrderInfo = ({ detail }) => {

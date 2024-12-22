@@ -2,12 +2,12 @@ import React from "react"
 import { useForm } from "react-hook-form"
 import "../css/AddressForm.css"
 import { MDBIcon } from "mdb-react-ui-kit"
-import { GOOGLE_MAPS_API_KEY } from "./service"
-import createAddressService from "./createAddressService"
+import { GOOGLE_MAPS_API_KEY } from "../env/env"
+import createAddressService from "../services/api/createAddressService"
 import toast from "react-hot-toast"
 import { useState } from "react"
-import updateAddressService from "./updateAddressService"
-import deleteAddressService from "./deleteAddressService"
+import updateAddressService from "../services/api/updateAddressService"
+import deleteAddressService from "../services/api/deleteAddressService"
 
 const AddressForm = ({
   selectedButton,
