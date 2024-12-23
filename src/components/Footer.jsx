@@ -1,9 +1,11 @@
-import React from 'react';
-import '../css/style.css';
-import '../css/responsive.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFacebook, faInstagram } from '@fortawesome/free-brands-svg-icons';
-import { faFileWaveform } from '@fortawesome/free-solid-svg-icons';
+import React from "react"
+import "../css/style.css"
+import "../css/responsive.css"
+import "../css/header.css"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faFacebook, faInstagram } from "@fortawesome/free-brands-svg-icons"
+import { faFileWaveform } from "@fortawesome/free-solid-svg-icons"
+import { Link } from "react-router-dom"
 
 function Footer() {
   return (
@@ -14,7 +16,10 @@ function Footer() {
             <div className="col-sm-6 col-lg-3">
               <div className="footer-info mb-30">
                 <h5 className="h5-md">Location</h5>
-                <p>137 Yusup Abdrahmanov Str. Crossing Toktogul, Bishkek, Kyrgyzstan</p>
+                <p>
+                  137 Yusup Abdrahmanov Str. Crossing Toktogul, Bishkek,
+                  Kyrgyzstan
+                </p>
               </div>
             </div>
             <div className="col-sm-6 col-lg-3">
@@ -45,32 +50,43 @@ function Footer() {
                 <h5 className="h5-md">Follow Us</h5>
                 <ul className="foo-socials text-center clearfix">
                   <li>
-                    <a href="https://www.facebook.com/macburgerandpizza" className="ico-facebook">
-                      <FontAwesomeIcon className="fab fa-facebook-f" icon={faFacebook}/>
+                    <a
+                      href="https://www.facebook.com/macburgerandpizza"
+                      className="ico-facebook"
+                    >
+                      <FontAwesomeIcon
+                        className="fab fa-facebook-f"
+                        icon={faFacebook}
+                      />
                     </a>
                   </li>
                   <li>
-                    <a href="https://www.instagram.com/macburger.kg/" className="ico-instagram">
-                      <FontAwesomeIcon className="fab fa-instagram" icon={faInstagram}/>
+                    <a
+                      href="https://www.instagram.com/macburger.kg/"
+                      className="ico-instagram"
+                    >
+                      <FontAwesomeIcon
+                        className="fab fa-instagram"
+                        icon={faInstagram}
+                      />
                     </a>
                   </li>
                 </ul>
               </div>
             </div>
           </div>
-          <div className="bottom-footer">
-            <div className="row d-flex align-items-center">
-              <div className="col-lg-10 offset-lg-1">
-                <ul className="bottom-footer-list clearfix">
-                  <li>© Mac Burger &amp; Pizza 2024 - All Rights Reserved</li>
-                </ul>
-              </div>
+          <div class="bottom-footer">
+            <div class="footer-content">
+              <span>© Mac Burger & Pizza 2024 - All Rights Reserved</span>
+              <Link to="/privacy-policy">
+                <a class="privacy-policy">Privacy Policy</a>
+              </Link>
             </div>
           </div>
         </div>
       </div>
     </footer>
-  );
+  )
 }
 
-export default Footer;
+export default Footer

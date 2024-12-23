@@ -87,12 +87,13 @@ function Home() {
                           style={{
                             maxWidth: "54px",
                             maxHeight: "54px",
-                            scale: "inherit",
+                            objectFit: "contain",
                           }}
                           className="category-img"
                           src={`${BASE_URL}/${item.img}`}
                           alt="vector"
                         />
+
                         <h5>{item.translation.title}</h5>
                       </a>
                     </li>
@@ -141,13 +142,13 @@ function Home() {
                 <a
                   onClick={() =>
                     handleProductClick(
-                      "06cea71c-6e22-4383-9bd0-9c219df7c52c/bc25c7cd-ed84-4626-8f6b-897476ca2a29"
+                      "b8101227-6d6f-4668-b4e7-df3e4c628a97/bc25c7cd-ed84-4626-8f6b-897476ca2a29"
                     )
                   }
                 >
                   <img
                     className="img-fluid"
-                    src={require("../images/central-banner-pizza-1.png")}
+                    src={require("../images/polo-veggie-pizza.webp")}
                     alt="promo-image"
                   />
                   <p>POLO VEGGIE PIZZA</p>
@@ -157,13 +158,13 @@ function Home() {
                 <a
                   onClick={() =>
                     handleProductClick(
-                      "66d2b9a2-6a4a-4c8f-92a5-02a55648f683/bc25c7cd-ed84-4626-8f6b-897476ca2a29"
+                      "34e06b3b-eb7e-429a-8570-a5c640da719d/bc25c7cd-ed84-4626-8f6b-897476ca2a29"
                     )
                   }
                 >
                   <img
                     className="img-fluid"
-                    src={require("../images/central-banner-pizza-2.png")}
+                    src={require("../images/hawain-pizza.webp")}
                     alt="promo-image"
                   />
                   <p>HAWAIIAN PIZZA</p>

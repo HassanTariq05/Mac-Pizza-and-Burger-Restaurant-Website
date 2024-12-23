@@ -46,10 +46,7 @@ function CategorySidebar({ onCategorySelect }) {
                 data-tab={item.id}
                 key={item.id}
               >
-                <a
-                  href="javascript:;"
-                  onClick={() => handleCategoryClick(item.uuid)}
-                >
+                <a onClick={() => handleCategoryClick(item.uuid)}>
                   {item.translation.title}
                 </a>
               </li>

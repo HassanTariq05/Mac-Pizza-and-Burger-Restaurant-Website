@@ -35,7 +35,7 @@ export default function DeliveryTypeModal({
         <MDBModalDialog>
           <MDBModalContent>
             <MDBModalHeader>
-              <MDBModalTitle>Select Option</MDBModalTitle>
+              <MDBModalTitle>Please Select Your Area</MDBModalTitle>
               <MDBIcon
                 icon="times"
                 size="1x"

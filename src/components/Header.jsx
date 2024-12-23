@@ -7,6 +7,7 @@ import { BASE_URL } from "../env/env"
 
 function Header() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const [profilePic, setProfilePic] = useState(null)
 
   const toggleDrawer = () => {
     setIsDrawerOpen((prev) => !prev)
@@ -25,13 +26,18 @@ function Header() {
 
   const getProfilePic = () => {
     const user = JSON.parse(localStorage.getItem("user"))
-    if (user) {
+    console.log("Here", user)
+    console.log("Profile Pic", localStorage.getItem("profilePic"))
+    const profileLocal = localStorage.getItem("profilePic")
+    if (profileLocal) {
+      return `${profileLocal}`
+    }
+    if (user.img) {
       return `${BASE_URL}/${user.img}`
     } else {
       return require("../images/default-user-pic.webp")
     }
   }
-
   return (
     <header className="header">
       <nav className="nav">
@@ -44,9 +50,13 @@ function Header() {
           >
             <Menu size={28} className="icon" />
           </button>
-          <Link to={"/home"}>
+          <Link to={"/"}>
             <a>
-              <Home size={28} className="icon" />
+              <img
+                className="home-icon"
+                src={require("../images/home-icon.png")}
+                alt="Mac Burger Logo"
+              />
             </a>
           </Link>
         </div>
@@ -60,7 +70,7 @@ function Header() {
             <a>Our Menu</a>
           </Link>
           <div className="logo-nav">
-            <Link to={"/home"}>
+            <Link to={"/"}>
               <img
                 className="logo-nav-img"
                 src={require("../images/macburger-logo.png")}
@@ -87,7 +97,7 @@ function Header() {
         {/* Right Section: User and Cart Buttons */}
         <div className="nav-right">
           <Link to={"/cart"}>
-            <ShoppingCart size={28} className="icon" />
+            <i id="shopping-cart-icon" className="fas fa-shopping-cart"></i>
           </Link>
 
           {localStorage.getItem("user") !== null &&
@@ -101,7 +111,7 @@ function Header() {
           ) : (
             <UserCircle
               onClick={handleProfileButtonClick}
-              size={28}
+              size={32}
               className="icon"
             />
           )}
@@ -123,7 +133,7 @@ function Header() {
             </button>
             <ul className="drawer-links">
               <li>
-                <Link to={"/home"}>
+                <Link to={"/"}>
                   <a>Home</a>
                 </Link>
               </li>

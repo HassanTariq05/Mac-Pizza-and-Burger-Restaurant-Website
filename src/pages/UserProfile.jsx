@@ -18,7 +18,6 @@ const UserProfile = () => {
   )
 
   const [AddressModalOpen, setAddressModalOpen] = useState(false)
-
   const onClose = () => {
     setAddressModalOpen(false)
   }
@@ -42,11 +41,23 @@ const UserProfile = () => {
       setEmail(userObj?.email || "-")
       setName(`${userObj?.firstname} ${userObj?.lastname}` || "-")
 
-      const profileImage = userObj?.img?.startsWith(BASE_URL)
-        ? userObj?.img
-        : `${BASE_URL}/${userObj?.img}`
+      let profileImage
 
-      setProfilePic(localStorage.getItem("profilePic") || profileImage)
+      if (userObj?.img?.startsWith(BASE_URL)) {
+        profileImage = userObj?.img
+      } else {
+        if (userObj?.img) {
+          profileImage = `${BASE_URL}/${userObj?.img}`
+        } else {
+          profileImage = null
+        }
+      }
+
+      if (localStorage.getItem("profilePic") || profileImage) {
+        setProfilePic(localStorage.getItem("profilePic") || profileImage)
+      } else {
+        setProfilePic(defaultProfilePicture)
+      }
     }
     getUserCredentials()
   }, [navigate])
@@ -108,13 +119,14 @@ const UserProfile = () => {
         }
       }
     } catch (error) {
+      toast.error("Error Updating Profile")
       console.error("Error:", error.response || error.message)
     }
   }
 
   const handleLogout = () => {
     localStorage.clear()
-    navigate("/home")
+    navigate("/")
     toast.success("Logged out successfully")
     localStorage.setItem("isGuestUser", "true")
     localStorage.removeItem("guestAddresses")

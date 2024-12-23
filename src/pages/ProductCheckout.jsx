@@ -561,7 +561,7 @@ const ProductCheckout = () => {
                         <div className="breadcrumb-nav">
                           <nav aria-label="breadcrumb">
                             <ol className="breadcrumb">
-                              <Link to="/home">
+                              <Link to="/">
                                 <li className="breadcrumb-item">
                                   <a href="">Home</a>
                                 </li>

@@ -43,10 +43,47 @@ import AddressModal from "./components/AddressModal"
 import useUser from "./components/useUser"
 import ProtectedRoute from "./components/ProtectedRoute"
 import DeliveryTypeModal from "./components/DeliveryTypeModal"
+import Privacy from "./pages/Policy"
+import { useState } from "react"
+import PickupAddressModal from "./components/PickupAddressModal"
 
 function MainContent() {
   const location = useLocation()
   const navigate = useNavigate()
+  const [showPopup, setShowPopup] = useState(false)
+  const [AddressModalOpen, setAddressModalOpen] = useState(false)
+  const [DeliveryTypeModalOpen, setDeliveryTypeModalOpen] = useState(true)
+  const [PickupAddressModalOpen, setPickupAddressModalOpen] = useState(false)
+
+  const onClose = () => {
+    setAddressModalOpen(false)
+  }
+
+  const onDeliveryTypeModalClose = () => {
+    setDeliveryTypeModalOpen(false)
+  }
+
+  const onPickupAddressModalClose = () => {
+    setPickupAddressModalOpen(false)
+  }
+
+  const handleAddressModalOpen = () => {
+    setAddressModalOpen(true)
+  }
+
+  const onDeliveryButtonClick = () => {
+    onDeliveryTypeModalClose()
+    handleAddressModalOpen()
+  }
+
+  const onPickupButtonClick = () => {
+    onDeliveryTypeModalClose()
+    setPickupAddressModalOpen(true)
+  }
+
+  const handleDeliveryTypeModalOpen = () => {
+    setDeliveryTypeModalOpen(true)
+  }
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -61,6 +98,14 @@ function MainContent() {
       window.removeEventListener("storage", handleStorageChange)
     }
   }, [navigate])
+
+  useEffect(() => {
+    const isFirstVisit = localStorage.getItem("isFirstVisit")
+    if (!isFirstVisit) {
+      setShowPopup(true)
+      localStorage.setItem("isFirstVisit", "false")
+    }
+  }, [])
 
   const skipHeaderFooter =
     location.pathname === "/signup" ||
@@ -77,6 +122,7 @@ function MainContent() {
       <DocumentTitle />
       <Routes>
         <Route path="/signup" element={<Signup />} />
+        <Route path="/privacy-policy" element={<Privacy />} />
         <Route path="/demo" element={<DeliveryTypeModal />} />
         <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -103,7 +149,7 @@ function MainContent() {
         <Route path="/shop/:category" element={<Shop />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/cart" element={<Cart />} />
-        <Route path="/home" element={<Home />} />
+        <Route path="/" element={<Home />} />
         <Route path="/checkout" element={<ProductCheckout />} />
         <Route
           path="/orders"
@@ -128,10 +174,25 @@ function MainContent() {
         />
 
         <Route path="/product/:uuid/:categoryUUID" element={<ProductView />} />
-        <Route path="/" element={<Navigate to="/home" />} />
-        <Route path="*" element={<Navigate to="/home" />} />
+        <Route path="/product/:uuid" element={<ProductView />} />
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
       {!skipHeaderFooter && <Footer />}
+      {showPopup && (
+        <>
+          <AddressModal isOpen={AddressModalOpen} onClose={onClose} />
+          <DeliveryTypeModal
+            isOpen={DeliveryTypeModalOpen}
+            onDeliveryTypeModalClose={onDeliveryTypeModalClose}
+            onDeliveryButtonClick={onDeliveryButtonClick}
+            onPickupButtonClick={onPickupButtonClick}
+          />
+          <PickupAddressModal
+            isOpen={PickupAddressModalOpen}
+            onPickupAddressModalClose={onPickupAddressModalClose}
+          />
+        </>
+      )}
     </>
   )
 }

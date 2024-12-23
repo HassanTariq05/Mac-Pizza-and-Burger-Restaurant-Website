@@ -35,7 +35,7 @@ const Login = () => {
       if (response.data.status) {
         toast.success("Login Successful")
       }
-      navigate("/home")
+      navigate("/")
     } catch (error) {
       toast.error("Login Failed")
     } finally {
@@ -63,11 +63,14 @@ const Login = () => {
   return (
     <div className="signup-container">
       <form className="signup-form" onSubmit={handleSubmit}>
-        <img
-          src={macburgerLogo}
-          alt="mac-burger-logo"
-          className="signup-logo"
-        />
+        <Link to="/">
+          <img
+            src={macburgerLogo}
+            alt="mac-burger-logo"
+            className="signup-logo"
+          />
+        </Link>
+
         <h6 className="signup-heading">Login to your account</h6>
         <span className="signup-subtext">Please Login to your account</span>
 
@@ -123,6 +126,16 @@ const Login = () => {
           <span>Don't have an account? </span>
           <Link to={"/signup"}>
             <span className="red-text"> Sign Up</span>
+          </Link>
+        </div>
+        <div className="orLabel">
+          <Link to={"/"}>
+            <span>OR</span>
+          </Link>
+        </div>
+        <div className="existingGuestLabel">
+          <Link to={"/"}>
+            <span className="red-text">Continue as Guest</span>
           </Link>
         </div>
       </form>

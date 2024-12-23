@@ -52,10 +52,23 @@ function PersonalData() {
         gender,
       })
 
-      const profileImage = userObj?.img?.startsWith(BASE_URL)
-        ? userObj?.img
-        : `${BASE_URL}/${userObj?.img}`
-      setProfilePic(localStorage.getItem("profilePic") || profileImage)
+      let profileImage
+
+      if (userObj?.img?.startsWith(BASE_URL)) {
+        profileImage = userObj?.img
+      } else {
+        if (userObj?.img) {
+          profileImage = `${BASE_URL}/${userObj?.img}`
+        } else {
+          profileImage = null
+        }
+      }
+
+      if (localStorage.getItem("profilePic") || profileImage) {
+        setProfilePic(localStorage.getItem("profilePic") || profileImage)
+      } else {
+        setProfilePic(defaultProfilePicture)
+      }
     }
     getUserCredentials()
   }, [])

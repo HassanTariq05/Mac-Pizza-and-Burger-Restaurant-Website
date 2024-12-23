@@ -21,18 +21,38 @@ const Signup = () => {
   })
   const navigate = useNavigate()
 
-  const registerUser = async (username, password, email, phone, name) => {
+  const registerUser = async (password, email, phone, firstname, lastname) => {
     try {
       setLoading(true)
       const params = {
-        username: username,
-        password: password,
-        email: email,
         phone: phone,
-        name: name,
+        email: email,
+        password: password,
+        firstname: firstname,
+        lastname: lastname,
       }
 
       const response = await authService.register(params)
+      if (response.data.status) {
+        loginUser(email, password)
+      }
+      navigate("/")
+    } catch (error) {
+      toast.error("Signup Failed")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const loginUser = async (email, password) => {
+    try {
+      setLoading(true)
+      const params = {
+        email: email,
+        password: password,
+      }
+
+      const response = await authService.authenticate(params)
       const token =
         response.data.data.token_type + " " + response.data.data.access_token
       const user = response.data.data.user
@@ -43,7 +63,7 @@ const Signup = () => {
       if (response.data.status) {
         toast.success("Signup Successful")
       }
-      navigate("/home")
+      navigate("/")
     } catch (error) {
       toast.error("Signup Failed")
     } finally {
@@ -63,10 +83,11 @@ const Signup = () => {
     e.preventDefault()
     console.log("Form data:", formData)
     registerUser(
-      formData.firstName + " " + formData.lastName,
       formData.password,
       formData.email,
-      formData.phone
+      formData.phone,
+      formData.firstName,
+      formData.lastName
     )
   }
 

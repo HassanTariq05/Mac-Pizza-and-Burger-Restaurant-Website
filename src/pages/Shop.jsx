@@ -21,27 +21,32 @@ function Shop() {
   const { category } = useParams()
   const [products, setProducts] = useState([])
   const [sortedProducts, setSortedProducts] = useState([])
-  const [selectedCategory, setSelectedCategory] = useState(category || "all")
+  const [selectedCategory, setSelectedCategory] = useState(category || "")
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [totalResults, setTotalResults] = useState(0)
   const [sortOption, setSortOption] = useState("menu_order")
 
+  const itemsPerPage = 10 // Set the number of items per page
+
   const fetchProducts = async () => {
     try {
       let response
-      if (selectedCategory === "all") {
+      if (selectedCategory === "") {
         const params = { id: "53dc5677-4a67-4b7f-a8a6-33304311512a", page }
         response = await allCategoryProductService.get(params)
       } else {
         const params = { id: selectedCategory, page }
         response = await productService.getAll(params)
+        console.log("products: ", response.data.data)
+        console.log("totalPages: ", response.data.meta.last_page)
+        console.log("totalResults: ", response.data.meta.total)
       }
       setProducts(response.data.data)
       setTotalPages(response.data.meta.last_page)
       setTotalResults(response.data.meta.total)
     } catch (error) {
-      // console.error('Error fetching products:', error);
+      // Handle error if needed
     }
   }
 
@@ -59,7 +64,6 @@ function Shop() {
         sorted.sort((a, b) => b.min_price - a.min_price)
         break
       default:
-        // Default sorting logic (if any)
         break
     }
     setSortedProducts(sorted)
@@ -105,7 +109,7 @@ function Shop() {
                         <nav aria-label="breadcrumb">
                           <ol className="breadcrumb">
                             <li className="breadcrumb-item">
-                              <Link to="/home">Home</Link>
+                              <Link to="/">Home</Link>
                             </li>
                             <li
                               className="breadcrumb-item active"
@@ -131,7 +135,6 @@ function Shop() {
             <CategorySidebar onCategorySelect={setSelectedCategory} />
             {loading ? (
               <div className="loading-spinner">
-                {/* Replace this with a spinner or loading animation */}
                 <p>...</p>
               </div>
             ) : sortedProducts.length > 0 ? (
@@ -139,9 +142,9 @@ function Shop() {
                 <div className="top-bar">
                   <div className="leftbox">
                     <p>
-                      Showing {(page - 1) * 10 + 1}–
-                      {Math.min(page * 10, totalResults)} of {totalResults}{" "}
-                      results
+                      Showing {(page - 1) * itemsPerPage + 1}–
+                      {Math.min(page * itemsPerPage, totalResults)} of{" "}
+                      {totalResults} results
                     </p>
                   </div>
                   <div className="select-wrap">

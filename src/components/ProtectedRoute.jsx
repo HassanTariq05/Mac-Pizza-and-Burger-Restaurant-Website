@@ -5,7 +5,7 @@ const ProtectedRoute = ({ children, allowedForGuests = false }) => {
   const isGuestUser = localStorage.getItem("isGuestUser") === "true"
 
   if (!allowedForGuests && isGuestUser) {
-    return <Navigate to="/home" replace />
+    return <Navigate to="/" replace />
   }
 
   return children

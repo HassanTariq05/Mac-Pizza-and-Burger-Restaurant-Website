@@ -177,7 +177,11 @@ const ProductView = () => {
   }
 
   const handleAddToCartClick = () => {
-    if (product.stocks.length > 1 && size === "") {
+    console.log("size: ", size)
+    if (
+      product.stocks.length > 1 &&
+      (size === "" || size === "Choose an option")
+    ) {
       toast.error("Select a size")
     } else if (
       product.addon_categories.length > 0 &&
@@ -207,9 +211,12 @@ const ProductView = () => {
                     <div className="coll">
                       <div className="breadcrumb-nav">
                         <nav aria-label="breadcrumb">
-                          <ol className="breadcrumb">
+                          <ol
+                            style={{ marginTop: "0px" }}
+                            className="breadcrumb"
+                          >
                             <li className="breadcrumb-item">
-                              <Link to="/home">Home</Link>
+                              <Link to="/">Home</Link>
                             </li>
                             <li
                               className="breadcrumb-item active"

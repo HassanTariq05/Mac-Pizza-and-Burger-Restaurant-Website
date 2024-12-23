@@ -133,6 +133,22 @@
   margin-top: 20px;
 }
 
+.existingGuestLabel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.orLabel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
 .forgot-password-text {
   display: flex;
   justify-content: right;

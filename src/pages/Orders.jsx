@@ -86,7 +86,7 @@ const OrderDetails = ({ detail }) => {
                     {`${item.stock.product.translation.title} X ${item.quantity}`}
                   </td>
                   <td className="text-bold">
-                    {((item.total_price ?? 0) * item.quantity).toFixed(2)}
+                    {(item.total_price ?? 0).toFixed(2)}
                   </td>
                 </tr>
               )
@@ -194,7 +194,7 @@ const Orders = () => {
                         <div className="breadcrumb-nav">
                           <nav aria-label="breadcrumb">
                             <ol className="breadcrumb">
-                              <Link to="/home">
+                              <Link to="/">
                                 <li className="breadcrumb-item">
                                   <a href="">Home</a>
                                 </li>

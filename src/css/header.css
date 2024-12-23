@@ -64,13 +64,22 @@
 }
 
 .logo-nav-img {
-  height: 65px;
+  height: 85px;
+}
+
+.home-icon {
+  height: 32px;
+}
+
+#shopping-cart-icon {
+  font-size: 30px;
+  color: white;
 }
 
 /* Navigation Links (Desktop View) */
 .nav-links {
   display: flex; /* Ensure links are visible on desktop */
-  gap: 20px;
+  gap: 25px;
   align-items: center;
   font-family: "oswald";
 }
@@ -78,7 +87,8 @@
 .nav-links a {
   text-decoration: none;
   color: white;
-  font-size: 18px;
+  font-size: 20px;
+  font-weight: 450;
   transition: color 0.3s;
 }
 
@@ -188,6 +198,40 @@
   object-fit: cover;
 }
 
+.bottom-footer {
+  background-color: #ffffff; /* Adjust the background color to match the footer */
+  padding: 20px 0; /* Add some padding for spacing */
+  text-align: center; /* Center-align the text */
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-size: 16px;
+  color: #666;
+}
+
+.footer-content a {
+  text-decoration: none;
+  color: #666;
+}
+
+.footer-content a:hover {
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column; /* Horizontal layout for larger screens */
+    justify-content: space-between; /* Space out items */
+    max-width: 1200px; /* Restrict content width */
+    margin: 0 auto; /* Center content */
+  }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .nav-left .hamburger {
@@ -206,5 +250,14 @@
 
   .nav-right {
     margin-left: auto; /* Keep right icons at the end */
+  }
+
+  .home-icon {
+    height: 28px;
+  }
+
+  #shopping-cart-icon {
+    font-size: 26px;
+    color: white;
   }
 }
