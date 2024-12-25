@@ -3,23 +3,21 @@ import categoryService from "../services/api/categoryService"
 
 function CategorySidebar({ onCategorySelect }) {
   const [categories, setCategories] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState(null)
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const params = { type: "parent", perPage: "100" }
         const response = await categoryService.getAll(params)
-        var sorted = response.data.data.sort((a, b) => {
-          if (a.translation.title < b.translation.title) {
-            return -1
-          }
-          if (a.translation.title > b.translation.title) {
-            return 1
-          }
-          return 0
-        })
-        setCategories(sorted)
-        // console.log('Category api response:', response.data);
+        const sortedCategories = response.data.data.sort(
+          (a, b) => a.sort - b.sort
+        )
+        setCategories(sortedCategories)
+
+        if (sortedCategories.length > 0) {
+          handleCategoryClick(sortedCategories[0].uuid)
+        }
       } catch (error) {
         console.error("Error fetching categories:", error)
       }

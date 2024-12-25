@@ -7577,6 +7577,7 @@ nav a#pull {
   font-size: 14px;
   text-decoration: none;
   color: #000;
+  cursor: pointer;
 }
 
 .shop-sidebar-cat-list .categories-tabbing .categories-tab-list.active a {

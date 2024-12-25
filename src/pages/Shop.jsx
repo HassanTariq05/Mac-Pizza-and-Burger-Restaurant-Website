@@ -32,16 +32,9 @@ function Shop() {
   const fetchProducts = async () => {
     try {
       let response
-      if (selectedCategory === "") {
-        const params = { id: "53dc5677-4a67-4b7f-a8a6-33304311512a", page }
-        response = await allCategoryProductService.get(params)
-      } else {
-        const params = { id: selectedCategory, page }
-        response = await productService.getAll(params)
-        console.log("products: ", response.data.data)
-        console.log("totalPages: ", response.data.meta.last_page)
-        console.log("totalResults: ", response.data.meta.total)
-      }
+      const params = { id: selectedCategory, page }
+      response = await productService.getAll(params)
+
       setProducts(response.data.data)
       setTotalPages(response.data.meta.last_page)
       setTotalResults(response.data.meta.total)
