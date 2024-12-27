@@ -474,37 +474,35 @@ const ProductCheckout = () => {
 
   const createOrder = async (token, guestUserPhone, cart_id) => {
     try {
+      console.log("Local Storage: ", localStorage)
+
+      // Parse necessary localStorage data
+      const userRaw = localStorage.getItem("user")
+      const currentAddressRaw = localStorage.getItem("currentAddress")
+      const deliveryType = localStorage.getItem("deliveryType")
+
+      if (!userRaw) throw new Error("User data is missing from localStorage")
+      const user = JSON.parse(userRaw)
+
+      const currentAddress =
+        deliveryType === "delivery" && currentAddressRaw
+          ? JSON.parse(currentAddressRaw)
+          : null
+
+      // Build params
       const params = {
-        user_id: JSON.parse(localStorage.getItem("user")).id,
+        user_id: user.id,
         currency_id: 2,
         rate: 1,
         payment_id: 1,
         delivery_price_id:
-          localStorage.getItem("deliveryType") === "delivery"
+          deliveryType === "delivery"
             ? parseInt(localStorage.getItem("deliveryPriceId"))
             : null,
         delivery_point_id:
-          localStorage.getItem("deliveryType") === "pickup"
+          deliveryType === "pickup"
             ? parseInt(localStorage.getItem("deliveryPointId"))
             : null,
-        address:
-          localStorage.getItem("deliveryType") === "delivery"
-            ? {
-                country_id: 1,
-                city_id: 1,
-                street_house_number: JSON.parse(
-                  localStorage.getItem("currentAddress")
-                ).street_house_number.toString(),
-                zip_code: "",
-                location: {
-                  latitude: JSON.parse(localStorage.getItem("currentAddress"))
-                    .latitude,
-                  longitude: JSON.parse(localStorage.getItem("currentAddress"))
-                    .longitude,
-                },
-                phone: JSON.parse(localStorage.getItem("user")).phone,
-              }
-            : {},
         delivery_date: getDeliveryDate(),
         delivery_type: getDeliveryType(),
         phone: formData.phone || "123",
@@ -514,7 +512,7 @@ const ProductCheckout = () => {
             ? `${formData.email},${formData.firstName}, ${formData.lastName}, ${formData.streetAddress}, ${formData.orderNotes}, ${guestUserPhone}`
             : "",
         },
-        coupon: couponCode == "" ? {} : { 501: couponCode },
+        coupon: couponCode === "" ? {} : { 501: couponCode },
         data: [
           {
             shop_id: 501,
@@ -522,6 +520,23 @@ const ProductCheckout = () => {
           },
         ],
       }
+
+      // Add address only if delivery type is "delivery" and currentAddress is valid
+      if (deliveryType === "delivery" && currentAddress) {
+        params.address = {
+          country_id: 1,
+          city_id: 1,
+          street_house_number: currentAddress.street_house_number.toString(),
+          zip_code: "",
+          location: {
+            latitude: currentAddress.latitude,
+            longitude: currentAddress.longitude,
+          },
+          phone: user.phone,
+        }
+      }
+
+      console.log("Params for API call:", params)
 
       const headers = {
         Authorization: token,
