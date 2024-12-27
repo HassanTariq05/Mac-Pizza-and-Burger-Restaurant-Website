@@ -56,7 +56,6 @@ export default function AddressModal({ isOpen, onClose }) {
         return
       }
       const addressesDataResponse = await getAddressesService.get(token)
-      console.log("Data: ", addressesDataResponse.data.data)
       setAddressesData(addressesDataResponse.data.data)
     } catch (error) {
       console.log(error)
@@ -68,7 +67,6 @@ export default function AddressModal({ isOpen, onClose }) {
   }, [])
 
   const handleSaveAddress = () => {
-    console.log("Address Saved!")
     handleBackButtonClick()
     getAddresses()
   }
@@ -91,7 +89,6 @@ export default function AddressModal({ isOpen, onClose }) {
     localStorage.setItem("currentAddress", JSON.stringify(address))
     handleCloseModal()
     toast.success("Delivery Address Selected")
-    console.log("Current Address: ", localStorage.getItem("currentAddress"))
   }
 
   const handleEditAddressClick = (address) => {
@@ -106,7 +103,6 @@ export default function AddressModal({ isOpen, onClose }) {
       selectedEditButton = "Other"
     }
 
-    console.log("Edit: ", address)
     setSelectedButton(selectedEditButton)
     setEditSelectedAddress(address)
     setShowMapRef(false)
@@ -127,7 +123,6 @@ export default function AddressModal({ isOpen, onClose }) {
       }, null)
 
       const max_distance_m = maxDistanceObj.max_distance_km * 1000
-      console.log("Maximum Delivery Distance in meters:", max_distance_m)
       setMaxDeliveryDistance(max_distance_m)
       setCoordinates({
         lat: maxDistanceObj.shop.lat_long.latitude,

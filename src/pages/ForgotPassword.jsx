@@ -22,7 +22,6 @@ const ForgotPassword = () => {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/ // Simple email validation
     if (emailRegex.test(formData.email)) {
-      console.log("Form data:", formData)
       navigate("/otp-verification") // Redirect to /otp-verification if email is valid
     } else {
       alert("Please enter a valid email address.") // Show alert for invalid email

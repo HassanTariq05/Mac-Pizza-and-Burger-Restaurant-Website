@@ -94,7 +94,6 @@ const AddressForm = ({
 
   const onSubmit = async (data) => {
     try {
-      console.log("Form Data Submitted:", data)
       let tagType
       if (selectedButton === "Home") {
         tagType = "Home"
@@ -180,8 +179,6 @@ const AddressForm = ({
           tag: tagType,
         }
 
-        console.log(selectedEditAddress)
-        console.log(updateAddressPayload)
         const updateAddressResponse = await updateAddressService.update(
           selectedEditAddress.id,
           updateAddressPayload,
@@ -219,9 +216,6 @@ const AddressForm = ({
         ids: [selectedEditAddress.id.toString()],
       }
       const token = localStorage.getItem("token")
-      console.log("token: ", token)
-      console.log("body: ", body)
-      console.log("id: ", selectedEditAddress.id)
       const response = await deleteAddressService.delete(
         selectedEditAddress.id,
         body,

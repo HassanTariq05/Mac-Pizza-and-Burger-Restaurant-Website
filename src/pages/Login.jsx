@@ -53,9 +53,7 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log("Form data:", formData)
     loginUser(formData.email, formData.password)
-    console.log(localStorage)
   }
 
   const togglePasswordVisibility = () => setPasswordVisible(!passwordVisible)

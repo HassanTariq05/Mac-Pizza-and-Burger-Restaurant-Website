@@ -10,7 +10,6 @@ function relatedProduct() {
         const params = { uuid: "" }
         const response = await relatedProductService.getAll(params)
         setRelatedProduct(response.data.data)
-        console.log("Related Products api response:", response.data)
       } catch (error) {
         console.error("Error fetching product:", error)
       }

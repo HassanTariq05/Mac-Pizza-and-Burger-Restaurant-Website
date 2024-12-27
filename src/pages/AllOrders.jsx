@@ -14,7 +14,6 @@ function AllOrders() {
       try {
         const token = localStorage.getItem("token")
         const response = await allOrdersService.get(token)
-        console.log("All Orders: ", response.data.data)
         setAllOrdersResponse(response.data.data || [])
       } catch (error) {
         console.error("Error fetching orders:", error)

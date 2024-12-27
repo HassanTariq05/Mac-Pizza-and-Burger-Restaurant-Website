@@ -47,8 +47,6 @@ const ResetPassword = () => {
       setErrors(formErrors)
       return
     }
-
-    console.log("Form data:", formData)
   }
 
   const validatePassword = (password) => {

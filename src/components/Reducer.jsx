@@ -4,7 +4,6 @@ export const initialState = {
 }
 
 export const Reducer = (state, action) => {
-  console.log(action)
   switch (action.type) {
     case "ADD_TO_BASKET":
       return {

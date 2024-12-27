@@ -80,6 +80,13 @@ function PersonalData() {
     return date.toISOString().split("T")[0]
   }
 
+  const formatBirthdayForPayload = (birthday) => {
+    if (!birthday) return "1999-01-01"
+
+    const date = new Date(birthday)
+    return date.toISOString().split("T")[0]
+  }
+
   const uploadImage = async (file) => {
     const formData = new FormData()
     formData.append("image", file)
@@ -93,7 +100,6 @@ function PersonalData() {
 
       const response = await imageUploadService.uploadImage(formData, token)
       const imageUrl = response.data?.data?.title
-      console.log("Image:", imageUrl)
 
       if (response) {
         try {
@@ -104,7 +110,7 @@ function PersonalData() {
             lastname: userObj?.lastname || "",
             email: userObj?.email || "",
             phone: userObj?.phone || "",
-            birthday: formatBirthday(userObj?.birthday) || "",
+            birthday: formatBirthdayForPayload(userObj?.birthday),
             gender: userObj?.gender || "",
             images: [imageUrl],
           }
@@ -142,7 +148,7 @@ function PersonalData() {
           lastname: formData.lastName || "",
           email: formData.email || "",
           phone: formData.phone || "",
-          birthday: formatBirthday(formData.dateOfBirth) || "",
+          birthday: formatBirthdayForPayload(formData.dateOfBirth),
           gender: formData.gender || "",
           images: [localStorage.getItem("profilePic") || profilePic],
         }
@@ -186,7 +192,6 @@ function PersonalData() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log("Form data:", formData)
     updateProfile(formData)
   }
   return (

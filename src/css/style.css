@@ -991,7 +991,6 @@ h5.h5-sm {
 /* 22px */
 h5.h5-md {
   font-size: 1.5rem;
-  text-transform: lowercase;
 }
 
 /* 24px */
@@ -6600,13 +6599,14 @@ select:-webkit-autofill:focus {
 .shopProduct {
   float: left;
   position: relative;
-  margin: 0 0px 20px 20px;
+  margin: 0 10px 20px 10px;
   border-radius: 6px;
   background: #fff;
   text-align: center;
   overflow: hidden;
   border: 1px solid #e5e5e5;
-  max-width: 255px;
+  max-width: 245px;
+  min-width: 190px;
   /* max-height: 390px; */
   align-content: space-between;
 }
@@ -7545,7 +7545,6 @@ nav a#pull {
 
 /* shope-page css */
 .shop-sidebar {
-  flex: 0 0 300px;
   max-width: 300px;
   margin-right: 15px;
   border-radius: 12px;
@@ -7554,6 +7553,7 @@ nav a#pull {
   margin-bottom: 20px;
   box-shadow: 0 0 46px rgba(9, 33, 43, 0.1);
   height: fit-content;
+  width: 100%;
 }
 
 .shop-sidebar .shop-sidebar-cat-title h3 {

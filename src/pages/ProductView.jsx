@@ -59,7 +59,6 @@ const ProductView = () => {
         ? prevSelected.filter((selected) => selected.id !== addon.id)
         : [...prevSelected, addon]
     )
-    console.log(selectedAddons)
   }
 
   useEffect(() => {
@@ -177,7 +176,6 @@ const ProductView = () => {
   }
 
   const handleAddToCartClick = () => {
-    console.log("size: ", size)
     if (
       product.stocks.length > 1 &&
       (size === "" || size === "Choose an option")

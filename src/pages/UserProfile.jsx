@@ -89,7 +89,6 @@ const UserProfile = () => {
 
       const response = await imageUploadService.uploadImage(formData, token)
       const imageUrl = response.data?.data?.title
-      console.log("Image:", imageUrl)
 
       if (response) {
         try {
@@ -100,7 +99,7 @@ const UserProfile = () => {
             lastname: userObj?.lastname || "",
             email: userObj?.email || "",
             phone: userObj?.phone || "",
-            birthday: formatBirthday(userObj?.birthday) || "",
+            birthday: formatBirthday(userObj?.birthday) || "1999-01-01",
             gender: userObj?.gender || "",
             images: [imageUrl],
           }

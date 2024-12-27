@@ -37,9 +37,6 @@ const AddToCartReceipt = () => {
 
   useEffect(() => {
     setIsActive(true)
-    console.log("Params:", { title, size, addonTitles })
-    console.log("Basket:", basket)
-    console.log("Matched Product:", matchedProduct)
   }, [matchedProduct])
 
   const handleCloseModal = () => {

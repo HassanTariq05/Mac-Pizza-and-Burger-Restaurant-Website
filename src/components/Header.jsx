@@ -26,8 +26,6 @@ function Header() {
 
   const getProfilePic = () => {
     const user = JSON.parse(localStorage.getItem("user"))
-    console.log("Here", user)
-    console.log("Profile Pic", localStorage.getItem("profilePic"))
     const profileLocal = localStorage.getItem("profilePic")
     if (profileLocal) {
       return `${profileLocal}`

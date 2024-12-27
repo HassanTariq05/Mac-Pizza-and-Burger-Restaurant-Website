@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react"
 import categoryService from "../services/api/categoryService"
 
-function CategorySidebar({ onCategorySelect }) {
+function CategorySidebar({ onCategorySelect, category }) {
   const [categories, setCategories] = useState([])
-  const [selectedCategory, setSelectedCategory] = useState(null)
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -14,8 +13,7 @@ function CategorySidebar({ onCategorySelect }) {
           (a, b) => a.sort - b.sort
         )
         setCategories(sortedCategories)
-
-        if (sortedCategories.length > 0) {
+        if (sortedCategories.length > 0 && !category) {
           handleCategoryClick(sortedCategories[0].uuid)
         }
       } catch (error) {

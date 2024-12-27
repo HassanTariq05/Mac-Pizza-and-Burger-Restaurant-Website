@@ -202,7 +202,6 @@ function App() {
 
   useEffect(() => {
     localStorage.setItem("basket", JSON.stringify(basket))
-    console.log("Local Storage (Basket):", localStorage.getItem("basket"))
   }, [basket])
 
   useEffect(() => {

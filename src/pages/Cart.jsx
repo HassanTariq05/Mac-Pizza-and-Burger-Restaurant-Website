@@ -52,8 +52,6 @@ const Cart = () => {
       } catch (error) {
         if (loggedIn) {
           toast.error("Error deleting cart")
-        } else {
-          console.log("Not logged in")
         }
       }
     }
@@ -306,8 +304,6 @@ const Cart = () => {
   const navigate = useNavigate()
   const handleCheckoutClick = () => {
     const currentAddress = localStorage.getItem("currentAddress")
-
-    console.log(localStorage)
     if (currentAddress !== null) {
       navigate("/checkout")
     } else {

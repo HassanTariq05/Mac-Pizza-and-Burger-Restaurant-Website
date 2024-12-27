@@ -16,6 +16,9 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons"
 import LoginConfirmationModal from "../components/LoginConfirmationModal"
 import createCartService from "../services/api/createCartService"
 import "../css/ProductCheckout.css"
+import AddressModal from "../components/AddressModal"
+import PickupAddressModal from "../components/PickupAddressModal"
+import DeliveryTypeModal from "../components/DeliveryTypeModal"
 
 const CouponSection = ({
   warnings,
@@ -206,6 +209,142 @@ const ProductCheckout = () => {
   const [discount, setDiscount] = useState(0)
   const [couponCode, setCouponCode] = useState("")
   const [latLong, setLatLong] = useState()
+  const [AddressModalOpen, setAddressModalOpen] = useState(false)
+  const [DeliveryTypeModalOpen, setDeliveryTypeModalOpen] = useState(false)
+  const [PickupAddressModalOpen, setPickupAddressModalOpen] = useState(false)
+  const [deliveryPrice, setDeliveryPrice] = useState({
+    value: "",
+    validation: false,
+  })
+
+  const onClose = () => {
+    setAddressModalOpen(false)
+    getDeliveryPrice()
+  }
+
+  const getDeliveryPrice = async () => {
+    try {
+      const currentAddress = JSON.parse(localStorage.getItem("currentAddress"))
+      if (!currentAddress || !currentAddress.location) {
+        setDeliveryPrice({ value: "Select address to view", validation: false })
+        return
+      }
+
+      const { latitude: lat, longitude: lng } = currentAddress.location
+      if (!lat || !lng) {
+        setDeliveryPrice({ value: "Select address to view", validation: false })
+        return
+      }
+
+      const addressCoordsObj = { lat, lng }
+
+      const getDeliveryDistanceResponse = await deliveryPriceService.getPrice()
+      const distances = getDeliveryDistanceResponse?.data?.data
+
+      if (!Array.isArray(distances) || distances.length === 0) {
+        setDeliveryPrice({
+          value: "No delivery options available",
+          validation: false,
+        })
+        return
+      }
+
+      const maxDistanceObj = distances.reduce(
+        (maxObj, item) =>
+          item.max_distance_km > (maxObj?.max_distance_km || 0) ? item : maxObj,
+        null
+      )
+
+      if (
+        !maxDistanceObj ||
+        !maxDistanceObj.shop ||
+        !maxDistanceObj.shop.lat_long
+      ) {
+        setDeliveryPrice({
+          value: "No delivery options available",
+          validation: false,
+        })
+        return
+      }
+
+      const calculatedDistance = calculateDistance(addressCoordsObj, {
+        lat: maxDistanceObj.shop.lat_long.latitude,
+        lng: maxDistanceObj.shop.lat_long.longitude,
+      })
+
+      const price = matchPrice(calculatedDistance, distances)
+
+      setDeliveryPrice({
+        value: price !== "" ? `${price}.00som` : "Select address to view",
+        validation: true,
+      })
+      localStorage.setItem("shippingFee", price)
+    } catch (error) {
+      console.error("Error fetching delivery price:", error)
+      setDeliveryPrice({
+        value: "Error fetching delivery price",
+        validation: false,
+      })
+    }
+  }
+
+  const calculateDistance = (coord1, coord2) => {
+    if (!coord1 || !coord2) return Infinity
+
+    const R = 6371e3 // Earth's radius in meters
+    const lat1 = (coord1.lat * Math.PI) / 180
+    const lat2 = (coord2.lat * Math.PI) / 180
+    const deltaLat = ((coord2.lat - coord1.lat) * Math.PI) / 180
+    const deltaLng = ((coord2.lng - coord1.lng) * Math.PI) / 180
+
+    const a =
+      Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+      Math.cos(lat1) *
+        Math.cos(lat2) *
+        Math.sin(deltaLng / 2) *
+        Math.sin(deltaLng / 2)
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+
+    return (R * c) / 1000
+  }
+  const matchPrice = (calculatedDistance, data) => {
+    const matchedItem = data.find(
+      (item) =>
+        calculatedDistance >= item.min_distance_km &&
+        calculatedDistance <= item.max_distance_km
+    )
+
+    localStorage.setItem("deliveryPriceId", matchedItem.id)
+    return matchedItem
+      ? matchedItem.price
+      : "No price available for the given distance"
+  }
+
+  const onDeliveryTypeModalClose = () => {
+    setDeliveryTypeModalOpen(false)
+  }
+
+  const onPickupAddressModalClose = () => {
+    setPickupAddressModalOpen(false)
+  }
+
+  const handleAddressModalOpen = () => {
+    setAddressModalOpen(true)
+  }
+
+  const onDeliveryButtonClick = () => {
+    onDeliveryTypeModalClose()
+    handleAddressModalOpen()
+  }
+
+  const onPickupButtonClick = () => {
+    onDeliveryTypeModalClose()
+    setPickupAddressModalOpen(true)
+  }
+
+  const handleDeliveryTypeModalOpen = () => {
+    setDeliveryTypeModalOpen(true)
+  }
 
   const [modalVisible, setModalVisible] = useState(false)
 
@@ -350,10 +489,6 @@ const ProductCheckout = () => {
     return products
   }
 
-  useEffect(() => {
-    console.log(basket)
-  }, [])
-
   const placeOrder = () => {
     const newWarnings = []
     if (isGuestUser()) {
@@ -474,8 +609,6 @@ const ProductCheckout = () => {
 
   const createOrder = async (token, guestUserPhone, cart_id) => {
     try {
-      console.log("Local Storage: ", localStorage)
-
       // Parse necessary localStorage data
       const userRaw = localStorage.getItem("user")
       const currentAddressRaw = localStorage.getItem("currentAddress")
@@ -535,8 +668,6 @@ const ProductCheckout = () => {
           phone: user.phone,
         }
       }
-
-      console.log("Params for API call:", params)
 
       const headers = {
         Authorization: token,
@@ -812,33 +943,70 @@ const ProductCheckout = () => {
 
                           {localStorage.getItem("deliveryType") ===
                             "delivery" && (
-                            <tr>
-                              <td className="label">City</td>
-                              <td className="value">
-                                {
-                                  JSON.parse(
+                            <>
+                              <tr>
+                                <td className="cbtn-td"></td>
+                                <td className="cbtn-td">
+                                  <button
+                                    onClick={handleDeliveryTypeModalOpen}
+                                    className="cbtn"
+                                  >
+                                    Change
+                                  </button>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td className="label">City</td>
+                                <td className="value">
+                                  {
                                     JSON.parse(
-                                      localStorage.getItem("currentAddress")
-                                    ).street_house_number
-                                  ).address1
-                                }
-                              </td>
-                            </tr>
+                                      JSON.parse(
+                                        localStorage.getItem("currentAddress")
+                                      ).street_house_number
+                                    ).address1
+                                  }
+                                </td>
+                              </tr>
+                            </>
                           )}
 
                           {localStorage.getItem("deliveryType") ===
                             "pickup" && (
-                            <tr>
-                              <td className="label">Pickup Location</td>
-                              <td className="value">
-                                {localStorage.getItem("currentAddress")}
-                              </td>
-                            </tr>
+                            <>
+                              <tr>
+                                <td className="label">Pickup Location</td>
+                                <td className="value">
+                                  {localStorage.getItem("currentAddress")}
+                                </td>
+                              </tr>
+                              <tr>
+                                <td className="cbtn-td"></td>
+                                <td className="cbtn-td">
+                                  <button
+                                    onClick={handleDeliveryTypeModalOpen}
+                                    className="cbtn"
+                                  >
+                                    Change
+                                  </button>
+                                </td>
+                              </tr>
+                            </>
                           )}
                         </tbody>
                       </table>
                     </div>
                   )}
+                  <AddressModal isOpen={AddressModalOpen} onClose={onClose} />
+                  <DeliveryTypeModal
+                    isOpen={DeliveryTypeModalOpen}
+                    onDeliveryTypeModalClose={onDeliveryTypeModalClose}
+                    onDeliveryButtonClick={onDeliveryButtonClick}
+                    onPickupButtonClick={onPickupButtonClick}
+                  />
+                  <PickupAddressModal
+                    isOpen={PickupAddressModalOpen}
+                    onPickupAddressModalClose={onPickupAddressModalClose}
+                  />
                   {isGuestUser() && (
                     <div className="checkout-from">
                       <form>

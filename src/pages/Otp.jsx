@@ -42,9 +42,6 @@ const Otp = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
     const otp = formData.otp.join("") // Join OTP digits into a single string
-    console.log("Submitted OTP:", otp)
-
-    // Add OTP validation logic here
   }
 
   return (

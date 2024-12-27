@@ -125,7 +125,10 @@ function Shop() {
       <section className="wide-100 Shop-page division">
         <div className="container">
           <div className="shop-main d-flex flex-wrap">
-            <CategorySidebar onCategorySelect={setSelectedCategory} />
+            <CategorySidebar
+              onCategorySelect={setSelectedCategory}
+              category={category}
+            />
             {loading ? (
               <div className="loading-spinner">
                 <p>...</p>

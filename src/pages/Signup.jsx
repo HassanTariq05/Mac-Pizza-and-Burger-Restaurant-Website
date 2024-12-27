@@ -81,7 +81,6 @@ const Signup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log("Form data:", formData)
     registerUser(
       formData.password,
       formData.email,
