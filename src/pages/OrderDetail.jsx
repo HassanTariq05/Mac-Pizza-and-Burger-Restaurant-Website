@@ -36,6 +36,18 @@ const OrderDetail = () => {
     }
   }
 
+  const getProductsCount = () => {
+    let count = 0
+
+    detail.details.map((item) => {
+      if (item.stock.product.addon === 0) {
+        count++
+      }
+    })
+
+    return "(" + count + ")"
+  }
+
   return (
     <>
       <div class="order-container">
@@ -62,8 +74,7 @@ const OrderDetail = () => {
         <div class="order-details">
           <div class="order-details-header">
             <h3>
-              Order details{" "}
-              <span class="item-count">({detail.details.length})</span>
+              Order details <span class="item-count">{getProductsCount()}</span>
             </h3>
           </div>
           <div class="order-items">

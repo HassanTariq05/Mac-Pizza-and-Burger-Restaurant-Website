@@ -223,6 +223,26 @@
   color: #666;
 }
 
+.cart-icon {
+  position: relative;
+}
+
+.cart-count-tag {
+  background-color: red;
+  border-radius: 50%;
+  color: white;
+  font-size: 12px;
+  height: 20px;
+  width: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
 @media (max-width: 768px) {
   .footer-content {
     flex-direction: column; /* Horizontal layout for larger screens */

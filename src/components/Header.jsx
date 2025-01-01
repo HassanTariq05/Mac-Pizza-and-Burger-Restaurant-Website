@@ -4,10 +4,11 @@ import "../css/header.css"
 import { Link } from "react-router-dom"
 import { useNavigate } from "react-router-dom"
 import { BASE_URL } from "../env/env"
+import { useStateValue } from "./StateProvider"
 
 function Header() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-  const [profilePic, setProfilePic] = useState(null)
+  const [{ basket }] = useStateValue()
 
   const toggleDrawer = () => {
     setIsDrawerOpen((prev) => !prev)
@@ -94,8 +95,9 @@ function Header() {
 
         {/* Right Section: User and Cart Buttons */}
         <div className="nav-right">
-          <Link to={"/cart"}>
+          <Link to="/cart" className="cart-icon">
             <i id="shopping-cart-icon" className="fas fa-shopping-cart"></i>
+            <span className="cart-count-tag">{basket?.length || 0}</span>
           </Link>
 
           {localStorage.getItem("user") !== null &&

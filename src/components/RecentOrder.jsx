@@ -23,6 +23,17 @@ function RecentOrder() {
     getRecentOrder()
   }, [])
 
+  const getOrderItemCount = () => {
+    let count = 0
+    if (allOrdersResponse?.[0])
+      allOrdersResponse?.[0]?.details.map((item, index) => {
+        if (item.stock.product.addon === 0) {
+          count++
+        }
+      })
+    return count
+  }
+
   return (
     <>
       {allOrdersResponse?.[0] && (
@@ -75,7 +86,7 @@ function RecentOrder() {
                 </div>
               </div>
               <div class="order-item-footer">
-                {`${allOrdersResponse?.[0]?.details?.length} item(s)` || "-"}
+                {`${getOrderItemCount()} item(s)` || "-"}
               </div>
             </div>
           </Link>
