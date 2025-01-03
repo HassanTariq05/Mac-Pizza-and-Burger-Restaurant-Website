@@ -61,7 +61,6 @@ const ResetPassword = () => {
         updatePasswordPayload,
         token
       )
-      console.log("response: ", updatePasswordServiceResponse)
       if (updatePasswordServiceResponse.status) {
         setLoading(false)
         navigate("/")

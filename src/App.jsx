@@ -46,6 +46,7 @@ import DeliveryTypeModal from "./components/DeliveryTypeModal"
 import Privacy from "./pages/Policy"
 import { useState } from "react"
 import PickupAddressModal from "./components/PickupAddressModal"
+import EmailVerification from "./pages/EmailVerfication"
 
 function MainContent() {
   const location = useLocation()
@@ -128,6 +129,10 @@ function MainContent() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/otp-verification/:email" element={<Otp />} />
+        <Route
+          path="/email-verification/:email"
+          element={<EmailVerification />}
+        />
         <Route
           path="/user-profile"
           element={

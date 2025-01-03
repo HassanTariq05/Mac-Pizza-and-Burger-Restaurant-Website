@@ -36,7 +36,6 @@ const Signup = () => {
       if (response.data.status) {
         loginUser(email, password)
       }
-      navigate("/")
     } catch (error) {
       toast.error("Signup Failed")
     } finally {
@@ -63,7 +62,7 @@ const Signup = () => {
       if (response.data.status) {
         toast.success("Signup Successful")
       }
-      navigate("/")
+      navigate(`/email-verification/${email}`)
     } catch (error) {
       toast.error("Signup Failed")
     } finally {

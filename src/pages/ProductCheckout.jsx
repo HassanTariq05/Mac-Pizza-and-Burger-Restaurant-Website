@@ -443,8 +443,6 @@ const ProductCheckout = () => {
         } else {
           setShippingCost(0)
         }
-      } else {
-        // console.log('Delivery Price not found');
       }
     } catch (error) {
       // console.error('Error fetching delivery price:', error);
