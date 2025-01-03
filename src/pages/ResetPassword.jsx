@@ -2,6 +2,10 @@ import React, { useState } from "react"
 import "../css/signup.css"
 import macburgerLogo from "../images/macburger-logo.png"
 import { Eye, EyeOff } from "lucide-react"
+import updatePasswordService from "../services/api/updatePasswordService"
+import toast from "react-hot-toast"
+import { useNavigate } from "react-router-dom"
+import { error } from "jquery"
 
 const ResetPassword = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +15,8 @@ const ResetPassword = () => {
 
   const [passwordVisible, setPasswordVisible] = useState(false)
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
 
   const [errors, setErrors] = useState({
     password: "",
@@ -25,9 +31,9 @@ const ResetPassword = () => {
     })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-
+    setLoading(true)
     let formErrors = { password: "", confirmPassword: "" }
 
     if (!validatePassword(formData.password)) {
@@ -39,13 +45,33 @@ const ResetPassword = () => {
       formErrors.confirmPassword = "Passwords do not match."
     }
 
-    if (formData.password == formData.confirmPassword) {
-      setErrors(formErrors)
-    }
-
     if (formErrors.password || formErrors.confirmPassword) {
       setErrors(formErrors)
       return
+    }
+
+    setErrors({})
+    try {
+      const updatePasswordPayload = {
+        password: formData.password,
+        password_confirmation: formData.confirmPassword,
+      }
+      const token = localStorage.getItem("token")
+      const updatePasswordServiceResponse = await updatePasswordService.update(
+        updatePasswordPayload,
+        token
+      )
+      console.log("response: ", updatePasswordServiceResponse)
+      if (updatePasswordServiceResponse.status) {
+        setLoading(false)
+        navigate("/")
+        toast.success("Password updated successfully")
+      } else {
+        throw error
+      }
+    } catch (error) {
+      toast.error("Password update failed!")
+      setLoading(false)
     }
   }
 
@@ -119,9 +145,15 @@ const ResetPassword = () => {
             <span className="error-message">{errors.confirmPassword}</span>
           )}
         </div>
-
-        <button type="submit" className="signup-button">
-          Continue
+        <button
+          type="submit"
+          className={`signup-button ${loading ? "loading" : ""}`}
+        >
+          {loading ? (
+            <div className="loader"></div>
+          ) : (
+            <span className="button-text">Continue</span>
+          )}
         </button>
       </form>
     </div>

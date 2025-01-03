@@ -127,7 +127,7 @@ function MainContent() {
         <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/otp-verification" element={<Otp />} />
+        <Route path="/otp-verification/:email" element={<Otp />} />
         <Route
           path="/user-profile"
           element={

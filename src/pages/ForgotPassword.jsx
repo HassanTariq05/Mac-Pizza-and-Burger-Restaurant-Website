@@ -2,11 +2,17 @@ import React, { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import "../css/signup.css"
 import macburgerLogo from "../images/macburger-logo.png"
+import forgotPasswordService from "../services/api/forgotPasswordService"
+import toast from "react-hot-toast"
+import { error } from "jquery"
+import { faL } from "@fortawesome/free-solid-svg-icons"
 
 const ForgotPassword = () => {
   const [formData, setFormData] = useState({
     email: "",
   })
+
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate() // Initialize useNavigate hook
 
   const handleChange = (e) => {
@@ -17,14 +23,30 @@ const ForgotPassword = () => {
     })
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault()
+      setLoading(true)
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (emailRegex.test(formData.email)) {
+        const payload = {
+          email: formData.email,
+        }
+        const forgotPasswordResponse = await forgotPasswordService.request(
+          payload
+        )
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/ // Simple email validation
-    if (emailRegex.test(formData.email)) {
-      navigate("/otp-verification") // Redirect to /otp-verification if email is valid
-    } else {
-      alert("Please enter a valid email address.") // Show alert for invalid email
+        if (forgotPasswordResponse.data.status == 200) {
+          setLoading(false)
+          toast.success("Verification code sent")
+          navigate(`/otp-verification/${formData.email}`)
+        } else {
+          throw error
+        }
+      }
+    } catch (error) {
+      setLoading(false)
+      toast.error("Invalid email!")
     }
   }
 
@@ -54,8 +76,15 @@ const ForgotPassword = () => {
             required
           />
         </div>
-        <button type="submit" className="signup-button">
-          Continue
+        <button
+          type="submit"
+          className={`signup-button ${loading ? "loading" : ""}`}
+        >
+          {loading ? (
+            <div className="loader"></div>
+          ) : (
+            <span className="button-text">Continue</span>
+          )}
         </button>
       </form>
     </div>
