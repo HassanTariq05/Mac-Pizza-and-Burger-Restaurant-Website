@@ -7,6 +7,7 @@ import { useState } from "react"
 import { useEffect } from "react"
 import categoryService from "../services/api/categoryService"
 import { BASE_URL } from "../env/env"
+import getBannersService from "../services/api/getBannersService"
 
 function Home() {
   const [categories, setCategories] = useState([])
@@ -34,6 +35,18 @@ function Home() {
     fetchCategories()
   }, [])
 
+  const [data, setData] = useState()
+
+  useEffect(() => {
+    const getBanners = async () => {
+      const getBannersResponse = await getBannersService.get()
+      setData(getBannersResponse.data.data)
+      console.log("Get banners response:", getBannersResponse.data.data)
+    }
+
+    getBanners()
+  }, [])
+
   return (
     <div>
       <section id="hero-2" className="bg-fixed hero-section division">
@@ -45,13 +58,22 @@ function Home() {
             <div className="hero-2-txt text-center">
               <h2 className="red-color shadow-txt-white"></h2>
               <div className="hero-2-img">
-                <img
+                {/* <img
                   className="img-fluid"
                   src={require("../images/hero-sec-banner-img.jpg")}
                   width="100%"
                   height="auto"
                   alt="hero-image"
+                /> */}
+                <img
+                  className="img-fluid"
+                  src={`${BASE_URL}/${data?.[0]?.img}`}
+                  alt="hero-image"
+                  onError={(e) =>
+                    (e.currentTarget.src = require("../images/hero-sec-banner-img.jpg"))
+                  }
                 />
+
                 <div
                   className="price-badge-sm bg-fixed white-color1"
                   style={{
